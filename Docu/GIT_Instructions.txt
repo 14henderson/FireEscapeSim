@@ -1,0 +1,5 @@
+git clone [URL]			download your repo
+git checkout [branch name]	switch to a different branch
+git branch 			list available branches
+
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" fx:id="mainPane" prefHeight="750.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLBuildingController">
+    <children>
+        <!--<Rectangle fx:id="play" arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="50.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />-->
+        <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
+            <children>
+                <Button layoutX="123.0" layoutY="702.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
+                <Button layoutX="88.0" layoutY="702.0" mnemonicParsing="false" onAction="#addRoom" text="+" />
+                <Button layoutX="47.0" layoutY="702.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
+                <Label fx:id="floorLevel" layoutX="86.0" layoutY="672.0" text="Label" />
+                <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
+            </children>
+        </Pane>
+    </children>
+</AnchorPane>

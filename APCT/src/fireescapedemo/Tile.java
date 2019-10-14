@@ -65,7 +65,7 @@ public class Tile {
         this.block.setStroke(Color.BLACK);
         this.type = null;
         this.block.setOnMouseClicked((MouseEvent event) -> {
-                    Color c = FXMLDocumentController.c;
+                    Color c = FXMLBuildingController.c;
                     if(!this.color.equals(c)){
                         this.color = c;
                         if(this.color.equals(Color.RED)){
