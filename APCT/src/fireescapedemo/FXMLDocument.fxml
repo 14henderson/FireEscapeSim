@@ -14,7 +14,7 @@
             <Button layoutX="123.0" layoutY="702.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
             <Button layoutX="88.0" layoutY="702.0" mnemonicParsing="false" onAction="#addRoom" text="+" />
             <Button layoutX="47.0" layoutY="702.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
-            <Label fx:id="floorLevel" layoutX="86.0" layoutY="672.0" text="Label" />
+   <!-- -->         <Label fx:id="floorLevel" layoutX="86.0" layoutY="672.0" text="Label" />
             <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
          </children>
       </Pane>
