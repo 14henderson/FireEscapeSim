@@ -11,12 +11,27 @@ public class FireEscapeDemo extends Application {
     
     @Override
     public void start(Stage stage) throws Exception {
-        Stage test = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
-        test.setTitle("Hello World!");
-       // Scene tmp = test.getScene();
-        test.show();
-        //stage.show();
+        Stage mainStage = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
+        //Scene buildingScene = FXMLLoader.load(getClass().getResource("FXMLBuilding.fxml"));
+        mainStage.show();
+        //Scene root = new Scene(mainStage);
 
+
+
+        //mainStage.setTitle("Hello World!");
+        //mainStage.show();
+
+
+
+
+/*
+        SceneManager manager = new SceneManager(mainStage);
+        Scene buildingScene = FXMLLoader.load(getClass().getResource("FXMLBuilding.fxml"));
+        manager.addScene(buildingScene, "Building");
+        manager.showScene("building");
+  */
+
+        //mainStage.setScene(buildingScene);
 //        Parent root = FXMLLoader.load(getClass().getResource("FXMLDocument.fxml"));
 
   //      Scene scene = new Scene(root);
