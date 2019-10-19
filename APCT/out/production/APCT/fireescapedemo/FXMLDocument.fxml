@@ -11,14 +11,12 @@
 
 
 
+<Scene xmlns:fx="http://javafx.com/fxml/1" fx:id="document"
+       xmlns="http://javafx.com/javafx/9.0.1" fx:controller="fireescapedemo.FXMLDocumentController">
+    <Button layoutX="68.0" layoutY="69.0" mnemonicParsing="false" text="RENDER" />
+</Scene>
 
-<Stage title="document" xmlns:fx="http://javafx.com/fxml/1" fx:id="documentStage" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="fireescapedemo.FXMLDocumentController">
-    <scene>
-        <Scene fx:id="Building">
-            <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" text="RENDER" />
-        </Scene>
-    </scene>
-</Stage>
+
 
 
 

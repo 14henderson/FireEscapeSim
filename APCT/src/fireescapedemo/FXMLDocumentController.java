@@ -18,9 +18,9 @@ public class FXMLDocumentController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        SceneManager tmpManager = new SceneManager(documentStage);
-        tmpManager.showScene("building");
-        System.out.println("In Document Controller");
+        //SceneManager tmpManager = new SceneManager(documentStage);
+        //tmpManager.showScene("building");
+       // System.out.println("In Document Controller");
         //this.Building.getRoot().setVisible(true);
         //this.Simulation.getRoot().setVisible(false);
     }
