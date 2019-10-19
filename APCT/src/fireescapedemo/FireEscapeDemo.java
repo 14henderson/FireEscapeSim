@@ -22,7 +22,7 @@ public class FireEscapeDemo extends Application {
         Stage root  = new Stage();
         SceneManager manager = new SceneManager(root);
         manager.addScene("FXMLBuilding.fxml", "building");
-        manager.addScene("FXMLDocument.fxml", "tmp");
+        manager.addScene("FXMLSimulation.fxml", "tmp");
 
         manager.showScene("building");
         manager.showScene("tmp");
