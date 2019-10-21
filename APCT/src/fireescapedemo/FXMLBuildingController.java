@@ -51,8 +51,7 @@ public class FXMLBuildingController implements Initializable {
         //mainBuilding.renderBlocks();
         Tile.disableBuild();
         mainBuilding.renderBlocks();
-        manager.addScene("FXMLSimulation.fxml", "tmp");
-        manager.showScene("tmp");
+        manager.showScene("simulation");
     }
 
 
