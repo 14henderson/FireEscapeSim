@@ -30,7 +30,9 @@ public class FXMLHomeController implements Initializable{
     public void buildCurrent(ActionEvent actionEvent) {
     }
 
-    public void buildNew(ActionEvent actionEvent) {
+    public void buildNew(ActionEvent actionEvent) throws IOException {
+
+        this.manager.addScene("FXMLBuilding.fxml", "building");
         this.manager.showScene("building");
     }
 }

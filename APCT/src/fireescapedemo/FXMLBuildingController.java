@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.AnchorPane;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -29,30 +31,31 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Label floorLevel;
     int floorNum = 0;
+    SceneManager manager= new SceneManager();
 
-    View currentView;
-    enum View
-    {
-        BUILDING,
-        SIMULATION
-    }
 
 
     ArrayList<Employee> characters;
     ArrayList<Tile> floors;
 
-    public static Building mainBuilding = new Building(14,13,50);
+    public static  Building mainBuilding = new Building(14,13,50);
     static Color c = Color.WHITESMOKE;
+
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
-
     }
 
     @FXML
-    private void renderBlocks(){
+    private void renderBlocks() throws IOException {
         //mainBuilding.renderBlocks();
+        Tile.disableBuild();
+        mainBuilding.renderBlocks();
+        manager.addScene("FXMLSimulation.fxml", "tmp");
+        manager.showScene("tmp");
     }
+
+
 
     @FXML
     private void nextRoom(){
@@ -94,7 +97,7 @@ public class FXMLBuildingController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         //initFloors(20,10,25);
-
+        System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
 
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
@@ -175,8 +178,7 @@ public class FXMLBuildingController implements Initializable {
         t.start();
     }
 
-    class Employee extends Actor{
-        int speed;
+    class Employee extends Actor{        int speed;
         boolean foundSteps;
         Tile currentFloor;
         Employee(Node view, Tile startingFloor){
