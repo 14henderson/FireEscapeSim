@@ -33,6 +33,15 @@ public class Building {
         this.currentFloor = 0;
     }
 
+    public Building(Building copy){
+        this.floors = copy.floors;
+        this.floorBlocks = copy.floorBlocks;
+        this.wallBlocks = copy.wallBlocks;
+        this.height = copy.height;
+        this.width = copy.width;
+        this.size = copy.size;
+        this.currentFloor = copy.currentFloor;
+    }
 
     public final void addFloor(){
         int i,j;
@@ -63,7 +72,7 @@ public class Building {
                 r.setOnMouseClicked(new EventHandler <MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
-                        setLineClicked(mouseEvent, finalR);
+                        if(Tile.isBuildEnabled()){setLineClicked(mouseEvent, finalR);}
                     }
                 });
                 r.setOpacity(0.2);
@@ -92,6 +101,17 @@ public class Building {
             System.out.println("After: " + finalCords[i]);
         }
         return finalCords;
+    }
+
+    public void renderForSim(){
+        for(Pane floor: this.floors){
+            for(Rectangle[][] walls : this.wallBlocks)
+                for(Rectangle[] wall : walls){
+                    for(Rectangle w : wall){
+                        floor.getChildren().remove(w);
+                    }
+                }
+        }
     }
 
     public final Pane getCurrentFloor(){ return this.floors.get(this.currentFloor); }
@@ -123,6 +143,7 @@ public class Building {
                 }
             }
         }
+        renderForSim();
     }
 
 
@@ -197,6 +218,13 @@ public class Building {
             lastRec = finalR;
         }
     }
+
+    public void removeBuildOptions(){
+        int i,j;
+
+    }
+
+    public Building createCopy(){return new Building(this);}
 
 
 }
