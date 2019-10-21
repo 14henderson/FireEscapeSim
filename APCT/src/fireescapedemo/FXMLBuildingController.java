@@ -38,7 +38,7 @@ public class FXMLBuildingController implements Initializable {
     ArrayList<Employee> characters;
     ArrayList<Tile> floors;
 
-    public static  Building mainBuilding = new Building(14,13,50);
+    public Building mainBuilding = new Building();
     static Color c = Color.WHITESMOKE;
 
 
@@ -49,9 +49,10 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private void renderBlocks() throws IOException {
         //mainBuilding.renderBlocks();
+        manager.addScene("FXMLSimulation.fxml", "simulation");
+        manager.showScene("simulation");
         Tile.disableBuild();
         mainBuilding.renderBlocks();
-        manager.showScene("simulation");
     }
 
 

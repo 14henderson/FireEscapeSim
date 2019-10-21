@@ -15,10 +15,10 @@
         <!--<Rectangle fx:id="play" arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="50.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />-->
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
             <children>
-                <Button layoutX="123.0" layoutY="702.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
-                <Button layoutX="88.0" layoutY="702.0" mnemonicParsing="false" onAction="#addRoom" text="+" />
-                <Button layoutX="47.0" layoutY="702.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
-                <Label fx:id="floorLevel" layoutX="86.0" layoutY="672.0" text="Label" />
+                <Button layoutX="123.0" layoutY="500.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
+                <Button layoutX="88.0" layoutY="500.0" mnemonicParsing="false" onAction="#addRoom" text="+" />
+                <Button layoutX="47.0" layoutY="500.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
+                <Label fx:id="floorLevel" layoutX="86.0" layoutY="450.0" text="Label" />
                 <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
             </children>
         </Pane>
