@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="fireescapedemo.FXMLHomeController"
+            prefHeight="300.0" prefWidth="300.0"
+            fx:id="HomeAnchorPane">
+    <children>
+        <Button layoutX="25" prefWidth="250" layoutY="80" mnemonicParsing="false" onAction="#buildNew" text="Build New Map" />
+        <Button layoutX="25" prefWidth="250" layoutY="120" mnemonicParsing="false" onAction="#buildCurrent" text="Load Map and Build" />
+        <Button layoutX="25" prefWidth="250" layoutY="160" mnemonicParsing="false" onAction="#simulateCurrent" text="Load Map and Simulate" />
+
+    </children>
+</AnchorPane>
