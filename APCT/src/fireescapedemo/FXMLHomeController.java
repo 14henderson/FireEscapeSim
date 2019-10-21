@@ -17,8 +17,6 @@ public class FXMLHomeController implements Initializable{
 
     @Override
     public void initialize(URL location, ResourceBundle resources){
-        //Stage root  = new Stage();
-        //this.manager = new SceneManager(root);
         this.manager = new SceneManager();
 
 
