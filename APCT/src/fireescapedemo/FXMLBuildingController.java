@@ -52,7 +52,6 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private void renderBlocks(){
         //mainBuilding.renderBlocks();
-        ProgramManager.sceneManager.showScene("tmp");
     }
 
     @FXML
