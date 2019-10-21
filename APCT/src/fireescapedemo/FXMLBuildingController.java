@@ -41,7 +41,7 @@ public class FXMLBuildingController implements Initializable {
     ArrayList<Employee> characters;
     ArrayList<Tile> floors;
 
-    Building mainBuilding = new Building(14,13,50);
+    public static Building mainBuilding = new Building(14,13,50);
     static Color c = Color.WHITESMOKE;
 
     @FXML
@@ -51,7 +51,8 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void renderBlocks(){
-        mainBuilding.renderBlocks();
+        //mainBuilding.renderBlocks();
+        ProgramManager.sceneManager.showScene("tmp");
     }
 
     @FXML

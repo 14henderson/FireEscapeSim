@@ -80,6 +80,7 @@ public class Building {
     }
 
 
+
     public final double[] normaliseCords(double cords[]){
         int i;
         double a;

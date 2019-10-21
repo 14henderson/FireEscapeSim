@@ -8,17 +8,11 @@ import javafx.stage.Stage;
 
 
 public class FireEscapeDemo extends Application {
-    
+
     @Override
     public void start(Stage stage) throws Exception {
         Stage root  = new Stage();
-        SceneManager manager = new SceneManager(root);
-        manager.addScene("FXMLBuilding.fxml", "building");
-        manager.addScene("FXMLSimulation.fxml", "tmp");
-
-        manager.showScene("building");
-        manager.showScene("tmp");
-
+        ProgramManager.initSceneManager(root);
     }
 
     /**
