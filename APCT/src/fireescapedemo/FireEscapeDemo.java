@@ -26,7 +26,7 @@ public class FireEscapeDemo extends Application {
 
         manager.showScene("building");
         manager.showScene("tmp");
-
+        System.out.println("Hello");
         //root.setScene(buildingScene);
         //root.show();
 
