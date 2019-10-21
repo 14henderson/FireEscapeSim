@@ -1,6 +1,7 @@
 package fireescapedemo;
 
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
@@ -17,9 +18,10 @@ public class SceneManager {
 
 
     public void addScene(String filename, String label) throws IOException {
-        Scene tmpRef = FXMLLoader.load(getClass().getResource(filename));
+        Parent tmpRef = FXMLLoader.load(getClass().getResource(filename));
+        Scene tmpSceneRef = new Scene(tmpRef);
 
-        this.scenes.put(label, tmpRef);
+        this.scenes.put(label, tmpSceneRef);
     }
 
     public void showScene(String name){

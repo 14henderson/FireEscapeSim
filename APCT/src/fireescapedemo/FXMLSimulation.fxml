@@ -7,12 +7,12 @@
 <?import javafx.scene.layout.*?>
 
 <?import javafx.stage.Stage?>
-<Scene xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="fireescapedemo.SimulationController">
-    <AnchorPane prefHeight="400.0" prefWidth="600.0">
-        <children>
-            <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
-                <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" text="RENDER" />
-            </Pane>
-        </children>
-    </AnchorPane>
-</Scene>
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
+            xmlns="http://javafx.com/javafx/9.0.1"
+            fx:controller="fireescapedemo.SimulationController">
+    <children>
+        <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
+            <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" text="RENDER" />
+        </Pane>
+    </children>
+</AnchorPane>
