@@ -6,6 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane id="AnchorPane" fx:id="mainPane" prefHeight="750.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLBuildingController">
     <children>
@@ -40,7 +41,8 @@
                </font>
             </Label>
             <Pane layoutX="6.0" layoutY="681.0" />
-            <Button layoutX="60.0" layoutY="698.0" mnemonicParsing="false" text="Save &amp; return home" />
+            <Button fx:id="saveButton" layoutX="60.0" layoutY="698.0" mnemonicParsing="false" onAction="#saveBuilding" text="Save &amp; return home" />
+            <Text fx:id="errorText" fill="RED" layoutX="18.0" layoutY="643.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
             </children>
         </Pane>
       <Pane layoutX="201.0" layoutY="195.0" prefHeight="196.0" prefWidth="197.0" />

@@ -9,13 +9,16 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.*;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,7 +40,10 @@ public class FXMLBuildingController implements Initializable {
     private Button stairsButton;
     @FXML
     private Button employeeButton;
-
+    @FXML
+    private Button saveButton;
+    @FXML
+    private Text errorText;
     int floorNum = 0;
     SceneManager manager= new SceneManager();
 
@@ -117,20 +123,42 @@ public class FXMLBuildingController implements Initializable {
         stairsButton.setOnAction((ActionEvent e) -> {
             c = Color.AQUAMARINE;
         });
+        errorText.setText("");
     }
 
+    /**
+     * Opens the save file dialog to save the serializable building object to be opened in the simulation.
+     * @throws IOException
+     */
+    public void saveBuilding() throws IOException {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Copy of Graphs");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("map files (*.map)","map"));
+        fileChooser.setSelectedFile(new File("my_building.map"));
 
-    public void saveBuilding(){
-        try{
-            String filename = "hand.ser";
-            java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
-            ObjectOutputStream out = new ObjectOutputStream(fos);
-            out.writeObject(this.mainBuilding);
-            out.close();
-
-        }catch(IOException ex){
-            System.out.println("Serializable Error thrown: "+ex);
+        //If save window has been closed after successfully pressing save
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().getPath();
+            try{
+                //Building object is serializable which allows the saving of the object.
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
+                ObjectOutputStream out = new ObjectOutputStream(fos);
+                out.writeObject(this.mainBuilding);
+                out.close();
+            }catch(IOException ex){
+                errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");
+                System.out.println("Serializable Error thrown: "+ex);
+            }
         }
+
+
+
+
+
+
+
+
+
     }
 
     public void initTestLabel(){
@@ -175,6 +203,9 @@ public class FXMLBuildingController implements Initializable {
         t.start();
     }
 
+
+
+
     class Employee extends Actor{        int speed;
         boolean foundSteps;
         Tile currentFloor;
@@ -199,6 +230,7 @@ public class FXMLBuildingController implements Initializable {
         public void update(){
 
         }
+
 
 
         /*
