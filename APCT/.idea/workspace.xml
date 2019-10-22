@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
+<<<<<<< HEAD
     <list default="true" id="991a90fc-c335-4c53-8e21-28143566b700" name="Default Changelist" comment="">
       <change afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
@@ -9,11 +10,15 @@
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+=======
+    <list default="true" id="8a0fd4cc-909f-428b-868f-50f4906643b5" name="Default Changelist" comment="" />
+>>>>>>> 4f70dc878f59936dbc084596b721ca1199d89dab
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+<<<<<<< HEAD
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
@@ -33,6 +38,12 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_package_manager_path" value="npm" />
   </component>
+=======
+  <component name="FavoritesManager">
+    <favorites_list name="JavaFxApplication" />
+  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+>>>>>>> 4f70dc878f59936dbc084596b721ca1199d89dab
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -45,6 +56,7 @@
       </list>
     </option>
   </component>
+<<<<<<< HEAD
   <component name="RunManager">
     <configuration name="FireEscapeDemo" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="fireescapedemo.FireEscapeDemo" />
@@ -65,10 +77,13 @@
       </list>
     </recent_temporary>
   </component>
+=======
+>>>>>>> 4f70dc878f59936dbc084596b721ca1199d89dab
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
+<<<<<<< HEAD
     <task active="true" id="Default" summary="Default task">
       <changelist id="991a90fc-c335-4c53-8e21-28143566b700" name="Default Changelist" comment="" />
       <created>1571740506283</created>
@@ -77,10 +92,9 @@
       <updated>1571740506283</updated>
       <workItem from="1571740533463" duration="3572000" />
     </task>
+=======
+>>>>>>> 4f70dc878f59936dbc084596b721ca1199d89dab
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
