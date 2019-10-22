@@ -15,7 +15,7 @@ import javafx.scene.shape.Rectangle;
 
 
 public class Building implements Serializable {
-    private static ArrayList<Floor> floors;
+    public static ArrayList<Floor> floors;
     private static int currentFloor;
     private static int height;
     private static int width;
@@ -63,7 +63,10 @@ public class Building implements Serializable {
         return  floors.get( currentFloor).getFloor();
     }
     
-    public void renderBlocks(){ for(Floor floor : floors){ floor.renderBlocks(); } }
+    public void renderBlocks(){
+        for(Floor floor : floors){ floor.renderBlocks(); }
+
+    }
 
 
 

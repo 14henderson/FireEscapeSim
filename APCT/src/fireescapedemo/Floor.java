@@ -12,6 +12,7 @@ import java.util.ArrayList;
 
 public class Floor {
     public ArrayList<Actor> employees;
+    public ArrayList<Line> walls;
     private Pane floor;
     private Tile[][] floorBlocks;
     private Rectangle[][] wallBlocks;
@@ -27,6 +28,7 @@ public class Floor {
             this.floor = new Pane();
             this.floorBlocks = new Tile[width][height];
             this.employees = new ArrayList<>();
+            this.walls = new ArrayList<>();
             this.height = heigh;
             this.width = widt;
             this.size = siz;
@@ -96,7 +98,24 @@ public class Floor {
 
     public Pane getFloor() { return this.floor; }
 
+
+    public void refactorFloorForSim(){
+        this.floor = new Pane();
+        int i,j, sizei = this.floorBlocks.length,sizej = this.floorBlocks[0].length;
+        for(i = 0; i < sizei; i++){
+            for(j = 0; j < sizej; j++){
+                this.floorBlocks[i][j].block.setStroke(Color.WHITE);
+                this.floor.getChildren().add(this.floorBlocks[i][j].block);
+            }
+        }
+        for(Line l : this.walls){
+            this.floor.getChildren().add(l);
+        }
+    }
+
     public void renderBlocks(){
+
+        refactorFloorForSim();
         for(Tile[] floor :  floorBlocks){
             for(Tile block : floor){
                 if(block.type != null) { block.type.render(); }
@@ -115,7 +134,7 @@ public class Floor {
             Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
             l.setStroke(Color.BLUE);
             l.setStrokeWidth(10);
-            floor.getChildren().add(l);
+            this.floor.getChildren().add(l);
             System.out.println("x1: " + cords[0] + ", x2: " + cords[2]);
             System.out.println("y1: " + cords[1] + ", y2: " + cords[3]);
             if(cords[1] == cords[3]){
@@ -163,6 +182,7 @@ public class Floor {
             }
             finalR.toFront();
             lastRec.toFront();
+            this.walls.add(l);
             lineClicked = false;
             lineCords[0] = 0;
             lineCords[1] = 0;
