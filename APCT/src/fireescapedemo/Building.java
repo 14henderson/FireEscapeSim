@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import javafx.event.EventHandler;
@@ -12,7 +13,7 @@ import javafx.scene.shape.Rectangle;
 
 
 
-public class Building {
+public class Building implements Serializable {
     ArrayList<Pane> floors;
     ArrayList<Tile[][]> floorBlocks;
     ArrayList<Rectangle[][]> wallBlocks;

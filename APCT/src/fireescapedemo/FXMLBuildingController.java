@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,6 +31,13 @@ public class FXMLBuildingController implements Initializable {
     private Pane assetPane;
     @FXML
     private Label floorLevel;
+    @FXML
+    private Button wallButton;
+    @FXML
+    private Button stairsButton;
+    @FXML
+    private Button employeeButton;
+
     int floorNum = 0;
     SceneManager manager= new SceneManager();
 
@@ -98,42 +106,31 @@ public class FXMLBuildingController implements Initializable {
         //initFloors(20,10,25);
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
-
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-
-        Button wallButton = new Button("Wall Button");
         wallButton.setOnAction((ActionEvent e) -> {
-            System.out.println("Grey");
             c = Color.GRAY;
         });
-        wallButton.setLayoutX(50);
-        wallButton.setLayoutY(50);
-        System.out.println(wallButton.getLayoutX());
-        Button employeeButton = new Button("Employee Button");
         employeeButton.setOnAction((ActionEvent e) -> {
             c = Color.RED;
         });
-
-        employeeButton.setLayoutX(50);
-        employeeButton.setLayoutY(100);
-
-
-        Button stairsButton = new Button("Stairs Button");
         stairsButton.setOnAction((ActionEvent e) -> {
             c = Color.AQUAMARINE;
         });
-        stairsButton.setLayoutX(50);
-        stairsButton.setLayoutY(150);
-        assetPane.getChildren().add(wallButton);
-        assetPane.getChildren().add(employeeButton);
-        assetPane.getChildren().add(stairsButton);
-        /*initCharacters();
-        initTestLabel();
-        initAnimation();*/
     }
 
 
+    public void saveBuilding(){
+        try{
+            String filename = "hand.ser";
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
+            ObjectOutputStream out = new ObjectOutputStream(fos);
+            out.writeObject(this.mainBuilding);
+            out.close();
 
+        }catch(IOException ex){
+            System.out.println("Serializable Error thrown: "+ex);
+        }
+    }
 
     public void initTestLabel(){
         Label l;
