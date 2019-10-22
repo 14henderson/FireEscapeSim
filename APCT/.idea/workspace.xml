@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="8a0fd4cc-909f-428b-868f-50f4906643b5" name="Default Changelist" comment="" />
+    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -10,6 +11,10 @@
   <component name="FavoritesManager">
     <favorites_list name="JavaFxApplication" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1SYWDcVA3iMl8RbQuz7iVqKLTYQ" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -23,10 +28,26 @@
       </list>
     </option>
   </component>
+  <component name="RunManager">
+    <configuration name="Sim Config" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="fireescapedemo.FireEscapeDemo" />
+      <module name="APCT" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="8a0fd4cc-909f-428b-868f-50f4906643b5" name="Default Changelist" comment="" />
+      <created>1571740893142</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1571740893142</updated>
+    </task>
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -34,7 +55,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
