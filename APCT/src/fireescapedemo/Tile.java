@@ -36,11 +36,12 @@ public class Tile {
         Employee {
             @Override
             public void render() {
-                
-                mainBuilding.addEmployee(new Actor(new Circle(50)));
-                mainBuilding.addEmployee(new Actor(new Circle(50)));
-                System.out.println(mainBuilding.employees.size());
-                System.out.println("Oh oh and I, I am an employee");
+                for(Floor floor : mainBuilding.getFloors()){
+                    floor.addEmployee(new Actor(new Circle(50)));
+                    floor.addEmployee(new Actor(new Circle(50)));
+                    System.out.println(floor.employees.size());
+                    System.out.println("Oh oh and I, I am an employee");
+                }
             }
         };
         
