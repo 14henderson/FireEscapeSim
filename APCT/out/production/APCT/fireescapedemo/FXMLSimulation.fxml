@@ -11,9 +11,12 @@
             xmlns="http://javafx.com/javafx/9.0.1"
             fx:controller="fireescapedemo.FXMLSimulationController">
     <children>
-
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
-            <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" text="RENDER" />
+            <children>
+                <Button layoutX="123.0" layoutY="500.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
+                <Button layoutX="47.0" layoutY="500.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
+                <Label fx:id="floorLevel" layoutX="86.0" layoutY="450.0" text="Label" />
+            </children>
         </Pane>
     </children>
 </AnchorPane>

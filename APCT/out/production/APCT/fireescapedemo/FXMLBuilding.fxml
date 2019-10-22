@@ -13,6 +13,7 @@
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="750.0" prefWidth="221.0">
 
             <children>
+<<<<<<< HEAD
                 <Rectangle fx:id="colourPane" fill="#c7dcff" height="777.0" layoutX="-11.0" layoutY="-10.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="245.0" />
                 <Button layoutX="165.0" layoutY="125.0" mnemonicParsing="false" onAction="#prevRoom" prefHeight="31.0" prefWidth="27.0" text="↓" wrapText="true">
                <font>
@@ -41,6 +42,13 @@
             </Label>
             <Pane layoutX="6.0" layoutY="681.0" />
             <Button layoutX="60.0" layoutY="698.0" mnemonicParsing="false" text="Save &amp; return home" />
+=======
+                <Button layoutX="123.0" layoutY="500.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
+                <Button layoutX="88.0" layoutY="500.0" mnemonicParsing="false" onAction="#addRoom" text="+" />
+                <Button layoutX="47.0" layoutY="500.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
+                <Label fx:id="floorLevel" layoutX="86.0" layoutY="450.0" text="Label" />
+                <Button layoutX="68.0" layoutY="639.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
+>>>>>>> b6ee3e940faeca0b88288e6882d09318835a94ed
             </children>
         </Pane>
       <Pane layoutX="201.0" layoutY="195.0" prefHeight="196.0" prefWidth="197.0" />

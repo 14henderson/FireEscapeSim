@@ -4,10 +4,12 @@ import javafx.geometry.Insets;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 public class Tile {
+    private static Building mainBuilding;
     public Pane container;
     public Rectangle block;
     public boolean[] walls;
@@ -34,6 +36,10 @@ public class Tile {
         Employee {
             @Override
             public void render() {
+                
+                mainBuilding.addEmployee(new Actor(new Circle(50)));
+                mainBuilding.addEmployee(new Actor(new Circle(50)));
+                System.out.println(mainBuilding.employees.size());
                 System.out.println("Oh oh and I, I am an employee");
             }
         };
@@ -45,6 +51,7 @@ public class Tile {
 
 
     public Tile(int x, int y, double size){
+        mainBuilding = new Building();
         this.color = Color.WHITESMOKE;
         initBlock(x*size,y*size,size);
         this.gridX = x;
