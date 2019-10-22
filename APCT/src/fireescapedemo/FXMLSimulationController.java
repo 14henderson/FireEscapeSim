@@ -18,7 +18,7 @@ public class FXMLSimulationController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        floorLevel.setText("Floor " + mainBuilding.currentFloor);
+        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
     }
 
@@ -36,7 +36,7 @@ public class FXMLSimulationController implements Initializable {
         }else{
             System.out.println("No next floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.currentFloor);
+        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
     }
 
     @FXML
@@ -49,7 +49,7 @@ public class FXMLSimulationController implements Initializable {
         }else{
             System.out.println("No prev floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.currentFloor);
+        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
     }
 
 
