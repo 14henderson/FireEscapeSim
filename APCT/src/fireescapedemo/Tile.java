@@ -22,30 +22,39 @@ public class Tile {
     enum BlockType{
         Office {
             @Override
-            public void render() {
+            public void render(int index, double x, double y) {
                 System.out.println("I'll render the office wall bois");
             }
 
         },
         Stairs {
             @Override
-            public void render() {
+            public void render(int index, double x, double y) {
                 System.out.println("Oooh I'll render some cheeky stair boyos");
             }
         },
         Employee {
             @Override
-            public void render() {
-                for(Floor floor : mainBuilding.getFloors()){
-                    floor.addEmployee(new Actor(new Circle(50)));
-                    floor.addEmployee(new Actor(new Circle(50)));
-                    System.out.println(floor.employees.size());
-                    System.out.println("Oh oh and I, I am an employee");
-                }
+            public void render(int index, double x, double y) {
+                Actor a;
+                Circle c;
+                c = new Circle(5);
+                c.setFill(Color.PINK);
+                c.setLayoutX(x+25);
+                c.setLayoutY(y+15);
+                mainBuilding.getFloor(index).addEmployee(new Actor(c));
+                c = new Circle(5);
+                c.setFill(Color.PINK);
+                c.setLayoutX(x+25);
+                c.setLayoutY(y+35);
+                mainBuilding.getFloor(index).addEmployee(new Actor(c));
+                System.out.println(mainBuilding.getFloor(index).employees.size());
+                System.out.println("Oh oh and I, I am an employee");
+
             }
         };
         
-        public abstract void render();
+        public abstract void render(int index, double x, double y);
     }
     
     public BlockType type;
@@ -63,7 +72,7 @@ public class Tile {
     }
 
 
-    public static void enableBuild() {buildEnabled = true;}
+    public static void enableBuild() {buildEnabled = true; }
     public static void disableBuild() {buildEnabled = false;}
 
     public static boolean isBuildEnabled(){return buildEnabled;}

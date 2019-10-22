@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -20,11 +21,31 @@ public class FXMLSimulationController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         floorLevel.setText("Floor " + mainBuilding.getFloorNum());
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+        initAnimation();
     }
 
 
 
 
+    public void initAnimation(){
+        AnimationTimer t = new AnimationTimer(){
+            @Override
+            public void handle(long now) {
+                onUpdate();
+            }
+
+        };
+        t.start();
+    }
+
+    private void onUpdate() {
+        for(Floor floor : mainBuilding.getFloors()){
+            for(Actor a : floor.employees){
+                a.setVelocityX(1);
+                a.update();
+            }
+        }
+    }
 
     @FXML
     private void nextRoom(){

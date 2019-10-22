@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
@@ -104,23 +105,28 @@ public class Floor {
         int i,j, sizei = this.floorBlocks.length,sizej = this.floorBlocks[0].length;
         for(i = 0; i < sizei; i++){
             for(j = 0; j < sizej; j++){
-                this.floorBlocks[i][j].block.setStroke(Color.WHITE);
+                this.floorBlocks[i][j].block.setStroke(Color.WHITESMOKE);
+                this.floorBlocks[i][j].block.setFill(Color.WHITESMOKE);
                 this.floor.getChildren().add(this.floorBlocks[i][j].block);
             }
         }
         for(Line l : this.walls){
             this.floor.getChildren().add(l);
         }
+        for(Actor emp : employees){
+            System.out.println("Wow 1");
+            this.floor.getChildren().add(emp.view);
+        }
     }
 
-    public void renderBlocks(){
+    public void renderBlocks(int index){
 
-        refactorFloorForSim();
-        for(Tile[] floor :  floorBlocks){
+        for(Tile[] floor :  this.floorBlocks){
             for(Tile block : floor){
-                if(block.type != null) { block.type.render(); }
+                if(block.type != null) { block.type.render(index,block.block.getX(),block.block.getY()); }
             }
         }
+        refactorFloorForSim();
     }
 
 

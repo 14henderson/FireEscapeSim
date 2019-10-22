@@ -47,9 +47,8 @@ public class FXMLBuildingController implements Initializable {
     int floorNum = 0;
     SceneManager manager= new SceneManager();
 
+    //ArrayList<Employee> characters;
 
-
-    ArrayList<Employee> characters;
     ArrayList<Tile> floors;
 
     public Building mainBuilding = new Building();
@@ -107,9 +106,9 @@ public class FXMLBuildingController implements Initializable {
     private void addRoom(){mainBuilding.addFloor(); System.out.println("Floor added");}
 
     private void onUpdate(){
-        characters.forEach((prefab) -> {
-            prefab.update();
-        });
+        /*characters.forEach((prefab) -> {
+            //prefab.update();
+        });*/
     }
 
     @Override
@@ -179,11 +178,6 @@ public class FXMLBuildingController implements Initializable {
 
     }
 
-    public void initCharacters(){
-        characters = new ArrayList();
-        characters.add(new Employee(play, floors.get(0)));
-        characters.get(0).setVelocityX(1);
-    }
 
     public void initFloors(int length, int width, double size){
         floors = new ArrayList();
@@ -210,62 +204,5 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    class Employee extends Actor{        int speed;
-        boolean foundSteps;
-        Tile currentFloor;
-        Employee(Node view, Tile startingFloor){
-            super(view);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-
-        }
-
-        Employee(Node view, Point2D vector, Tile startingFloor){
-            super(view,vector);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-        }
-
-        @Override
-        public void update(){
-
-        }
-
-
-
-        /*
-        @Override
-        public void update(){
-            if(this.foundSteps == false){
-                double width = ((Rectangle)(this.view)).getWidth();
-                double fWidth = this.currentFloor.getWidth();
-                if(this.view.getLayoutX() >= fWidth - width){
-                    this.setVelocityX(-1);
-                    this.speed = -speed;
-                }else if(this.view.getLayoutX() <= this.currentFloor.getLayoutX()){
-                    this.setVelocityX(1);
-                    this.speed = -speed;
-                }
-            }
-
-            //compute gravity
-            if(applyGravity())  { this.setVelocityY(3); }
-            else                { this.setVelocityY(0); }
-
-            this.view.setLayoutX(this.view.getLayoutX() +  velocity.getX() + speed);
-            this.view.setLayoutY(this.view.getLayoutY() +  velocity.getY());
-        }
-        */
-        public int getSpeed(){
-            return this.speed;
-        }
-
-
-
-    }
 
 }

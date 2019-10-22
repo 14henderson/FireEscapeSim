@@ -45,6 +45,8 @@ public class Building extends Component implements Serializable {
 
     public final ArrayList<Floor> getFloors(){return floors;}
     public final Pane getCurrentFloor(){ return  floors.get( currentFloor).getFloor(); }
+    public final Pane getFloorPane(int index){return floors.get(index).getFloor(); }
+    public final Floor getFloor(int index) {return floors.get(index);}
     public final Tile[][] getCurrentFloorBlock(){return  floors.get( currentFloor).getCurrentFloorBlock();}
     public final int getFloorNum() {return currentFloor;}
     
@@ -65,7 +67,8 @@ public class Building extends Component implements Serializable {
     }
     
     public void renderBlocks(){
-        for(Floor floor : floors){ floor.renderBlocks(); }
+        int index = 0;
+        for(Floor floor : floors){ floor.renderBlocks(index); index++;}
 
     }
 
