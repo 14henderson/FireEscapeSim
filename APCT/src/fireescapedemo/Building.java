@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -14,8 +15,8 @@ import javafx.scene.shape.Rectangle;
 
 
 
-public class Building implements Serializable {
-    public static ArrayList<Floor> floors;
+public class Building extends Component implements Serializable {
+    private static ArrayList<Floor> floors;
     private static int currentFloor;
     private static int height;
     private static int width;
