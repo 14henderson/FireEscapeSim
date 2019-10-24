@@ -17,13 +17,47 @@ public class Actor {
     Node view;
     boolean swap;
     final int id;
+    private boolean findingPath;
     private static int idCounter = 0;
-    
+    enum State{
+        Idle {
+            @Override
+            public void act(Actor employee, Floor floor, boolean s) {
+
+            }
+        },
+        FindRoute{
+          @Override
+          public void act(Actor employee, Floor floor, boolean s){
+
+              System.out.println("Route found");
+                s = false;
+          }
+        },
+        Escape {
+            @Override
+            public void act(Actor employee, Floor floor, boolean s) {
+
+            }
+        },
+
+        Extinguish{
+            @Override
+            public void act(Actor employee, Floor floor, boolean s) {
+
+            }
+        };
+
+        public abstract void act(Actor employee, Floor floor, boolean s);
+    }
+    private State currentState;
     public Actor(Node view){
         this.view = view;
         this.velocity = new Point2D(0,0);
         this.swap = false;
         this.id =idCounter;
+        this.currentState = State.Idle;
+        this.findingPath = false;
         idCounter++;
     } 
     
@@ -35,10 +69,34 @@ public class Actor {
         idCounter++;
     } 
     
-    public void update(){
-        
-        this.view.setTranslateX(view.getTranslateX() + velocity.getX());
-        this.view.setTranslateY(view.getTranslateY() + velocity.getY());
+    public void update(Floor floor){
+        switch(this.currentState){
+            case Idle:{
+                this.currentState.act(this,floor,false);
+                break;
+            }
+            case FindRoute:{
+                if(!this.findingPath){
+                    findingPath = true;
+                    this.currentState.act(this,floor,this.findingPath);
+                }
+                break;
+            }
+            case Escape:{
+                this.currentState.act(this,floor,false);
+                break;
+            }
+            case Extinguish:{
+                this.currentState.act(this,floor,false);
+                break;
+            }
+            default:{
+                System.out.println("Nothing matched");
+                break;
+            }
+        }
+        this.view.setLayoutX(view.getLayoutX() + velocity.getX());
+        this.view.setLayoutY(view.getLayoutY() + velocity.getY());
     }
     
     public Node getView(){return this.view;}

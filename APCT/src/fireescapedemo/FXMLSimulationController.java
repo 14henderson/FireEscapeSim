@@ -41,8 +41,7 @@ public class FXMLSimulationController implements Initializable {
     private void onUpdate() {
         for(Floor floor : mainBuilding.getFloors()){
             for(Actor a : floor.employees){
-                a.setVelocityX(1);
-                a.update();
+                a.update(floor);
             }
         }
     }

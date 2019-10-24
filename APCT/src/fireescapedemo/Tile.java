@@ -20,10 +20,10 @@ public class Tile {
     private static int idCount = 0;
     private static boolean buildEnabled = true;
     enum BlockType{
-        Office {
+        Exit {
             @Override
             public void render(int index, double x, double y) {
-                System.out.println("I'll render the office wall bois");
+                System.out.println("I'll render the Exit wall bois");
             }
 
         },
@@ -38,12 +38,12 @@ public class Tile {
             public void render(int index, double x, double y) {
                 Actor a;
                 Circle c;
-                c = new Circle(5);
+                c = new Circle(10);
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
                 c.setLayoutY(y+15);
                 mainBuilding.getFloor(index).addEmployee(new Actor(c));
-                c = new Circle(5);
+                c = new Circle(10);
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
                 c.setLayoutY(y+35);
@@ -69,6 +69,7 @@ public class Tile {
         this.currentActor = null;
         this.id = idCount;
         idCount++;
+
     }
 
 
@@ -94,7 +95,7 @@ public class Tile {
                             if (this.color.equals(Color.RED)) {
                                 this.type = BlockType.Employee;
                             } else if (c.equals(Color.GREY)) {
-                                this.type = BlockType.Office;
+                                this.type = BlockType.Exit;
                             } else if (c.equals(Color.AQUAMARINE)) {
                                 this.type = BlockType.Stairs;
                             }

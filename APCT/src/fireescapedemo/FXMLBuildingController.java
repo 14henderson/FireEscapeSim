@@ -35,7 +35,7 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Label floorLevel;
     @FXML
-    private Button wallButton;
+    private Button exitButton;
     @FXML
     private Button stairsButton;
     @FXML
@@ -117,7 +117,7 @@ public class FXMLBuildingController implements Initializable {
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-        wallButton.setOnAction((ActionEvent e) -> {
+        exitButton.setOnAction((ActionEvent e) -> {
             c = Color.GRAY;
         });
         employeeButton.setOnAction((ActionEvent e) -> {
