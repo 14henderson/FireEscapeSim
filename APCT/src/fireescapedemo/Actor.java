@@ -19,6 +19,8 @@ public class Actor {
     final int id;
     private boolean findingPath;
     private static int idCounter = 0;
+    private SystemTools tools;
+    private Tile oriTile;
     enum State{
         Idle {
             @Override
@@ -29,9 +31,10 @@ public class Actor {
         FindRoute{
           @Override
           public void act(Actor employee, Floor floor, boolean s){
-
+              SystemTools tools = new SystemTools(employee.oriTile,floor.getTestFirstExit(),floor.getCurrentFloorBlock());
+              tools.pathFinder.findPath();
               System.out.println("Route found");
-                s = false;
+              s = false;
           }
         },
         Escape {
@@ -51,21 +54,25 @@ public class Actor {
         public abstract void act(Actor employee, Floor floor, boolean s);
     }
     private State currentState;
-    public Actor(Node view){
+    public Actor(Node view, Tile tile,State state){
         this.view = view;
         this.velocity = new Point2D(0,0);
         this.swap = false;
         this.id =idCounter;
-        this.currentState = State.Idle;
+        this.currentState = state;
         this.findingPath = false;
+        this.oriTile = tile;
         idCounter++;
     } 
     
-    public Actor(Node view, Point2D vector){
+    public Actor(Node view, Tile tile, Point2D vector){
         this.view = view;
         this.velocity = vector;
         this.swap = false;
         this.id =idCounter;
+        this.currentState = State.Idle;
+        this.findingPath = false;
+        this.oriTile = tile;
         idCounter++;
     } 
     

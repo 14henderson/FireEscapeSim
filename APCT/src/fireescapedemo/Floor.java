@@ -97,6 +97,9 @@ public class Floor {
         return finalCords;
     }
 
+    public final Tile getTestFirstExit(){
+        return this.exits.isEmpty() ? null : this.exits.get(0).position;
+    }
 
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
 
@@ -115,6 +118,8 @@ public class Floor {
                 }
             }
         }
+        //this is purley for testing purposes
+        int empX,empY,exiX,exiY;
         for(Line l : this.walls){
             this.floor.getChildren().add(l);
         }
@@ -133,7 +138,7 @@ public class Floor {
 
         for(Tile[] floor :  this.floorBlocks){
             for(Tile block : floor){
-                if(block.type != null) { block.type.render(index,block.block.getX(),block.block.getY()); }
+                if(block.type != null) { block.type.render(index,block.block.getX(),block.block.getY(),block); }
             }
         }
         refactorFloorForSim();

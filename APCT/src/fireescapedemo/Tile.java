@@ -23,14 +23,20 @@ public class Tile implements Comparable<Tile>{
     public final int gridX, gridY;
     private static int idCount = 0;
     private static boolean buildEnabled = true;
-    private double gCost,hCost,fCost;
-
-    public int compareTo(Tile t) { return (int)(this.getFCost() - t.getFCost()); }
+    private double gCost,fCost,hCost;
+    public int compareTo(Tile t) {
+        if(this.getFCost() < t.getFCost()){
+            return -1;
+        }else if(this.getFCost() > t.getFCost()){
+            return 1;
+        }
+        return 0;
+    }
 
     public enum BlockType{
         Exit {
             @Override
-            public void render(int index, double x, double y) {
+            public void render(int index, double x, double y,Tile tile) {
                 System.out.println("I'll render the Exit wall bois");
                 Rectangle rec = new Rectangle(x,y,50,25);
                 Image image;
@@ -41,20 +47,20 @@ public class Tile implements Comparable<Tile>{
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
-                Exit exit = new Exit(rec);
+                Exit exit = new Exit(rec,tile);
                 mainBuilding.getFloor(index).addExit(exit);
             }
 
         },
         Stairs {
             @Override
-            public void render(int index, double x, double y) {
+            public void render(int index, double x, double y,Tile tile) {
                 System.out.println("Oooh I'll render some cheeky stair boyos");
             }
         },
         Employee {
             @Override
-            public void render(int index, double x, double y) {
+            public void render(int index, double x, double y,Tile tile) {
                 Actor a;
                 Circle c;
                 c = new Circle(10);
@@ -69,7 +75,7 @@ public class Tile implements Comparable<Tile>{
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
-                mainBuilding.getFloor(index).addEmployee(new Actor(c));
+                mainBuilding.getFloor(index).addEmployee(new Actor(c,tile, Actor.State.FindRoute));
                 c = new Circle(10);
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
@@ -81,14 +87,14 @@ public class Tile implements Comparable<Tile>{
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
-                mainBuilding.getFloor(index).addEmployee(new Actor(c));
+                mainBuilding.getFloor(index).addEmployee(new Actor(c,tile, Actor.State.Idle));
                 System.out.println(mainBuilding.getFloor(index).employees.size());
                 System.out.println("Oh oh and I, I am an employee");
 
             }
         };
         
-        public abstract void render(int index, double x, double y);
+        public abstract void render(int index, double x, double y,Tile tile);
     }
     
     public BlockType type;
@@ -142,8 +148,8 @@ public class Tile implements Comparable<Tile>{
         });
         this.container.getChildren().add(this.block);
         this.walls = new boolean[4];
-        for(Boolean b : this.walls){
-            b = true;
+        for(int i = 0; i < 4; i++){
+            this.walls[i] = true;
         }
     }
 
@@ -153,7 +159,7 @@ public class Tile implements Comparable<Tile>{
 
     public void setGCost(double i) {this.gCost = i;}
     public void addGCost(double i) {this.gCost += i;}
-    public void setHCost(int i) {this.hCost = i;}
+    public void setHCost(double i) {this.hCost = i;}
     public void setColor(Color c){this.color = c;}
     public boolean setActor(Actor a){
         if(buildEnabled && this.containsActor()){
@@ -188,7 +194,7 @@ public class Tile implements Comparable<Tile>{
 
     public void calculateFCost(){ this.fCost = this.gCost + this.hCost;}
     public void computeDistance(Tile endNode) {
-        this.hCost =  Math.sqrt(Math.pow(endNode.gridX - this.gridX,2) + Math.pow(endNode.gridY - this.gridY,2));
+        this.hCost = Math.abs(this.gridX - endNode.gridX) + Math.abs(this.gridY - endNode.gridY);
     }
     
     public final void printType(){
