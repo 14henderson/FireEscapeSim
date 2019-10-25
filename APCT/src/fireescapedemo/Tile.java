@@ -1,14 +1,18 @@
 package fireescapedemo;
 
 import javafx.geometry.Insets;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
-public class Tile {
+import java.net.URISyntaxException;
+
+public class Tile implements Comparable<Tile>{
     private static Building mainBuilding;
     public Pane container;
     public Rectangle block;
@@ -19,11 +23,26 @@ public class Tile {
     public final int gridX, gridY;
     private static int idCount = 0;
     private static boolean buildEnabled = true;
-    enum BlockType{
+    private double gCost,hCost,fCost;
+
+    public int compareTo(Tile t) { return (int)(this.getFCost() - t.getFCost()); }
+
+    public enum BlockType{
         Exit {
             @Override
             public void render(int index, double x, double y) {
                 System.out.println("I'll render the Exit wall bois");
+                Rectangle rec = new Rectangle(x,y,50,25);
+                Image image;
+                try {
+                    image = new Image(getClass().getResource("/Assets/estExit.PNG").toURI().toString());
+                    rec.setFill(new ImagePattern(image));
+                    System.out.println("Complete");
+                } catch (URISyntaxException ex) {
+                    System.out.println(ex);
+                }
+                Exit exit = new Exit(rec);
+                mainBuilding.getFloor(index).addExit(exit);
             }
 
         },
@@ -42,11 +61,26 @@ public class Tile {
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
                 c.setLayoutY(y+15);
+                Image image;
+                try {
+                    image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
+                    c.setFill(new ImagePattern(image));
+                    System.out.println("Complete");
+                } catch (URISyntaxException ex) {
+                    System.out.println(ex);
+                }
                 mainBuilding.getFloor(index).addEmployee(new Actor(c));
                 c = new Circle(10);
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
                 c.setLayoutY(y+35);
+                try {
+                    image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
+                    c.setFill(new ImagePattern(image));
+                    System.out.println("Complete");
+                } catch (URISyntaxException ex) {
+                    System.out.println(ex);
+                }
                 mainBuilding.getFloor(index).addEmployee(new Actor(c));
                 System.out.println(mainBuilding.getFloor(index).employees.size());
                 System.out.println("Oh oh and I, I am an employee");
@@ -68,15 +102,12 @@ public class Tile {
         this.gridY = y;
         this.currentActor = null;
         this.id = idCount;
+        this.gCost = 1;
+        this.hCost = 0;
+        this.fCost = 0;
         idCount++;
 
     }
-
-
-    public static void enableBuild() {buildEnabled = true; }
-    public static void disableBuild() {buildEnabled = false;}
-
-    public static boolean isBuildEnabled(){return buildEnabled;}
 
     private void initBlock(double x, double y,double size){
         this.container = new Pane();
@@ -119,8 +150,11 @@ public class Tile {
 
     public boolean containsActor(){return this.currentActor != null;}
 
-    public final int getId(){return this.id;}
-    
+
+    public void setGCost(double i) {this.gCost = i;}
+    public void addGCost(double i) {this.gCost += i;}
+    public void setHCost(int i) {this.hCost = i;}
+    public void setColor(Color c){this.color = c;}
     public boolean setActor(Actor a){
         if(buildEnabled && this.containsActor()){
             this.currentActor = a;
@@ -128,6 +162,14 @@ public class Tile {
         }
         return false;
     }
+
+
+    public final int getId(){return this.id;}
+    public final boolean getAccess(int dir){ return this.walls[dir]; }
+    public final double getFCost(){return this.fCost;}
+    public final double getGCost(){return this.gCost;}
+    public final double getHCost(){return this.hCost;}
+    public final Actor getActor(){return this.currentActor;}
 
     /**
      * Check if actor has access to a certain direction
@@ -138,20 +180,18 @@ public class Tile {
      *              2:  Checks Down
      *              3:  Checks Left
      */
-    public boolean getAccess(int dir){ return this.walls[dir]; }
+    public final void removeAccess(int dir){ this.walls[dir] = false;}
+    public final void removeActor(){this.currentActor = null;}
 
-    public void removeAccess(int dir){ this.walls[dir] = false;}
+    public static void toggleBuild() {buildEnabled = !buildEnabled;}
+    public static boolean isBuildEnabled(){return buildEnabled;}
 
-    public void setWalls(){
-
+    public void calculateFCost(){ this.fCost = this.gCost + this.hCost;}
+    public void computeDistance(Tile endNode) {
+        this.hCost =  Math.sqrt(Math.pow(endNode.gridX - this.gridX,2) + Math.pow(endNode.gridY - this.gridY,2));
     }
-    public void setColor(Color c){this.color = c;}
     
-    public void removeActor(){this.currentActor = null;}
-    
-    public Actor getActor(){return this.currentActor;}
-    
-    public void printType(){
+    public final void printType(){
         String addOn;
         if(this.type == null){
             addOn = "NO TYPE";

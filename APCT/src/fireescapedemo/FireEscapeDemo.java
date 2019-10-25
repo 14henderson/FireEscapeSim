@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.TreeSet;
+
 
 public class FireEscapeDemo extends Application {
     Building mainBuilding;
@@ -18,7 +20,6 @@ public class FireEscapeDemo extends Application {
         manager.addScene("FXMLBuilding.fxml", "building");
         manager.addScene("FXMLHome.fxml", "home");
         manager.addScene("FXMLSimulation.fxml", "simulation");
-
 
         manager.showScene("home");
 

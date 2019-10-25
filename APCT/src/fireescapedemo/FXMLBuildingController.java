@@ -63,7 +63,7 @@ public class FXMLBuildingController implements Initializable {
     private void renderBlocks() throws IOException {
         //mainBuilding.renderBlocks();
         manager.addScene("FXMLSimulation.fxml", "simulation");
-        Tile.disableBuild();
+        Tile.toggleBuild();
         mainBuilding.renderBlocks();
         mainPane.getChildren().remove(mainPane.getChildren().size()-1);
         System.out.println("render done");

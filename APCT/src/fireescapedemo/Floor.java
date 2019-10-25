@@ -10,6 +10,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import fireescapedemo.Tile.BlockType;
 
 public class Floor {
     public ArrayList<Actor> employees;
@@ -22,19 +23,20 @@ public class Floor {
     int size;
     boolean lineClicked = false;
     double lineCords[] = new double[2];
+    ArrayList<Exit> exits;
     Rectangle lastRec = null;
 
     public Floor(int heigh, int widt, int siz){
-        if ( floor == null){
-            this.floor = new Pane();
-            this.floorBlocks = new Tile[width][height];
-            this.employees = new ArrayList<>();
-            this.walls = new ArrayList<>();
-            this.height = heigh;
-            this.width = widt;
-            this.size = siz;
-            addFloor();
-        }
+
+        this.floor = new Pane();
+        this.floorBlocks = new Tile[width][height];
+        this.employees = new ArrayList<>();
+        this.walls = new ArrayList<>();
+        this.exits = new ArrayList<>();
+        this.height = heigh;
+        this.width = widt;
+        this.size = siz;
+        addFloor();
     }
 
     public final void addFloor(){
@@ -78,7 +80,8 @@ public class Floor {
 
     }
 
-    public void addEmployee(Actor employee){employees.add(employee);}
+    public void addEmployee(Actor employee) { this.employees.add(employee); }
+    public void addExit(Exit exit)          { this.exits.add(exit); }
 
 
     public final double[] normaliseCords(double cords[]){
@@ -105,9 +108,11 @@ public class Floor {
         int i,j, sizei = this.floorBlocks.length,sizej = this.floorBlocks[0].length;
         for(i = 0; i < sizei; i++){
             for(j = 0; j < sizej; j++){
-                this.floorBlocks[i][j].block.setStroke(Color.WHITESMOKE);
-                this.floorBlocks[i][j].block.setFill(Color.WHITESMOKE);
-                this.floor.getChildren().add(this.floorBlocks[i][j].block);
+                if(this.floorBlocks[i][j].type != BlockType.Exit) {
+                    this.floorBlocks[i][j].block.setStroke(Color.WHITESMOKE);
+                    this.floorBlocks[i][j].block.setFill(Color.WHITESMOKE);
+                    this.floor.getChildren().add(this.floorBlocks[i][j].block);
+                }
             }
         }
         for(Line l : this.walls){
@@ -117,6 +122,11 @@ public class Floor {
             System.out.println("Wow 1");
             this.floor.getChildren().add(emp.view);
         }
+        for(Exit exit : this.exits){
+            System.out.println("Exit added");
+            this.floor.getChildren().add(exit.VIEW);
+        }
+        System.out.println("Number of Exits: " + this.exits.size());
     }
 
     public void renderBlocks(int index){
