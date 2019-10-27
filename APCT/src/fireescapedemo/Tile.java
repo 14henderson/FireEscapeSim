@@ -8,17 +8,16 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
-public class Tile {
-    private static Building mainBuilding;
-    public Pane container;
-    public Rectangle block;
+import java.io.Serializable;
+
+public class Tile extends MapObject implements Serializable {
+  //  public transient Pane container;
+    //public transient Rectangle block;
     public boolean[] walls;
     private Actor currentActor;
-    private Color color;
-    private final int id;
+    //private transient Color color;
     public final int gridX, gridY;
-    private static int idCount = 0;
-    private static boolean buildEnabled = true;
+    public final double width, height;
     enum BlockType{
         Office {
             @Override
@@ -52,54 +51,45 @@ public class Tile {
 
 
     public Tile(int x, int y, double size){
-        mainBuilding = new Building();
-        this.color = Color.WHITESMOKE;
-        initBlock(x*size,y*size,size);
+        this.type = null;
         this.gridX = x;
         this.gridY = y;
+        this.width = size;
+        this.height = size;
+        render();
+
         this.currentActor = null;
-        this.id = idCount;
-        idCount++;
     }
 
+    @Override
+    public void render(){
+        Pane container = new Pane();
+        container.setLayoutX(0);
+        container.setLayoutY(0);
+        container.setPadding(new Insets(0));
 
-    public static void enableBuild() {buildEnabled = true;}
-    public static void disableBuild() {buildEnabled = false;}
-
-    public static boolean isBuildEnabled(){return buildEnabled;}
-
-    private void initBlock(double x, double y,double size){
-        this.container = new Pane();
-        this.container.setLayoutX(x);
-        this.container.setLayoutY(y);
-        this.container.setPadding(new Insets(0));
-        this.block = new Rectangle(x,y,size,size);
-        this.block.setFill(Color.WHITESMOKE);
-        this.block.setStroke(Color.BLACK);
+        Rectangle block = new Rectangle(this.gridX, this.gridY, this.width, this.height);
+        block.setFill(Color.WHITESMOKE);
+        block.setStroke(Color.BLACK);
+        block.toFront();
         this.type = null;
-        this.block.setOnMouseClicked((MouseEvent event) -> {
-                    if(buildEnabled) {
-                        Color c = FXMLBuildingController.c;
-                        if (!this.color.equals(c)) {
-                            this.color = c;
-                            if (this.color.equals(Color.RED)) {
-                                this.type = BlockType.Employee;
-                            } else if (c.equals(Color.GREY)) {
-                                this.type = BlockType.Office;
-                            } else if (c.equals(Color.AQUAMARINE)) {
-                                this.type = BlockType.Stairs;
-                            }
-                        } else {
-                            this.color = Color.WHITESMOKE;
-                            this.type = null;
-                        }
-                        this.block.setFill(this.color);
-                        this.block.setOpacity(0.5);
-
-                        this.printType();
-                    }
+        block.setOnMouseClicked((MouseEvent event) -> {
+            if(canEdit) {
+                Color tileColor;
+                switch (this.type){
+                    case Employee: tileColor = Color.web(getColor("RED"));
+                    case Office: tileColor = Color.web(getColor("GREY"));
+                    case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));
+                    default: tileColor = Color.web(getColor("WHITESMOKE"));
+                }
+                block.setFill(tileColor);
+                block.setOpacity(0.5);
+                this.printType();
+            }
         });
-        this.container.getChildren().add(this.block);
+        mainBuilding.windowContainer.getChildren().add(container);
+        container.getChildren().add(block);
+        block.toFront();
         this.walls = new boolean[4];
         for(Boolean b : this.walls){
             b = true;
@@ -107,12 +97,20 @@ public class Tile {
     }
 
 
+
+
+
+
+
+    private void initBlock(double x, double y,double size){
+
+    }
+
+
     public boolean containsActor(){return this.currentActor != null;}
 
-    public final int getId(){return this.id;}
-    
     public boolean setActor(Actor a){
-        if(buildEnabled && this.containsActor()){
+        if(canEdit && this.containsActor()){
             this.currentActor = a;
             return true;
         }
@@ -135,7 +133,7 @@ public class Tile {
     public void setWalls(){
 
     }
-    public void setColor(Color c){this.color = c;}
+    //public void setColor(Color c){this.color = c;}
     
     public void removeActor(){this.currentActor = null;}
     

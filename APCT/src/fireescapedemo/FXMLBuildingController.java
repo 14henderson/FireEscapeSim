@@ -45,14 +45,14 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Text errorText;
     int floorNum = 0;
-    SceneManager manager= new SceneManager();
+    SceneManager manager;
 
 
 
     ArrayList<Employee> characters;
-    ArrayList<Tile> floors;
+    //ArrayList<Tile> floors;
 
-    public Building mainBuilding = new Building();
+    public Building mainBuilding;// = new Building();
     static Color c = Color.WHITESMOKE;
 
 
@@ -66,7 +66,7 @@ public class FXMLBuildingController implements Initializable {
         manager.addScene("FXMLSimulation.fxml", "simulation");
         manager.showScene("simulation");
         Tile.disableBuild();
-        mainBuilding.renderBlocks();
+        mainBuilding.render();
     }
 
 
@@ -74,33 +74,41 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
-            mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            System.out.println("Wow");
-            mainBuilding.nextFloor();
-            mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-            floorNum++;
+            mainBuilding.increaseFloor();
+            mainBuilding.render();
+            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
+           //System.out.println("Wow");
+            //mainBuilding.increaseFloor();
+            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+           // floorNum++;
         }else{
             System.out.println("No next floor");
         }
-        floorLevel.setText("Floor " + floorNum);
+        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
     @FXML
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
-            mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            System.out.println("Wow");
-            mainBuilding.prevFloor();
-            mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-            floorNum--;
+            mainBuilding.decreaseFloor();
+            mainBuilding.render();
+           // mainPane.getChildren().remove(mainPane.getChildren().size()-1);
+           // System.out.println("Wow");
+           // mainBuilding.prevFloor();
+           // mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+         //   floorNum--;
         }else{
             System.out.println("No prev floor");
         }
-        floorLevel.setText("Floor " + floorNum);
+        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
     @FXML
-    private void addRoom(){mainBuilding.addFloor(); System.out.println("Floor added");}
+    private void addRoom(){
+        mainBuilding.addFloor();
+        System.out.println("Floor added");
+    }
+
 
     private void onUpdate(){
         characters.forEach((prefab) -> {
@@ -110,10 +118,34 @@ public class FXMLBuildingController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        //initFloors(20,10,25);
+        this.manager = new SceneManager();
+        //if(manager.globalBuilding != null){
+        //    this.mainBuilding = manager.globalBuilding;
+        //}
+
+
+        this.mainBuilding = null;
+        String filename = "C:\\Users\\Niklas Henderson\\Documents\\my_building.map";
+        try {
+            java.io.FileInputStream fis = new java.io.FileInputStream(filename);
+            ObjectInputStream in = new ObjectInputStream(fis);
+            this.mainBuilding = (Building) in.readObject();
+            in.close();
+            fis.close();
+            //System.out.println("Building has: "+loadedBuilding.getFloors().size());
+            //this.mainBuilding = loadedBuilding;
+            System.out.println("Building has: "+this.mainBuilding.getFloors().size()+" floors.");
+        } catch (IOException | ClassNotFoundException ex) {
+            System.out.println("Serializable Error thrown: " + ex);
+            this.mainBuilding = new Building(14,13,50, mainPane);
+        }
+
+
+        //
+
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
-        mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+        mainBuilding.render();
         wallButton.setOnAction((ActionEvent e) -> {
             c = Color.GRAY;
         });
@@ -143,23 +175,24 @@ public class FXMLBuildingController implements Initializable {
                 //Building object is serializable which allows the saving of the object.
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
                 ObjectOutputStream out = new ObjectOutputStream(fos);
-                out.writeObject(this.mainBuilding);
+                out.writeObject(mainBuilding);
                 out.close();
+                fos.close();
+                System.out.println("Current Building Object"+this.mainBuilding.toString());
+
+                this.mainBuilding = null;
+                this.manager.showScene("home");
             }catch(IOException ex){
                 errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");
                 System.out.println("Serializable Error thrown: "+ex);
             }
         }
 
-
-
-
-
-
-
-
-
     }
+
+
+
+
 
     public void initTestLabel(){
         Label l;
@@ -177,10 +210,11 @@ public class FXMLBuildingController implements Initializable {
 
     public void initCharacters(){
         characters = new ArrayList();
-        characters.add(new Employee(play, floors.get(0)));
+        characters.add(new Employee(play, mainBuilding.getCurrentFloor().getTile(0, 0)));
         characters.get(0).setVelocityX(1);
     }
 
+    /*
     public void initFloors(int length, int width, double size){
         floors = new ArrayList();
         for(int i = 0; i < size * length; i += size){
@@ -191,6 +225,8 @@ public class FXMLBuildingController implements Initializable {
 
         for(Tile floor : floors){mainPane.getChildren().add(floor.block);}
     }
+     */
+
 
     public void initAnimation(){
         AnimationTimer t = new AnimationTimer(){
@@ -259,6 +295,7 @@ public class FXMLBuildingController implements Initializable {
         public int getSpeed(){
             return this.speed;
         }
+
 
 
 

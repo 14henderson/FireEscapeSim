@@ -8,17 +8,25 @@ package fireescapedemo;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Leem
  */
-public class Actor {
-    Point2D velocity;
-    Node view;
+public class Actor extends MapObject implements Serializable {
+    private transient Point2D velocity;
+    private transient Node view;
     boolean swap;
     final int id;
     private static int idCounter = 0;
-    
+
+    @Override
+    public void render(){
+
+    }
+
+
     public Actor(Node view){
         this.view = view;
         this.velocity = new Point2D(0,0);
@@ -36,7 +44,6 @@ public class Actor {
     } 
     
     public void update(){
-        
         this.view.setTranslateX(view.getTranslateX() + velocity.getX());
         this.view.setTranslateY(view.getTranslateY() + velocity.getY());
     }

@@ -42,7 +42,7 @@
             </Label>
             <Pane layoutX="6.0" layoutY="681.0" />
             <Button fx:id="saveButton" layoutX="60.0" layoutY="698.0" mnemonicParsing="false" onAction="#saveBuilding" text="Save &amp; return home" />
-            <Text fill="RED" fx:id="errorText" layoutX="18.0" layoutY="669.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="134.69921875" />
+            <Text fx:id="errorText" fill="RED" layoutX="18.0" layoutY="643.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
             </children>
         </Pane>
       <Pane layoutX="201.0" layoutY="195.0" prefHeight="196.0" prefWidth="197.0" />

@@ -15,59 +15,126 @@ import javafx.scene.shape.Rectangle;
 
 
 
-public class Building extends Component implements Serializable {
-    private static ArrayList<Floor> floors;
-    private static int currentFloor;
-    private static int height;
-    private static int width;
-    private static int size;
+public class Building extends MapObject implements Serializable {
+    private ArrayList<Floor> floors;
+    private int currentFloor;
+    private int height;
+    private int width;
+    private int size;
+    private static final long serialVersionUID = 12345;
+    public static transient Pane windowContainer;
 
     public Building(){
+        this.mainBuilding = this;
         if(floors == null){
             throw new RuntimeException();
         }
     }
 
-    public Building(int heigh, int widt, int siz){
+    public Building(int floorHeight, int floorWidth, int floorSize, Pane windowContainerParent){
+        this.mainBuilding = this;
+        this.windowContainer = windowContainerParent;
         if ( floors == null){
              floors = new ArrayList();
-             height = heigh;
-             width = widt;
-             size = siz;
-             floors.add(new Floor(heigh,widt,siz));
+             height = floorHeight;
+             width = floorWidth;
+             size = floorSize;
+             floors.add(new Floor(floorHeight,floorWidth,floorSize));
              currentFloor = 0;
         }
     }
+/*
+    public Building(Building loadedBuilding){
+        this.floors = loadedBuilding.floors;
+        this.currentFloor = 0;
+        this.height = loadedBuilding.height;
+        this.width = loadedBuilding.width;
+        this.size = loadedBuilding.size;
 
-    public final void addFloor(){
-        floors.add(new Floor(height,width,size));
-    }
+        for(Floor aFloor : this.floors){
+            aFloor.floor = new Pane();
 
-    public final ArrayList<Floor> getFloors(){return floors;}
-    public final Pane getCurrentFloor(){ return  floors.get( currentFloor).getFloor(); }
-    public final Tile[][] getCurrentFloorBlock(){return  floors.get( currentFloor).getCurrentFloorBlock();}
-    public final int getFloorNum() {return currentFloor;}
-    
-    public boolean hasNextFloor(){return ( currentFloor + 1) <  floors.size(); }
-    public boolean hasPrevFloor(){return ( currentFloor - 1) > -1; }
-    
-    public Pane nextFloor() {
-        if(hasNextFloor()){
-             currentFloor += 1;
+            for(Tile[] aTileRow : aFloor.getCurrentFloorBlock()){
+                for(Tile aTile : aTileRow){
+                   // aTile.
+                }
+            }
         }
-        return  floors.get( currentFloor).getFloor();
     }
-    public Pane prevFloor() {
-        if(hasPrevFloor()){
-             currentFloor -= 1;
-        }
-        return  floors.get( currentFloor).getFloor();
-    }
+*/
+
+
+
+    public final ArrayList<Floor> getFloors(){return this.floors;}
+    public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
+    //public final Tile[][] getCurrentFloorBlock(){return  floors.get( currentFloor).getCurrentFloorBlock();}
+    public final int getCurrentFloorIndex() {return this.currentFloor;}
+    public int getTotalFloors(){return this.floors.size();}
+    public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
+    public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
     
-    public void renderBlocks(){ for(Floor floor : floors){ floor.renderBlocks(); } }
+    public Floor increaseFloor() {
+        if(hasNextFloor()){currentFloor += 1;}
+        return  floors.get( currentFloor);
+    }
+    public Floor decreaseFloor() {
+        if(hasPrevFloor()){currentFloor -= 1;}
+        return  floors.get( currentFloor);
+    }
+
+    @Override
+    public void render(){
+        this.floors.get(this.currentFloor).render();
+    }
+
+
+    @Override
+    public String toString(){
+        String output = "";
+        output += ("Num Floors:"+this.getTotalFloors()+"\n");
+        //output += ("")
+        return output;
+    }
 
 
 
 
+    public final void addFloor() {
+        Floor newFloor = new Floor(this.height, this.width, this.size);
+        this.floors.add(newFloor);
 
-}
+    }
+
+/*
+
+        Tile b;
+        Rectangle r;
+        this.floorBlocks = new Tile[ size* width / size][ size *  width / size];
+        this.wallBlocks = new Rectangle[(this.floorBlocks.length + 1)][(this.floorBlocks[0].length+1)];
+
+        for(i = 0; i < this.floorBlocks.length; i ++){
+            for(j = 0; j< this.floorBlocks[i].length; j++){
+                this.floorBlocks[i][j] = new Tile(i,j,size);
+                this.floor.getChildren().add(this.floorBlocks[i][j].block);
+            }
+        }
+
+        for(i = 0; i < wallBlocks.length; i ++){
+            for(j = 0; j< this.wallBlocks[i].length; j++){
+
+                r = new Rectangle(((i*size) - (newSize / 2)) ,((j*size) - (newSize / 2)), newSize, newSize);
+                Rectangle finalR = r;
+                r.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        if(Tile.isBuildEnabled()){setLineClicked(mouseEvent, finalR);}
+                    }
+                });
+                r.setOpacity(0.2);
+                r.setFill(Color.RED);
+                this.floor.getChildren().add(r);
+                wallBlocks[i][j] = r;
+            }
+        }*/
+    }
+
