@@ -51,7 +51,7 @@ public class Actor {
                 if(employee.getPath() != null){
                     employee.prevTile = employee.proTile;
                     employee.proTile = employee.getPath().poll();
-                    
+
                 }
             }
         },
