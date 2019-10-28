@@ -28,7 +28,6 @@ public class SystemTools {
         private int endX,endY;
         public AStarPath(Tile startNode, Tile exitNode, Tile[][] map){
             this.unopenedNodes = new PriorityQueue<>();
-            this.unopenedNodes.add(startNode);
             this.openedNodes = new PriorityQueue<>();
             this.startNode = startNode;
             this.endNode = exitNode;
@@ -37,116 +36,94 @@ public class SystemTools {
             this.endY = endNode.gridY;
         }
 
-        public Queue<Tile> findPath(){
-            int i,j,k,nodeX,nodeY;
+        public Queue<Tile> findPath() {
+            int i = 0, j, k, nodeX, nodeY;
+            double newDis;
             double currentPathScore = 0;
-            Tile expandingNode = null,currentNode;
+            Tile expandingNode = null, currentNode = null, start = this.map[this.startNode.gridX][this.startNode.gridY],
+                    goal = this.map[this.endNode.gridX][this.endNode.gridY];
+            this.unopenedNodes.add(start);
 
             ArrayList<Tile> nodesToExplore = new ArrayList<>();
-            currentNode = this.unopenedNodes.poll();
-            this.openedNodes.add(currentNode);
-            while(!isComplete(currentNode)){
-                nodeX = currentNode.gridX;
-                nodeY = currentNode.gridY;
-                nodesToExplore = getNeighbors(nodesToExplore,currentNode,expandingNode,nodeX,nodeY,currentPathScore);
-
-                for(Tile t : nodesToExplore){
-                    t.setGCost(t.getGCost() + currentPathScore);
-                    t.calculateFCost();
-                    this.unopenedNodes.add(t);
-                }
+            //currentNode = this.unopenedNodes.poll();
+            //this.openedNodes.add(currentNode);
+            while (this.unopenedNodes.size() != 0) {
 
                 System.out.println("Size: " + this.openedNodes.size());
                 System.out.println("");
                 currentNode = this.unopenedNodes.poll();
                 this.openedNodes.add(currentNode);
-                currentPathScore += currentNode.getGCost();
-                nodesToExplore.clear();
+                if(currentNode == goal){break;}
+                nodeX = currentNode.gridX;
+                nodeY = currentNode.gridY;
+
+                for (Tile t : getNeighbors(nodeX, nodeY)) {
+                    newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
+                    if(this.openedNodes.contains(t)){continue;}
+                    if (newDis < t.getGCost() || !this.unopenedNodes.contains(t)) {
+                        t.setGCost(newDis);
+                        t.setHCost(calculateDistance(t, goal));
+                        t.calculateFCost();
+                        t.setPerant(currentNode);
+                        if (!this.unopenedNodes.contains(t)) {
+                            this.unopenedNodes.add(t);
+                        }
+                    }
+                }
+
 
             }
-            this.openedNodes.add(currentNode);
+            //this.openedNodes.add(currentNode);
             System.out.println("Finished");
-            int counter = 0, maxCount;
-            int absX = Math.abs(this.startNode.gridX - this.endNode.gridX);
-            int absY = Math.abs(this.startNode.gridY - this.endNode.gridY);
-
-            maxCount = absX + absY;
-
-            for(Tile t :  this.openedNodes){
-
-                if(t == endNode){break;}
-                t.block.setFill(Color.RED);
-                counter++;
+            int counter = 1;
+            currentNode = goal;
+            boolean test = true;
+            if (test) {
+                while (currentNode != start) {
+                    System.out.println("Countg " + counter);
+                    System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
+                    currentNode.block.setFill(Color.RED);
+                    currentNode = currentNode.getPerant();
+                    counter++;
+                }
             }
+            else {
+                for (Tile t : this.openedNodes) {
+                    System.out.println("Countg " + counter);
+                    System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
+                    t.block.setFill(Color.RED);
+                }
+            }
+
             return this.openedNodes;
         }
 
-        private boolean isComplete(Tile node){return node == this.endNode;}
 
-        private ArrayList<Tile> getNeighbors(ArrayList<Tile> nodesToExplore, Tile currentNode, Tile expandingNode, int nodeX,int nodeY, double currentPathScore){
-            //Horizontal and Vertical Check
-            if(currentNode.getAccess(0) && nodeY != 0){
-                expandingNode = map[nodeX][nodeY-1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
-            if(currentNode.getAccess(1) && nodeX != map.length-1){
-                expandingNode = map[nodeX+1][nodeY];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
-            if(currentNode.getAccess(2) && nodeY != map.length-1){
-                expandingNode = map[nodeX][nodeY + 1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
-            if(currentNode.getAccess(3) && nodeX != 0){
-                expandingNode = map[nodeX-1][nodeY];
-                if(!this.openedNodes.contains(expandingNode) && !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
+        private int calculateDistance(Tile a, Tile b){
+            int maxX = Math.abs(a.gridX - b.gridX);
+            int maxY = Math.abs(a.gridY - b.gridY);
+            System.out.println("maxX: " + maxX + ", maxY: " + maxY);
+            if(maxY < maxX)return 14 * maxY + 10 * (maxX - maxY);
+            return 14 * maxX + 10 * (maxY - maxX);
 
-            //Diaganol Checks
-            if((currentNode.getAccess(0) && currentNode.getAccess(1)) && (nodeX != this.map.length-1 && nodeY != 0)){
-                expandingNode = map[nodeX+1][nodeY-1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.setGCost(2);
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
-            if((currentNode.getAccess(1) && currentNode.getAccess(2)) && (nodeX != this.map.length-1 && nodeY != this.map.length-1)){
-                expandingNode = map[nodeX+1][nodeY+1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.setGCost(2);
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
-            if((currentNode.getAccess(2) && currentNode.getAccess(3)) && (nodeX != 0 && nodeY != this.map.length-1)){
-                expandingNode = map[nodeX-1][nodeY+1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.setGCost(2);
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }if((currentNode.getAccess(3) && currentNode.getAccess(0)) && (nodeX != 0 && nodeY != 0)){
-                expandingNode = map[nodeX-1][nodeY-1];
-                if(!this.openedNodes.contains(expandingNode)&& !this.unopenedNodes.contains(expandingNode)) {
-                    expandingNode.setGCost(2);
-                    expandingNode.computeDistance(this.endNode);
-                    nodesToExplore.add(expandingNode);
-                }
-            }
+        }
 
+        private ArrayList<Tile> getNeighbors(int nodeX,int nodeY){
+            ArrayList<Tile> nodesToExplore = new ArrayList<>();
+            int i,j, newX,newY,mapLength = this.map.length;
+            for(i = -1; i < 2; i++){
+                for(j = -1; j < 2; j++){
+                    if(i == 0 && j == 0){
+                        continue;
+                    }else{
+                        newX = i + nodeX;
+                        newY = j + nodeY;
+                        if(newX < mapLength && newX > -1 && newY < mapLength && newY > -1 ){
+                            nodesToExplore.add(this.map[newX][newY]);
+                        }
+                    }
+                }
+            }
             return nodesToExplore;
         }
 

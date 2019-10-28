@@ -24,11 +24,18 @@ public class Tile implements Comparable<Tile>{
     private static int idCount = 0;
     private static boolean buildEnabled = true;
     private double gCost,fCost,hCost;
+    private Tile perant;
     public int compareTo(Tile t) {
         if(this.getFCost() < t.getFCost()){
             return -1;
         }else if(this.getFCost() > t.getFCost()){
             return 1;
+        }else {
+            if(this.getHCost() < t.getHCost()){
+                return -1;
+            }else if(this.getHCost() < t.getHCost()){
+                return 1;
+            }
         }
         return 0;
     }
@@ -108,9 +115,9 @@ public class Tile implements Comparable<Tile>{
         this.gridY = y;
         this.currentActor = null;
         this.id = idCount;
-        this.gCost = 1;
         this.hCost = 0;
         this.fCost = 0;
+        this.perant = null;
         idCount++;
 
     }
@@ -156,9 +163,8 @@ public class Tile implements Comparable<Tile>{
 
     public boolean containsActor(){return this.currentActor != null;}
 
-
+    public void setPerant(Tile t) {this.perant = t;}
     public void setGCost(double i) {this.gCost = i;}
-    public void addGCost(double i) {this.gCost += i;}
     public void setHCost(double i) {this.hCost = i;}
     public void setColor(Color c){this.color = c;}
     public boolean setActor(Actor a){
@@ -172,6 +178,7 @@ public class Tile implements Comparable<Tile>{
 
     public final int getId(){return this.id;}
     public final boolean getAccess(int dir){ return this.walls[dir]; }
+    public final Tile getPerant(){return this.perant;}
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}
     public final double getHCost(){return this.hCost;}
