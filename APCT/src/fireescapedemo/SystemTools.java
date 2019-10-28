@@ -36,7 +36,7 @@ public class SystemTools {
             this.endY = endNode.gridY;
         }
 
-        public Queue<Tile> findPath() {
+        public boolean findPath() {
             int nodeX, nodeY;
             double newDis;
             Tile currentNode = null, start = this.map[this.startNode.gridX][this.startNode.gridY],
@@ -69,29 +69,23 @@ public class SystemTools {
 
 
             }
-
             System.out.println("Finished");
-            int counter = 1;
-            currentNode = goal;
-            boolean test = true;
-            if (test) {
-                while (currentNode != start) {
-                    System.out.println("Count " + counter);
-                    System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
-                    currentNode.block.setFill(Color.RED);
-                    currentNode = currentNode.getPerant();
-                    counter++;
+            if(this.openedNodes.contains(goal)){
+                int counter = 1;
+                currentNode = goal;
+                boolean test = true;
+                if (test) {
+                    while (currentNode != start) {
+                        System.out.println("Count " + counter);
+                        System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
+                        currentNode.block.setFill(Color.RED);
+                        currentNode = currentNode.getPerant();
+                        counter++;
+                    }
                 }
+                return true;
             }
-            else {
-                for (Tile t : this.openedNodes) {
-                    System.out.println("Count " + counter);
-                    System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
-                    t.block.setFill(Color.RED);
-                }
-            }
-
-            return this.openedNodes;
+            return false;
         }
 
 
@@ -126,15 +120,17 @@ public class SystemTools {
                                 nodesToExplore.add(this.map[newX][newY]);
                             }else if(j == 0 && dirAcess[1]){
                                 nodesToExplore.add(this.map[newX][newY]);
-                            }else if(dirAcess[0] && dirAcess[1]){
+                            }/*else if(dirAcess[0] && dirAcess[1]){
                                 nodesToExplore.add(this.map[newX][newY]);
-                            }
+                            }*/
                         }
                     }
                 }
             }
             return nodesToExplore;
         }
+
+        public PriorityQueue<Tile> getPath(){return this.openedNodes;}
 
     }
 

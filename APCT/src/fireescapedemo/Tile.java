@@ -82,7 +82,7 @@ public class Tile implements Comparable<Tile>{
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
-                mainBuilding.getFloor(index).addEmployee(new Actor(c,tile, Actor.State.FindRoute));
+                mainBuilding.getFloor(index).addEmployee(new Actor(c,tile, Actor.State.Idle));
                 c = new Circle(10);
                 c.setFill(Color.PINK);
                 c.setLayoutX(x+25);
