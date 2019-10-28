@@ -1,40 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="23f41675-7a33-4947-818d-675a67ce5e45" name="Default Changelist" comment="">
+    <list default="true" id="414e8417-a322-430f-ae54-464574825456" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/APCT/META-INF/APCT.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Building.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Building.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Exit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Exit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLHomeController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLHomeController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FireEscapeDemo.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FireEscapeDemo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SceneManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SceneManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="CodeStyleSettingsInfer">
-    <option name="done" value="true" />
-  </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectCodeStyleSettingsMigration">
-    <option name="version" value="1" />
-  </component>
-  <component name="ProjectId" id="1Snuf7rjqo60xTZvtdCmQ306ceJ" />
   <component name="PropertiesComponent">
-    <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="aspect.path.notification.shown" value="true" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\Leem\Documents\Project\FireEscapeSim\APCT\src\Assets" />
-    </key>
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -68,50 +77,7 @@
       </list>
     </recent_temporary>
   </component>
-  <component name="SvnConfiguration">
-    <configuration />
-  </component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="23f41675-7a33-4947-818d-675a67ce5e45" name="Default Changelist" comment="" />
-      <created>1572211787331</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1572211787331</updated>
-      <workItem from="1572211810423" duration="10776000" />
-    </task>
     <servers />
-  </component>
-  <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/fireescapedemo/SystemTools.java</url>
-          <line>121</line>
-          <option name="timeStamp" value="25" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="t.block" language="JAVA" />
-        <watch expression="this.unopenedNodes.toArray()[3]" />
-        <watch expression="((AStarPath)this).unopenedNodes" custom="fireescapedemo.SystemTools.AStarPath" />
-      </configuration>
-    </watches-manager>
   </component>
 </project>

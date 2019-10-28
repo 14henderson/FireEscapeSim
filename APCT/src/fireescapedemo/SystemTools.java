@@ -105,16 +105,30 @@ public class SystemTools {
 
         private ArrayList<Tile> getNeighbors(int nodeX,int nodeY){
             ArrayList<Tile> nodesToExplore = new ArrayList<>();
-            int i,j, newX,newY,mapLength = this.map.length;
+            int i, j, aX, aY, newX, newY, mapLength = this.map.length;
+            Tile node = this.map[nodeX][nodeY];
+            boolean[] dirAcess = new boolean[2];
             for(i = -1; i < 2; i++){
                 for(j = -1; j < 2; j++){
                     if(i == 0 && j == 0){
                         continue;
-                    }else{
+                    }
+                    else{
+                        aY = i == -1 ? 3 : 1;
+                        aX = j == -1 ? 0 : 2;
+                        dirAcess[0] = node.getAccess(aX);
+                        dirAcess[1] = node.getAccess(aY);
                         newX = i + nodeX;
                         newY = j + nodeY;
+
                         if(newX < mapLength && newX > -1 && newY < mapLength && newY > -1 ){
-                            nodesToExplore.add(this.map[newX][newY]);
+                            if(i == 0 && dirAcess[0]){
+                                nodesToExplore.add(this.map[newX][newY]);
+                            }else if(j == 0 && dirAcess[1]){
+                                nodesToExplore.add(this.map[newX][newY]);
+                            }else if(dirAcess[0] && dirAcess[1]){
+                                nodesToExplore.add(this.map[newX][newY]);
+                            }
                         }
                     }
                 }
