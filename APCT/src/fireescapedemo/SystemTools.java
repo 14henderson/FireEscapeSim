@@ -37,16 +37,12 @@ public class SystemTools {
         }
 
         public Queue<Tile> findPath() {
-            int i = 0, j, k, nodeX, nodeY;
+            int nodeX, nodeY;
             double newDis;
-            double currentPathScore = 0;
-            Tile expandingNode = null, currentNode = null, start = this.map[this.startNode.gridX][this.startNode.gridY],
+            Tile currentNode = null, start = this.map[this.startNode.gridX][this.startNode.gridY],
                     goal = this.map[this.endNode.gridX][this.endNode.gridY];
             this.unopenedNodes.add(start);
 
-            ArrayList<Tile> nodesToExplore = new ArrayList<>();
-            //currentNode = this.unopenedNodes.poll();
-            //this.openedNodes.add(currentNode);
             while (this.unopenedNodes.size() != 0) {
 
                 System.out.println("Size: " + this.openedNodes.size());
@@ -73,14 +69,14 @@ public class SystemTools {
 
 
             }
-            //this.openedNodes.add(currentNode);
+
             System.out.println("Finished");
             int counter = 1;
             currentNode = goal;
             boolean test = true;
             if (test) {
                 while (currentNode != start) {
-                    System.out.println("Countg " + counter);
+                    System.out.println("Count " + counter);
                     System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
                     currentNode.block.setFill(Color.RED);
                     currentNode = currentNode.getPerant();
@@ -89,7 +85,7 @@ public class SystemTools {
             }
             else {
                 for (Tile t : this.openedNodes) {
-                    System.out.println("Countg " + counter);
+                    System.out.println("Count " + counter);
                     System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
                     t.block.setFill(Color.RED);
                 }
@@ -102,7 +98,6 @@ public class SystemTools {
         private int calculateDistance(Tile a, Tile b){
             int maxX = Math.abs(a.gridX - b.gridX);
             int maxY = Math.abs(a.gridY - b.gridY);
-            System.out.println("maxX: " + maxX + ", maxY: " + maxY);
             if(maxY < maxX)return 14 * maxY + 10 * (maxX - maxY);
             return 14 * maxX + 10 * (maxY - maxX);
 
