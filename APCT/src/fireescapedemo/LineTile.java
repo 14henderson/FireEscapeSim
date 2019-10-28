@@ -2,21 +2,26 @@ package fireescapedemo;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-public class LineTile extends MapObject{
+public class LineTile{
     private int gridX;
     private int gridY;
     private double size;
+    private Pane windowContainer;
+    private Building mainBuilding;
 
-    public LineTile(int gridXSetter, int gridYSetter, int sizeSetter){
+
+    public LineTile(int gridXSetter, int gridYSetter, int sizeSetter, Pane windowontainer, Building mainBuilding){
         this.gridX = gridXSetter;
         this.gridY = gridYSetter;
         this.size = sizeSetter;
+        this.windowContainer = windowontainer;
+        this.mainBuilding = mainBuilding;
     }
 
-    @Override
     public void render(){
         Rectangle lineTileRect = new Rectangle(gridX, gridY, size, size);
 
@@ -25,7 +30,7 @@ public class LineTile extends MapObject{
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(Tile.isBuildEnabled()){
-                    mainBuilding.getCurrentFloor().setLineClicked(mouseEvent);
+                    FXMLBuildingController.setLineClicked(mouseEvent);
                 }
             }
         });

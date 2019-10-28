@@ -66,21 +66,23 @@ public class Tile extends MapObject implements Serializable {
         Pane container = new Pane();
         container.setLayoutX(0);
         container.setLayoutY(0);
+
         container.setPadding(new Insets(0));
 
         Rectangle block = new Rectangle(this.gridX, this.gridY, this.width, this.height);
         block.setFill(Color.WHITESMOKE);
         block.setStroke(Color.BLACK);
         block.toFront();
-        this.type = null;
+
         block.setOnMouseClicked((MouseEvent event) -> {
+            this.type = FXMLBuildingController.getActionType();
             if(canEdit) {
                 Color tileColor;
                 switch (this.type){
-                    case Employee: tileColor = Color.web(getColor("RED"));
-                    case Office: tileColor = Color.web(getColor("GREY"));
-                    case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));
-                    default: tileColor = Color.web(getColor("WHITESMOKE"));
+                    case Employee: tileColor = Color.web(getColor("RED"));break;
+                    case Office: tileColor = Color.web(getColor("GREY"));break;
+                    case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
+                    default: tileColor = Color.web(getColor("WHITESMOKE"));break;
                 }
                 block.setFill(tileColor);
                 block.setOpacity(0.5);

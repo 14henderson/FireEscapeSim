@@ -43,6 +43,9 @@ public class Building extends MapObject implements Serializable {
              currentFloor = 0;
         }
     }
+    public int getHeight(){return this.height;}
+    public int getWidth(){return this.width;}
+    public int getSize(){return this.size;}
 /*
     public Building(Building loadedBuilding){
         this.floors = loadedBuilding.floors;
@@ -72,7 +75,7 @@ public class Building extends MapObject implements Serializable {
     public int getTotalFloors(){return this.floors.size();}
     public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
     public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
-    
+    public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}
         return  floors.get( currentFloor);

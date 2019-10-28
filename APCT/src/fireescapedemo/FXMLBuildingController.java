@@ -9,6 +9,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -46,14 +48,13 @@ public class FXMLBuildingController implements Initializable {
     private Text errorText;
     int floorNum = 0;
     SceneManager manager;
-
-
-
+    public LineTile[][] lineTiles = null;
+    private static double lineCords[] = new double[2];
+    private static boolean lineClicked;
     ArrayList<Employee> characters;
-    //ArrayList<Tile> floors;
-
-    public Building mainBuilding;// = new Building();
+    public static Building mainBuilding;// = new Building();
     static Color c = Color.WHITESMOKE;
+    private static Tile.BlockType actionType;
 
 
     @FXML
@@ -67,6 +68,29 @@ public class FXMLBuildingController implements Initializable {
         manager.showScene("simulation");
         Tile.disableBuild();
         mainBuilding.render();
+    }
+
+
+
+
+    public void initLineBlocks(){
+        int size = this.mainBuilding.getSize();
+        int width = this.mainBuilding.getWidth();
+        int height = this.mainBuilding.getHeight();
+        this.lineTiles = new LineTile[width+1][height+1];
+        for(int i = 0; i < this.lineTiles.length; i ++){
+            for(int j = 0; j< this.lineTiles[i].length; j++) {
+                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 4)) ,((j*size) - (size / 4)),
+                                            size/2, this.mainPane, this.mainBuilding);
+            }}
+    }
+    public void renderLineBlocks(){
+        for (LineTile[] lineTileRow : this.lineTiles) {
+            for (LineTile lineTile : lineTileRow) {
+                lineTile.render();
+            }
+        }
+
     }
 
 
@@ -115,47 +139,40 @@ public class FXMLBuildingController implements Initializable {
             prefab.update();
         });
     }
-
+    public static Tile.BlockType getActionType(){return actionType;}
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.manager = new SceneManager();
-        //if(manager.globalBuilding != null){
-        //    this.mainBuilding = manager.globalBuilding;
-        //}
 
-
-        this.mainBuilding = null;
-        String filename = "C:\\Users\\Niklas Henderson\\Documents\\my_building.map";
-        try {
-            java.io.FileInputStream fis = new java.io.FileInputStream(filename);
-            ObjectInputStream in = new ObjectInputStream(fis);
-            this.mainBuilding = (Building) in.readObject();
-            in.close();
-            fis.close();
-            //System.out.println("Building has: "+loadedBuilding.getFloors().size());
-            //this.mainBuilding = loadedBuilding;
-            System.out.println("Building has: "+this.mainBuilding.getFloors().size()+" floors.");
-        } catch (IOException | ClassNotFoundException ex) {
-            System.out.println("Serializable Error thrown: " + ex);
-            this.mainBuilding = new Building(14,13,50, mainPane);
+        mainBuilding = manager.getGlobalBuilding();
+        if(mainBuilding == null){
+            System.out.println("Building is null. Making new one");
+            mainBuilding = new Building(14,13,50, mainPane);
         }
 
-
-        //
+        this.mainBuilding.enableBuild();
+        this.mainBuilding.setWindowContainer(mainPane);
 
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
         mainBuilding.render();
         wallButton.setOnAction((ActionEvent e) -> {
+            this.actionType = Tile.BlockType.Office;
+
             c = Color.GRAY;
         });
         employeeButton.setOnAction((ActionEvent e) -> {
+            this.actionType = Tile.BlockType.Employee;
             c = Color.RED;
         });
         stairsButton.setOnAction((ActionEvent e) -> {
+            this.actionType = Tile.BlockType.Stairs;
             c = Color.AQUAMARINE;
         });
         errorText.setText("");
+
+        this.initLineBlocks();
+        this.renderLineBlocks();
     }
 
     /**
@@ -175,6 +192,7 @@ public class FXMLBuildingController implements Initializable {
                 //Building object is serializable which allows the saving of the object.
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
                 ObjectOutputStream out = new ObjectOutputStream(fos);
+                System.out.println("Walls from Save function: "+mainBuilding.getCurrentFloor().getWalls().size());
                 out.writeObject(mainBuilding);
                 out.close();
                 fos.close();
@@ -295,10 +313,100 @@ public class FXMLBuildingController implements Initializable {
         public int getSpeed(){
             return this.speed;
         }
+    }
+
+    public static final double[] normaliseCords(double cords[]){
+        int i;
+        double a;
+        double[] finalCords = new double[4];
+        for(i = 0; i < 4; i++){
+            a = cords[i] %  mainBuilding.getSize();
+            System.out.println("Before: " + cords[i]);
+            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (50 - a);
+            System.out.println("After: " + finalCords[i]);
+        }
+        return finalCords;
+    }
 
 
+    @FXML
+    public static void setLineClicked(MouseEvent event){//, Rectangle finalR){
+        if(lineClicked){
+            double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
+            double [] cords = {x1,y1,x2,y2};
+            cords = normaliseCords(cords);
 
+            if(cords[1] == cords[3]){
+                mainBuilding.getCurrentFloor().addWall(cords);
+                Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
+                l.setStroke(Color.BLUE);
+                l.setStrokeWidth(10);
+                l.toBack();
+                mainBuilding.windowContainer.getChildren().add(l);
 
+                int x = (int)x1 == 0 ? 0 : (int)cords[0] / 50;
+                int xx = (int)x2 == 0 ? 0 : (int)cords[2] / 50;
+                int y = (int)y1 == 0 ? 0 : (int)cords[1] / 50;
+                int max = x - xx < 0 ? xx : x;
+                int min = x - xx < 0 ? x : xx;
+                System.out.println("Min: " + min + ", Max: " + max);
+                System.out.println("x: " + x + ", xx: " + xx + ", y: " + y);
+                for(int i = min; i < max; i++){
+                    mainBuilding.getCurrentFloor().getTile(i,y).removeAccess(0);
+                    System.out.println("Block [" + i + "], [" + y + "] has removed access " + 0);
+                }
+
+                if(y != 0){
+                    y -= 1;
+                    for(int i = min; i < max; i++){
+                        mainBuilding.getCurrentFloor().getTile(i,y).removeAccess(2);
+                        System.out.println("Block [" + i + "], [" + y + "] has removed access " + 2);
+                    }
+                }
+
+            }else if (cords[0] == cords[2]){
+                mainBuilding.getCurrentFloor().addWall(cords);
+                Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
+                l.setStroke(Color.BLUE);
+                l.setStrokeWidth(10);
+                l.toBack();
+                mainBuilding.windowContainer.getChildren().add(l);
+                int x = (int)x1 == 0 ? 0 : (int)cords[0] / 50;
+                int y = (int)y1 == 0 ? 0 : (int)cords[1] / 50;
+                int yy = (int)y2 == 0 ? 0 : (int)cords[3] / 50;
+                int max = y - yy < 0 ? yy : y;
+                int min = y - yy < 0 ? y : yy;
+                System.out.println("Min: " + min + ", Max: " + max);
+                System.out.println("y: " + y + ", yy: " + yy + ", x: " + x);
+                for(int i = min; i < max; i++){
+                    mainBuilding.getCurrentFloor().getTile(x,i).removeAccess(3);
+                    System.out.println("Block [" + x + "], [" + i + "] has removed access " + 3);
+                }
+
+                if(x != 0){
+                    x -= 1;
+                    for(int i = min; i < max; i++){
+                        mainBuilding.getCurrentFloor().getTile(x,i).removeAccess(1);
+                        System.out.println("Block [" + i + "], [" + y + "] has removed access " + 1);
+                    }
+                }
+            }
+            //finalR.toFront();
+            //lastRec.toFront();
+            lineClicked = false;
+            lineCords[0] = 0;
+            lineCords[1] = 0;
+            //lastRec = null;
+            System.out.println("Line Deactivated");
+
+        }else{
+            lineClicked = true;
+            lineCords[0] = event.getX();
+            lineCords[1] = event.getY();
+            System.out.println("Line Active");
+            //lastRec = finalR;
+        }
+        System.out.println("Building Controller says you have this many walls now: "+mainBuilding.getCurrentFloor().getWalls().size());
     }
 
 }
