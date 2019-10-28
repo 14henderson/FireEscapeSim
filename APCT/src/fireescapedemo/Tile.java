@@ -63,34 +63,31 @@ public class Tile extends MapObject implements Serializable {
 
     @Override
     public void render(){
-        Pane container = new Pane();
-        container.setLayoutX(0);
-        container.setLayoutY(0);
-
-        container.setPadding(new Insets(0));
-
+        //Pane container = new Pane();
+        //container.setLayoutX(this.gridX);
+        //container.setLayoutY(this.gridY);
+        //container.setPadding(new Insets(0));
         Rectangle block = new Rectangle(this.gridX, this.gridY, this.width, this.height);
         block.setFill(Color.WHITESMOKE);
         block.setStroke(Color.BLACK);
-        block.toFront();
 
         block.setOnMouseClicked((MouseEvent event) -> {
             this.type = FXMLBuildingController.getActionType();
-            if(canEdit) {
-                Color tileColor;
-                switch (this.type){
-                    case Employee: tileColor = Color.web(getColor("RED"));break;
-                    case Office: tileColor = Color.web(getColor("GREY"));break;
-                    case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
-                    default: tileColor = Color.web(getColor("WHITESMOKE"));break;
-                }
-                block.setFill(tileColor);
-                block.setOpacity(0.5);
-                this.printType();
+
+            Color tileColor;
+            switch (this.type){
+                case Employee: tileColor = Color.web(getColor("RED"));break;
+                case Office: tileColor = Color.web(getColor("GREY"));break;
+                case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
+                default: tileColor = Color.web(getColor("WHITESMOKE"));break;
             }
+            block.setFill(tileColor);
+            block.setOpacity(0.5);
+            //this.printType();
+
         });
-        mainBuilding.windowContainer.getChildren().add(container);
-        container.getChildren().add(block);
+        mainBuilding.windowContainer.getChildren().add(block);
+        //container.getChildren().add(block);
         block.toFront();
         this.walls = new boolean[4];
         for(Boolean b : this.walls){
