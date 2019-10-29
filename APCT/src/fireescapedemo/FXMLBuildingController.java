@@ -35,6 +35,8 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Pane assetPane;
     @FXML
+    private Pane mapPane;
+    @FXML
     private Label floorLevel;
     @FXML
     private Button wallButton;
@@ -45,10 +47,14 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Button saveButton;
     @FXML
+    private Button cancelButton;
+    @FXML
+    private Button saveToSim;
+    @FXML
     private Text errorText;
     int floorNum = 0;
     SceneManager manager;
-    public LineTile[][] lineTiles = null;
+    public static LineTile[][] lineTiles = null;
     private static double lineCords[] = new double[2];
     private static boolean lineClicked;
     ArrayList<Employee> characters;
@@ -69,10 +75,13 @@ public class FXMLBuildingController implements Initializable {
         Tile.disableBuild();
         mainBuilding.render();
     }
-
-
-
-
+    public static void refreshLineTiles(){
+        for(LineTile[] tiles : lineTiles){
+            for(LineTile tile : tiles){
+                tile.bringToFront();
+            }
+        }
+    }
     public void initLineBlocks(){
         int size = this.mainBuilding.getSize();
         int width = this.mainBuilding.getWidth();
@@ -100,6 +109,7 @@ public class FXMLBuildingController implements Initializable {
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
             mainBuilding.render();
+            this.renderLineBlocks();
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
            //System.out.println("Wow");
             //mainBuilding.increaseFloor();
@@ -116,6 +126,7 @@ public class FXMLBuildingController implements Initializable {
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.decreaseFloor();
             mainBuilding.render();
+            this.renderLineBlocks();
            // mainPane.getChildren().remove(mainPane.getChildren().size()-1);
            // System.out.println("Wow");
            // mainBuilding.prevFloor();
@@ -129,7 +140,17 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void addRoom(){
+        //this.mainPane.getChildren().removeAll();
         mainBuilding.addFloor();
+        //mainBuilding.render();
+        /*
+        for(LineTile[] lineTileRow : this.lineTiles){
+            for(LineTile lineTile : lineTileRow){
+                lineTile.render();
+            }
+        }
+
+         */
         System.out.println("Floor added");
     }
 
@@ -147,11 +168,12 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding = manager.getGlobalBuilding();
         if(mainBuilding == null){
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(14,13,50, mainPane);
+            mainBuilding = new Building(14,13,50, mapPane);
         }
 
+        this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
-        this.mainBuilding.setWindowContainer(mainPane);
+        this.mainBuilding.setWindowContainer(mapPane);
 
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
@@ -205,25 +227,26 @@ public class FXMLBuildingController implements Initializable {
                 System.out.println("Serializable Error thrown: "+ex);
             }
         }
-
     }
 
+    public void cancelBuilding() throws IOException {
+        this.manager.setGlobalBuilding(null);
+        this.manager.showScene("home");
+    }
 
-
-
+    public void saveToSim(){
+        System.out.println("Saving to simulation");
+    }
 
     public void initTestLabel(){
         Label l;
-
-        for(int i = 0; i < 550; i+=50){
+        for(int i = 0; i < 550; i+=50) {
             l = new Label();
             l.setLayoutX(i);
             l.setLayoutY(0);
             l.setText(Double.toString(l.getLayoutX()));
             mainPane.getChildren().add(l);
         }
-
-
     }
 
     public void initCharacters(){
@@ -252,15 +275,13 @@ public class FXMLBuildingController implements Initializable {
             public void handle(long now) {
                 onUpdate();
             }
-
         };
         t.start();
     }
 
 
-
-
-    class Employee extends Actor{        int speed;
+    class Employee extends Actor{
+        int speed;
         boolean foundSteps;
         Tile currentFloor;
         Employee(Node view, Tile startingFloor){
@@ -269,9 +290,7 @@ public class FXMLBuildingController implements Initializable {
             this.speed = (rand.nextInt(2)+1);
             this.foundSteps = false;
             this.currentFloor = startingFloor;
-
         }
-
         Employee(Node view, Point2D vector, Tile startingFloor){
             super(view,vector);
             Random rand = new Random();
@@ -279,7 +298,6 @@ public class FXMLBuildingController implements Initializable {
             this.foundSteps = false;
             this.currentFloor = startingFloor;
         }
-
         @Override
         public void update(){
 
@@ -309,7 +327,10 @@ public class FXMLBuildingController implements Initializable {
             this.view.setLayoutX(this.view.getLayoutX() +  velocity.getX() + speed);
             this.view.setLayoutY(this.view.getLayoutY() +  velocity.getY());
         }
-        */
+         */
+
+
+
         public int getSpeed(){
             return this.speed;
         }
@@ -330,12 +351,12 @@ public class FXMLBuildingController implements Initializable {
 
 
     @FXML
-    public static void setLineClicked(MouseEvent event){//, Rectangle finalR){
+    public static void setLineClicked(MouseEvent event){
+        refreshLineTiles();
         if(lineClicked){
             double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
             double [] cords = {x1,y1,x2,y2};
             cords = normaliseCords(cords);
-
             if(cords[1] == cords[3]){
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
@@ -355,7 +376,6 @@ public class FXMLBuildingController implements Initializable {
                     mainBuilding.getCurrentFloor().getTile(i,y).removeAccess(0);
                     System.out.println("Block [" + i + "], [" + y + "] has removed access " + 0);
                 }
-
                 if(y != 0){
                     y -= 1;
                     for(int i = min; i < max; i++){
@@ -363,7 +383,6 @@ public class FXMLBuildingController implements Initializable {
                         System.out.println("Block [" + i + "], [" + y + "] has removed access " + 2);
                     }
                 }
-
             }else if (cords[0] == cords[2]){
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
@@ -382,7 +401,6 @@ public class FXMLBuildingController implements Initializable {
                     mainBuilding.getCurrentFloor().getTile(x,i).removeAccess(3);
                     System.out.println("Block [" + x + "], [" + i + "] has removed access " + 3);
                 }
-
                 if(x != 0){
                     x -= 1;
                     for(int i = min; i < max; i++){
@@ -391,22 +409,15 @@ public class FXMLBuildingController implements Initializable {
                     }
                 }
             }
-            //finalR.toFront();
-            //lastRec.toFront();
             lineClicked = false;
             lineCords[0] = 0;
             lineCords[1] = 0;
-            //lastRec = null;
-            System.out.println("Line Deactivated");
-
         }else{
             lineClicked = true;
             lineCords[0] = event.getX();
             lineCords[1] = event.getY();
-            System.out.println("Line Active");
-            //lastRec = finalR;
         }
-        System.out.println("Building Controller says you have this many walls now: "+mainBuilding.getCurrentFloor().getWalls().size());
+        refreshLineTiles();
     }
 
 }

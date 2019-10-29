@@ -11,12 +11,10 @@ import javafx.scene.shape.Rectangle;
 import java.io.Serializable;
 
 public class Tile extends MapObject implements Serializable {
-  //  public transient Pane container;
-    //public transient Rectangle block;
     public boolean[] walls;
     private Actor currentActor;
-    //private transient Color color;
-    public final int gridX, gridY;
+    public final int[] gridCords = new int[2];
+    public final int[] actualCords = new int[2];
     public final double width, height;
     enum BlockType{
         Office {
@@ -32,6 +30,12 @@ public class Tile extends MapObject implements Serializable {
                 System.out.println("Oooh I'll render some cheeky stair boyos");
             }
         },
+        Default {
+            @Override
+            public void render() {
+                System.out.println("This is the default");
+            }
+        },
         Employee {
             @Override
             public void render() {
@@ -40,72 +44,65 @@ public class Tile extends MapObject implements Serializable {
                     floor.addEmployee(new Actor(new Circle(50)));
                     System.out.println(floor.employees.size());
                     System.out.println("Oh oh and I, I am an employee");
-                }
-            }
-        };
-        
+        }}};
         public abstract void render();
     }
-    
     public BlockType type;
+
+
+
 
 
     public Tile(int x, int y, double size){
         this.type = null;
-        this.gridX = x;
-        this.gridY = y;
+        this.actualCords[0] = x;
+        this.actualCords[1] = y;
+
         this.width = size;
         this.height = size;
-        render();
-
+        this.type = BlockType.Default;
         this.currentActor = null;
     }
 
+    public BlockType getType(){return this.type;}
+    public int[] getActualCords(){return this.actualCords;}
+    public int[] getGridCords(){return this.gridCords;}
+
+
     @Override
     public void render(){
-        //Pane container = new Pane();
-        //container.setLayoutX(this.gridX);
-        //container.setLayoutY(this.gridY);
-        //container.setPadding(new Insets(0));
-        Rectangle block = new Rectangle(this.gridX, this.gridY, this.width, this.height);
+        Rectangle block = new Rectangle(this.actualCords[0], this.actualCords[1], this.width, this.height);
         block.setFill(Color.WHITESMOKE);
         block.setStroke(Color.BLACK);
-
         block.setOnMouseClicked((MouseEvent event) -> {
             this.type = FXMLBuildingController.getActionType();
-
-            Color tileColor;
-            switch (this.type){
-                case Employee: tileColor = Color.web(getColor("RED"));break;
-                case Office: tileColor = Color.web(getColor("GREY"));break;
-                case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
-                default: tileColor = Color.web(getColor("WHITESMOKE"));break;
-            }
-            block.setFill(tileColor);
+            block.setFill(getColor(this.type));
             block.setOpacity(0.5);
-            //this.printType();
-
         });
+        block.setFill(getColor(this.type));
+        block.setOpacity(0.5);
         mainBuilding.windowContainer.getChildren().add(block);
-        //container.getChildren().add(block);
         block.toFront();
         this.walls = new boolean[4];
         for(Boolean b : this.walls){
             b = true;
+    }}
+
+
+    //Returns Colour of block depending on a type of block
+    public Color getColor(BlockType type){
+        Color tileColor;
+        switch (this.type){
+            case Employee: tileColor = Color.web(getColor("RED"));break;
+            case Office: tileColor = Color.web(getColor("GREY"));break;
+            case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
+            default: tileColor = Color.web(getColor("WHITESMOKE"));break;
         }
+        return tileColor;
     }
 
 
-
-
-
-
-
-    private void initBlock(double x, double y,double size){
-
-    }
-
-
+    public void removeAccess(int dir){ this.walls[dir] = false;}
     public boolean containsActor(){return this.currentActor != null;}
 
     public boolean setActor(Actor a){
@@ -116,6 +113,9 @@ public class Tile extends MapObject implements Serializable {
         return false;
     }
 
+
+
+
     /**
      * Check if actor has access to a certain direction
      *
@@ -125,26 +125,9 @@ public class Tile extends MapObject implements Serializable {
      *              2:  Checks Down
      *              3:  Checks Left
      */
-    public boolean getAccess(int dir){ return this.walls[dir]; }
-
-    public void removeAccess(int dir){ this.walls[dir] = false;}
-
-    public void setWalls(){
-
-    }
-    //public void setColor(Color c){this.color = c;}
-    
+    public boolean getAccess(int dir){ return this.walls[dir];}
     public void removeActor(){this.currentActor = null;}
-    
     public Actor getActor(){return this.currentActor;}
     
-    public void printType(){
-        String addOn;
-        if(this.type == null){
-            addOn = "NO TYPE";
-        }else{
-            addOn = this.type.toString();
-        }
-        System.out.println("Type " + addOn);
-    }
+
 }

@@ -43,39 +43,31 @@ public class Building extends MapObject implements Serializable {
              currentFloor = 0;
         }
     }
+
+    @Override
+    public void render(){
+        this.floors.get(this.currentFloor).render();
+    }
+
+    @Override
+    public String toString(){
+        String output = "";
+        output += ("Num Floors:"+this.getTotalFloors()+"\n");
+        return output;
+    }
+
     public int getHeight(){return this.height;}
     public int getWidth(){return this.width;}
     public int getSize(){return this.size;}
-/*
-    public Building(Building loadedBuilding){
-        this.floors = loadedBuilding.floors;
-        this.currentFloor = 0;
-        this.height = loadedBuilding.height;
-        this.width = loadedBuilding.width;
-        this.size = loadedBuilding.size;
-
-        for(Floor aFloor : this.floors){
-            aFloor.floor = new Pane();
-
-            for(Tile[] aTileRow : aFloor.getCurrentFloorBlock()){
-                for(Tile aTile : aTileRow){
-                   // aTile.
-                }
-            }
-        }
-    }
-*/
-
-
-
     public final ArrayList<Floor> getFloors(){return this.floors;}
     public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
-    //public final Tile[][] getCurrentFloorBlock(){return  floors.get( currentFloor).getCurrentFloorBlock();}
     public final int getCurrentFloorIndex() {return this.currentFloor;}
     public int getTotalFloors(){return this.floors.size();}
     public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
     public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
     public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
+    public void setCurrentFloor(int floor){this.currentFloor = floor;}
+
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}
         return  floors.get( currentFloor);
@@ -85,59 +77,13 @@ public class Building extends MapObject implements Serializable {
         return  floors.get( currentFloor);
     }
 
-    @Override
-    public void render(){
-        this.floors.get(this.currentFloor).render();
-    }
-
-
-    @Override
-    public String toString(){
-        String output = "";
-        output += ("Num Floors:"+this.getTotalFloors()+"\n");
-        //output += ("")
-        return output;
-    }
-
-
-
-
     public final void addFloor() {
         Floor newFloor = new Floor(this.height, this.width, this.size);
         this.floors.add(newFloor);
-
     }
 
-/*
 
-        Tile b;
-        Rectangle r;
-        this.floorBlocks = new Tile[ size* width / size][ size *  width / size];
-        this.wallBlocks = new Rectangle[(this.floorBlocks.length + 1)][(this.floorBlocks[0].length+1)];
 
-        for(i = 0; i < this.floorBlocks.length; i ++){
-            for(j = 0; j< this.floorBlocks[i].length; j++){
-                this.floorBlocks[i][j] = new Tile(i,j,size);
-                this.floor.getChildren().add(this.floorBlocks[i][j].block);
-            }
-        }
 
-        for(i = 0; i < wallBlocks.length; i ++){
-            for(j = 0; j< this.wallBlocks[i].length; j++){
-
-                r = new Rectangle(((i*size) - (newSize / 2)) ,((j*size) - (newSize / 2)), newSize, newSize);
-                Rectangle finalR = r;
-                r.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if(Tile.isBuildEnabled()){setLineClicked(mouseEvent, finalR);}
-                    }
-                });
-                r.setOpacity(0.2);
-                r.setFill(Color.RED);
-                this.floor.getChildren().add(r);
-                wallBlocks[i][j] = r;
-            }
-        }*/
-    }
+}
 

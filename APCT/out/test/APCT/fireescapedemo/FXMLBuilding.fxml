@@ -14,7 +14,7 @@
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="750.0" prefWidth="221.0">
 
             <children>
-                <Rectangle fx:id="colourPane" fill="#c7dcff" height="777.0" layoutX="-11.0" layoutY="-10.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="245.0" />
+                <Rectangle fx:id="colourPane" fill="#c7dcff" height="773.0" layoutX="-14.0" layoutY="-13.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="249.0" />
                 <Button layoutX="165.0" layoutY="125.0" mnemonicParsing="false" onAction="#prevRoom" prefHeight="31.0" prefWidth="27.0" text="↓" wrapText="true">
                <font>
                   <Font name="System Bold" size="15.0" />
@@ -32,19 +32,24 @@
                   <Font size="15.0" />
                </font></Label>
                 <Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
-            <Button fx:id="wallButton" layoutX="17.0" layoutY="156.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Wall" />
-            <Button fx:id="stairsButton" layoutX="18.0" layoutY="192.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
-            <Button fx:id="employeeButton" layoutX="18.0" layoutY="227.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
-            <Label layoutX="21.0" layoutY="299.0" text="Total Floors: 3">
+            <Button fx:id="wallButton" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Exit" />
+            <Button fx:id="stairsButton" layoutX="140.0" layoutY="198.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
+            <Button fx:id="employeeButton" layoutX="140.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
+                <Pane layoutX="6.0" layoutY="681.0" />
+                <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
+                <Button fx:id="saveButton" layoutX="41.0" layoutY="669.0" mnemonicParsing="false" onAction="#saveBuilding" prefHeight="25.0" prefWidth="133.0" text="Save &amp; return home" />
+                <Button fx:id="cancelButton" layoutX="41.0" layoutY="702.0" mnemonicParsing="false" onAction="#saveToSim" text="Save &amp; run simulation" />
+                <Button fx:id="saveToSim" layoutX="41.0" layoutY="637.0" mnemonicParsing="false" onAction="#cancelBuilding" text="Cancel &amp; return home" />
+            <Label layoutY="168.0" text="Place a wall between tiles" />
+            <Text layoutX="-1.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Place stairs for access between floors" wrappingWidth="149.427734375" />
+            <Text layoutX="-1.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Place persons on tiles" wrappingWidth="149.427734375" />
+            <Label layoutX="56.0" layoutY="14.0" text="Map Builder">
                <font>
-                  <Font size="15.0" />
+                  <Font name="System Bold" size="19.0" />
                </font>
             </Label>
-            <Pane layoutX="6.0" layoutY="681.0" />
-            <Button fx:id="saveButton" layoutX="60.0" layoutY="698.0" mnemonicParsing="false" onAction="#saveBuilding" text="Save &amp; return home" />
-            <Text fx:id="errorText" fill="RED" layoutX="18.0" layoutY="643.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
             </children>
         </Pane>
-      <Pane layoutX="201.0" layoutY="195.0" prefHeight="196.0" prefWidth="197.0" />
+      <Pane fx:id="mapPane" layoutX="0" layoutY="0" prefHeight="727.0" prefWidth="652.0" />
     </children>
 </AnchorPane>

@@ -12,7 +12,7 @@ public class LineTile{
     private double size;
     private Pane windowContainer;
     private Building mainBuilding;
-
+    private Rectangle lineTileRect;
 
     public LineTile(int gridXSetter, int gridYSetter, int sizeSetter, Pane windowontainer, Building mainBuilding){
         this.gridX = gridXSetter;
@@ -21,12 +21,12 @@ public class LineTile{
         this.windowContainer = windowontainer;
         this.mainBuilding = mainBuilding;
     }
-
+    public void bringToFront(){
+        this.lineTileRect.toFront();
+    }
     public void render(){
-        Rectangle lineTileRect = new Rectangle(gridX, gridY, size, size);
-
-        //Rectangle finalR = r;
-        lineTileRect.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.lineTileRect = new Rectangle(gridX, gridY, size, size);
+        this.lineTileRect.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if(Tile.isBuildEnabled()){
@@ -34,10 +34,9 @@ public class LineTile{
                 }
             }
         });
-        lineTileRect.setOpacity(0.2);
-        lineTileRect.setFill(Color.RED);
-        this.mainBuilding.windowContainer.getChildren().add(lineTileRect);
-        lineTileRect.toFront();
-        //wallBlocks[i][j] = r;
+        this.lineTileRect.setOpacity(0.2);
+        this.lineTileRect.setFill(Color.RED);
+        this.mainBuilding.windowContainer.getChildren().add(this.lineTileRect);
+        this.lineTileRect.toFront();
     }
 }

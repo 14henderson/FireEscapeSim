@@ -23,8 +23,6 @@ public class FXMLHomeController implements Initializable{
     @Override
     public void initialize(URL location, ResourceBundle resources){
         this.manager = new SceneManager();
-
-
     }
 
     public void simulateCurrent(ActionEvent actionEvent) {
@@ -46,18 +44,15 @@ public class FXMLHomeController implements Initializable{
                 in.close();
                 fis.close();
                 System.out.println("Loading from homecont"+loadedBuilding.toString());
+                loadedBuilding.setCurrentFloor(0);
                 manager.globalBuilding = loadedBuilding;
-
                 manager.setGlobalBuilding(loadedBuilding);
-
             } catch (IOException | ClassNotFoundException ex) {
                 System.out.println("Serializable Error thrown: " + ex);
             }
-
         }else{
             System.out.println("If clause not entered");
         }
-
         manager.showScene("building");
     }
 

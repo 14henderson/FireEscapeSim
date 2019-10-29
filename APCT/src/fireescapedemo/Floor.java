@@ -13,17 +13,14 @@ import java.util.ArrayList;
 
 public class Floor extends MapObject implements Serializable {
     public ArrayList<Actor> employees;
-   // public transient Pane floor;
     public Tile[][] floorBlocks;
-   // private transient Rectangle[][] wallBlocks;
     int height;
     int width;
     int size;
     boolean lineClicked = false;
     private ArrayList<double[]> walls;
-    //
-    //private transient Rectangle lastRec = null;
-    //Building mainBuilding;
+
+
 
     public Floor(int heigh, int widt, int siz){
         this.height = heigh;
@@ -38,9 +35,6 @@ public class Floor extends MapObject implements Serializable {
             for(int j = 0; j< this.floorBlocks[i].length; j++){
                 this.floorBlocks[i][j] = new Tile(i*size,j*size,size);
         }}
-
-
-        this.render();
     }
 
 
@@ -49,23 +43,15 @@ public class Floor extends MapObject implements Serializable {
     public void render(){
         int i,j;
         double newSize =  size / 2;
-        mainBuilding.windowContainer.getChildren().removeAll();
+        mainBuilding.windowContainer.getChildren().clear();
         mainBuilding.windowContainer.setPrefHeight(500);
         mainBuilding.windowContainer.setPrefWidth(500);
-        mainBuilding.windowContainer.setLayoutX(25);
-        mainBuilding.windowContainer.setLayoutY(25);
-        //mainBuilding.windowContainer.getChildren()
-
+        mainBuilding.windowContainer.setLayoutX(15);
+        mainBuilding.windowContainer.setLayoutY(15);
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
                 aTile.render();
-            }
-        }
-
-
-
-
-        System.out.println("You have this many walls: "+this.walls.size());
+        }}
 
         for(double[] line : this.walls){
             System.out.println("Hello world!!!!"+line.toString());
@@ -73,36 +59,22 @@ public class Floor extends MapObject implements Serializable {
             wallLine.setStroke(Color.BLUE);
             wallLine.setStrokeWidth(10);
             mainBuilding.windowContainer.getChildren().add(wallLine);
-
         }
     }
 
 
-    public Tile getTile(int x, int y){
-        return this.floorBlocks[x][y];
-    }
-
+    public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
     public void addEmployee(Actor employee){employees.add(employee);}
-
-    public void addWall(double[] cords){
-        this.walls.add(cords);
-    }
-    public ArrayList<double[]> getWalls(){
-        return this.walls;
-    }
-
-
+    public void addWall(double[] cords){this.walls.add(cords);}
+    public ArrayList<double[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
 
-    //public Pane getFloor() { return this.floor; }
 
     public void renderBlocks(){
         for(Tile[] floor :  floorBlocks){
             for(Tile block : floor){
                 if(block.type != null) { block.type.render(); }
-            }
-        }
-    }
+    }}}
 
 
 
