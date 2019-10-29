@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -32,8 +33,8 @@ public class FXMLSimulationController implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 for(Floor floor : mainBuilding.getFloors()){
-                    for(Actor employee : floor.employees){
-                        employee.setCurrentState(Actor.State.FindRoute);
+                    for(Employee employee : floor.employees){
+                        employee.setCurrentState(Employee.State.FindRoute);
                     }
                 }
                 alarm.setDisable(true);
@@ -43,14 +44,6 @@ public class FXMLSimulationController implements Initializable {
         initAnimation();
     }
 
-    @FXML
-    private void startAlarm(){
-        for(Floor floor : mainBuilding.getFloors()){
-            for(Actor employee : floor.employees){
-                employee.setCurrentState(Actor.State.FindRoute);
-            }
-        }
-    }
 
 
 

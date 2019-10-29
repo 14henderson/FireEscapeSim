@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import fireescapedemo.Tile.BlockType;
 
 public class Floor {
-    public ArrayList<Actor> employees;
+    public ArrayList<Employee> employees;
     public ArrayList<Line> walls;
     private Pane floor;
     private Tile[][] floorBlocks;
@@ -79,7 +79,7 @@ public class Floor {
 
     }
 
-    public void addEmployee(Actor employee) { this.employees.add(employee); }
+    public void addEmployee(Employee employee) { this.employees.add(employee); }
     public void addExit(Exit exit)          { this.exits.add(exit); }
 
 

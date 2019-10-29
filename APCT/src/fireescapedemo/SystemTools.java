@@ -52,7 +52,7 @@ public class SystemTools {
                 nodeX = currentNode.gridX;
                 nodeY = currentNode.gridY;
 
-                for (Tile t : getNeighbors(nodeX, nodeY)) {
+                for (Tile t : getNeighbors(nodeX, nodeY,currentNode)) {
                     newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
                     if(this.openedNodes.contains(t)){continue;}
                     if (newDis < t.getGCost() || !this.unopenedNodes.contains(t)) {
@@ -107,10 +107,9 @@ public class SystemTools {
 
         }
 
-        private ArrayList<Tile> getNeighbors(int nodeX,int nodeY){
+        private ArrayList<Tile> getNeighbors(int nodeX,int nodeY, Tile node){
             ArrayList<Tile> nodesToExplore = new ArrayList<>();
             int i, j, aX, aY, newX, newY, mapLength = this.map.length;
-            Tile node = this.map[nodeX][nodeY];
             boolean[] dirAcess = new boolean[2];
             for(i = -1; i < 2; i++){
                 for(j = -1; j < 2; j++){
