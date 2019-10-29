@@ -56,10 +56,10 @@ public class Actor {
                 for(Point2D p : employee.getPath()){
                     System.out.println(p);
                 }
-                if(employee.getPath() != null){
+                if(employee.getPath().isEmpty() ){
                     employee.exited = true;
                 }
-                else if(!employee.getPath().isEmpty() ){
+                else if(employee.getPath() != null){
                     vel = employee.getPath().remove(0);
                 }
                 employee.setVelocity(vel);
