@@ -1,16 +1,13 @@
 package fireescapedemo;
 
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
 
-import java.awt.*;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 public class SystemTools {
     public AStarPath pathFinder;
@@ -23,12 +20,14 @@ public class SystemTools {
     public class AStarPath{
         private PriorityQueue<Tile> unopenedNodes;
         private PriorityQueue<Tile> openedNodes;
+        private ArrayList<Point2D> velocitys;
         private Tile[][] map;
         private Tile startNode, endNode;
         private int endX,endY;
         public AStarPath(Tile startNode, Tile exitNode, Tile[][] map){
             this.unopenedNodes = new PriorityQueue<>();
             this.openedNodes = new PriorityQueue<>();
+            this.velocitys = new ArrayList<>();
             this.startNode = startNode;
             this.endNode = exitNode;
             this.map = map;
@@ -69,20 +68,31 @@ public class SystemTools {
 
 
             }
+            Point2D point;
             System.out.println("Finished");
             if(this.openedNodes.contains(goal)){
                 int counter = 1;
                 currentNode = goal;
                 boolean test = true;
                 if (test) {
-                    while (currentNode != start) {
+                    do {
+                        int prevX = currentNode.gridX, prevY = currentNode.gridY, proX = currentNode.getPerant().gridX, proY = currentNode.getPerant().gridY,vel =0;
+                        System.out.println("x: " + proX + ", y: " + proY);
+                        if(prevX== proX){
+                            vel = prevY > proY ? 1 : -1;
+                            this.velocitys.add(new Point2D(0,vel));
+                        }else{
+                            vel = prevX > proX ? 1 : -1;
+                            this.velocitys.add(new Point2D(vel,0));
+                        }
                         System.out.println("Count " + counter);
                         System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
                         currentNode.block.setFill(Color.RED);
                         currentNode = currentNode.getPerant();
                         counter++;
-                    }
+                    }while (currentNode != start);
                 }
+                Collections.reverse(this.velocitys);
                 return true;
             }
             return false;
@@ -131,7 +141,7 @@ public class SystemTools {
         }
 
         public PriorityQueue<Tile> getPath(){return this.openedNodes;}
-
+        public ArrayList<Point2D> getVelocities() {return this.velocitys;}
     }
 
 }
