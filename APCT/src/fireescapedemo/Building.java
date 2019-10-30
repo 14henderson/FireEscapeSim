@@ -56,9 +56,16 @@ public class Building extends MapObject implements Serializable {
         return output;
     }
 
+    public void zoom(int zoomValue){
+        this.size += zoomValue;
+        this.getCurrentFloor().zoom(zoomValue);
+    }
+
+
     public int getHeight(){return this.height;}
     public int getWidth(){return this.width;}
     public int getSize(){return this.size;}
+    public void setSize(int newSize){this.size = newSize;}
     public final ArrayList<Floor> getFloors(){return this.floors;}
     public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
     public final int getCurrentFloorIndex() {return this.currentFloor;}

@@ -15,7 +15,7 @@ public class Tile extends MapObject implements Serializable {
     private Actor currentActor;
     public final int[] gridCords = new int[2];
     public final int[] actualCords = new int[2];
-    public final double width, height;
+    public double width, height;
     enum BlockType{
         Office {
             @Override
@@ -67,7 +67,10 @@ public class Tile extends MapObject implements Serializable {
     public BlockType getType(){return this.type;}
     public int[] getActualCords(){return this.actualCords;}
     public int[] getGridCords(){return this.gridCords;}
-
+    public void setActualCords(int x, int y){
+        this.actualCords[0] = x;
+        this.actualCords[1] = y;
+    }
 
     @Override
     public void render(){
@@ -88,6 +91,10 @@ public class Tile extends MapObject implements Serializable {
             b = true;
     }}
 
+    public void zoom(int zoomValue){
+        this.height += (double) zoomValue;
+        this.width += (double) zoomValue;
+    }
 
     //Returns Colour of block depending on a type of block
     public Color getColor(BlockType type){

@@ -37,12 +37,27 @@ public class Floor extends MapObject implements Serializable {
         }}
     }
 
+    public void zoom(int zoomValue){
+        this.size += zoomValue;
+        for(int i = 0; i < this.floorBlocks.length; i ++){
+            for(int j = 0; j< this.floorBlocks[i].length; j++){
+                this.floorBlocks[i][j].setActualCords(i*this.size, j*this.size);
+                this.floorBlocks[i][j].zoom(zoomValue);
+            }}
 
+        double zoomFactor = this.size/20.0;
+        for(double[] line : this.walls) {
+            line[0] *= zoomFactor;
+            line[1] *= zoomFactor;
+            line[2] *= zoomFactor;
+            line[3] *= zoomFactor;
+        }
+        this.render();
+    }
 
     @Override
     public void render(){
         int i,j;
-        double newSize =  size / 2;
         mainBuilding.windowContainer.getChildren().clear();
         mainBuilding.windowContainer.setPrefHeight(500);
         mainBuilding.windowContainer.setPrefWidth(500);
@@ -54,13 +69,16 @@ public class Floor extends MapObject implements Serializable {
         }}
 
         for(double[] line : this.walls){
-            System.out.println("Hello world!!!!"+line.toString());
             Line wallLine = new Line(line[0], line[1], line[2], line[3]);
             wallLine.setStroke(Color.BLUE);
-            wallLine.setStrokeWidth(10);
+            wallLine.setStrokeWidth(10*this.size/50.0);
             mainBuilding.windowContainer.getChildren().add(wallLine);
         }
     }
+
+
+
+
 
 
     public Tile getTile(int x, int y){return this.floorBlocks[x][y];}

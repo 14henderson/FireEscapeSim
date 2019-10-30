@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
@@ -110,11 +111,6 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.increaseFloor();
             mainBuilding.render();
             this.renderLineBlocks();
-            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-           //System.out.println("Wow");
-            //mainBuilding.increaseFloor();
-            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-           // floorNum++;
         }else{
             System.out.println("No next floor");
         }
@@ -127,11 +123,6 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.decreaseFloor();
             mainBuilding.render();
             this.renderLineBlocks();
-           // mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-           // System.out.println("Wow");
-           // mainBuilding.prevFloor();
-           // mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-         //   floorNum--;
         }else{
             System.out.println("No prev floor");
         }
@@ -140,18 +131,7 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void addRoom(){
-        //this.mainPane.getChildren().removeAll();
         mainBuilding.addFloor();
-        //mainBuilding.render();
-        /*
-        for(LineTile[] lineTileRow : this.lineTiles){
-            for(LineTile lineTile : lineTileRow){
-                lineTile.render();
-            }
-        }
-
-         */
-        System.out.println("Floor added");
     }
 
 
@@ -161,16 +141,16 @@ public class FXMLBuildingController implements Initializable {
         });
     }
     public static Tile.BlockType getActionType(){return actionType;}
+
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.manager = new SceneManager();
-
         mainBuilding = manager.getGlobalBuilding();
         if(mainBuilding == null){
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(14,13,50, mapPane);
+            mainBuilding = new Building(30,30,20, mapPane);
         }
-
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
         this.mainBuilding.setWindowContainer(mapPane);
@@ -180,7 +160,6 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding.render();
         wallButton.setOnAction((ActionEvent e) -> {
             this.actionType = Tile.BlockType.Office;
-
             c = Color.GRAY;
         });
         employeeButton.setOnAction((ActionEvent e) -> {
@@ -193,9 +172,25 @@ public class FXMLBuildingController implements Initializable {
         });
         errorText.setText("");
 
+
+        this.mapPane.setOnScroll((ScrollEvent event) -> {
+            if(event.getDeltaY() < 0) {
+                mainBuilding.zoom(-1);
+            }else if(event.getDeltaY() > 0){
+                mainBuilding.zoom(1);
+            }
+            //System.out.println(mainBuilding.getSize());
+            //mainBuilding.render();
+            //renderLineBlocks();
+        });
+
+
+
+
         this.initLineBlocks();
         this.renderLineBlocks();
     }
+
 
     /**
      * Opens the save file dialog to save the serializable building object to be opened in the simulation.
@@ -255,18 +250,6 @@ public class FXMLBuildingController implements Initializable {
         characters.get(0).setVelocityX(1);
     }
 
-    /*
-    public void initFloors(int length, int width, double size){
-        floors = new ArrayList();
-        for(int i = 0; i < size * length; i += size){
-            for(int j = 0; j< size * width; j+= size){
-                floors.add(new Tile(j,i,size));
-            }
-        }
-
-        for(Tile floor : floors){mainPane.getChildren().add(floor.block);}
-    }
-     */
 
 
     public void initAnimation(){
@@ -343,7 +326,7 @@ public class FXMLBuildingController implements Initializable {
         for(i = 0; i < 4; i++){
             a = cords[i] %  mainBuilding.getSize();
             System.out.println("Before: " + cords[i]);
-            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (50 - a);
+            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
             System.out.println("After: " + finalCords[i]);
         }
         return finalCords;
@@ -361,13 +344,13 @@ public class FXMLBuildingController implements Initializable {
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
-                l.setStrokeWidth(10);
+                l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 l.toBack();
                 mainBuilding.windowContainer.getChildren().add(l);
 
-                int x = (int)x1 == 0 ? 0 : (int)cords[0] / 50;
-                int xx = (int)x2 == 0 ? 0 : (int)cords[2] / 50;
-                int y = (int)y1 == 0 ? 0 : (int)cords[1] / 50;
+                int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
+                int xx = (int)x2 == 0 ? 0 : (int)cords[2] / mainBuilding.getSize();
+                int y = (int)y1 == 0 ? 0 : (int)cords[1] / mainBuilding.getSize();
                 int max = x - xx < 0 ? xx : x;
                 int min = x - xx < 0 ? x : xx;
                 System.out.println("Min: " + min + ", Max: " + max);
@@ -387,12 +370,12 @@ public class FXMLBuildingController implements Initializable {
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
-                l.setStrokeWidth(10);
+                l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 l.toBack();
                 mainBuilding.windowContainer.getChildren().add(l);
-                int x = (int)x1 == 0 ? 0 : (int)cords[0] / 50;
-                int y = (int)y1 == 0 ? 0 : (int)cords[1] / 50;
-                int yy = (int)y2 == 0 ? 0 : (int)cords[3] / 50;
+                int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
+                int y = (int)y1 == 0 ? 0 : (int)cords[1] / mainBuilding.getSize();
+                int yy = (int)y2 == 0 ? 0 : (int)cords[3] / mainBuilding.getSize();
                 int max = y - yy < 0 ? yy : y;
                 int min = y - yy < 0 ? y : yy;
                 System.out.println("Min: " + min + ", Max: " + max);
