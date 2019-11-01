@@ -2,27 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="675c6d43-6bd7-4efc-aa90-6ee936120745" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/fireescapedemo/Fire.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/fireescapedemo/Partical.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$1.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$2.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$3.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State$4.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor$State.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Actor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Actor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Actor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Partical.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Partical.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Fire.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Fire.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Partical.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Partical.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -96,7 +83,9 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1572331292314</updated>
-      <workItem from="1572331317920" duration="6245000" />
+      <workItem from="1572331317920" duration="6483000" />
+      <workItem from="1572376762528" duration="4819000" />
+      <workItem from="1572526427695" duration="11978000" />
     </task>
     <servers />
   </component>
@@ -108,7 +97,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>

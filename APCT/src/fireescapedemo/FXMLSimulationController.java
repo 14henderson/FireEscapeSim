@@ -23,9 +23,10 @@ public class FXMLSimulationController implements Initializable {
     Label floorLevel;
 
     Building mainBuilding = new Building();
-
+    Fire p;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        p = new Fire(50,200, new Tile(0,0,0));
         floorLevel.setText("Floor " + mainBuilding.getFloorNum());
         mainPane.getChildren().add(mainBuilding.getCurrentFloor());
         Button alarm = new Button("FIRE ALARM");
@@ -41,6 +42,7 @@ public class FXMLSimulationController implements Initializable {
             }
         });
         assetPane.getChildren().add(alarm);
+        assetPane.getChildren().add(p.view);
         initAnimation();
     }
 
@@ -64,6 +66,7 @@ public class FXMLSimulationController implements Initializable {
                 a.update(floor);
             }
         }
+        p.update(mainBuilding.getFloor(mainBuilding.getFloorNum()));
     }
 
     @FXML

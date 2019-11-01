@@ -16,7 +16,7 @@ import java.util.Random;
 public class Partical extends Actor{
     private Point2D randomVel;
     private boolean expired;
-    private double x ,y;
+    private double x ,y, fade;
     private int r,g,b;
 
 
@@ -39,25 +39,36 @@ public class Partical extends Actor{
         }
         c.setHue(Color.rgb(this.r,this.g,this.b).getHue());
         Random rand = new Random();
-        this.randomVel = new Point2D((double)rand.nextInt(1) - 1, -1);
+        this.randomVel = new Point2D(0, rand.nextInt(4)-4 );
         this.velocity = randomVel;
+        this.fade = ((double)(rand.nextInt(25) + 1)) /100;
         this.expired = false;
     }
 
     @Override
     public void update(Floor floor){
         double opacity = this.view.getOpacity();
-        /*
         if(opacity > 0){
-            this.view.setOpacity(opacity - 0.1);
-            this.x = this.velocity.getX() - 0.1;
-            this.y = this.velocity.getY() + 0.1;
+            this.view.setOpacity(opacity - this.fade);
+            this.x = this.velocity.getX();
+            this.y = this.velocity.getY() - 0.5;
             this.setVelocity(new Point2D(this.x,this.y));
         }else{
             this.expired = true;
-        }*/
+        }
+        this.view.setLayoutX(this.velocity.getX());
+        this.view.setLayoutY(this.velocity.getY());
     }
 
+    public void reset(int y){
+        Random rand = new Random();
+        this.y = y;
+        this.view.setLayoutY(this.y);
+        this.view.setOpacity(1);
+        this.velocity = this.randomVel;
+        this.fade = ((double)(rand.nextInt(25) + 1)) /100;
+        this.expired = false;
+    }
 
     public boolean isExpired(){return this.expired;}
 
