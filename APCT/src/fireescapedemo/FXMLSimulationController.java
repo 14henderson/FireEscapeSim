@@ -70,17 +70,40 @@ public class FXMLSimulationController implements Initializable {
                 alarm.setDisable(true);
             }
         });
+
+        Button reset = new Button("RESET");
+        reset.setLayoutY(30);
+        reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                second = 0;
+                timer.setTextFill(Color.BLACK);
+                for(Floor floor : mainBuilding.getFloors()){
+                    for(Employee employee : floor.employees){
+                        employee.view.setOpacity(0);
+                        employee.view.setLayoutX(employee.oriTile.getGridX());
+                        employee.view.setLayoutY(employee.oriTile.getGridY());
+                        employee.setCurrentState(Employee.State.Idle);
+                        employee.toggleExited();
+                    }
+                }
+                mainBuilding.calculateInitialEmployeeCount();
+                employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+            }
+        });
+
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e-> addSecond())
         );
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timer = new Label("Timer: 0");
+        timer = new Label("Timer: 0s");
         timer.setLayoutX(50);
         timer.setLayoutY(50);
         employeesLeft = new Label("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         employeesLeft.setLayoutX(50);
         employeesLeft.setLayoutY(100);
         assetPane.getChildren().add(alarm);
+        //assetPane.getChildren().add(reset);
         assetPane.getChildren().add(p.view);
         assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
@@ -90,7 +113,7 @@ public class FXMLSimulationController implements Initializable {
     Label timer;
     Label employeesLeft;
     int second = 0;
-    void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second));}
+    void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second) + "s");}
 
 
 

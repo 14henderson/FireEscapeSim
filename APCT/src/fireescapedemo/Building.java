@@ -52,7 +52,6 @@ public class Building extends MapObject implements Serializable {
 
     @Override
     public void rerender(){
-        calculateInitialEmployeeCount();
         this.floors.get(this.currentFloor).rerender();
     }
 

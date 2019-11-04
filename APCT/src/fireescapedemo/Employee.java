@@ -127,7 +127,7 @@ public class Employee extends Actor implements Serializable{
 
     public void setCurrentState(State state){this.currentState = state;}
     public void setPath(ArrayList<Point2D> newPath){this.path = newPath;}
-
+    public void toggleExited(){this.exited = !exited;}
     public boolean hasExited(){return this.exited;}
 
 }
