@@ -3,11 +3,12 @@ package fireescapedemo;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Employee extends Actor {
+public class Employee extends Actor implements Serializable{
     private int counter = 0;
-    private ArrayList<Point2D> path;
+    private transient ArrayList<Point2D> path;
     private boolean findingPath, exited;
     public Tile proTile;
     enum State{
@@ -60,7 +61,8 @@ public class Employee extends Actor {
     }
     private State currentState;
 
-    public Employee(Node view, Tile tile){
+    public Employee(Node view, Tile tile)
+    {
         super (view, tile);
         this.currentState = State.Idle;
         this.findingPath = false;

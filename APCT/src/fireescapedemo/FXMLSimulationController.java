@@ -39,6 +39,13 @@ public class FXMLSimulationController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
+
+        if(mainBuilding == null){
+            System.out.println("Building is null. ERROR");
+            mainBuilding = new Building(14,13,50, mapPane);
+        }
+
+
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
 

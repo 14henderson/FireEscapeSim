@@ -23,7 +23,7 @@ public class Floor {
 
     public class Floor extends MapObject implements Serializable {
     public ArrayList<Employee> employees;
-    public transient Tile[][] floorBlocks;
+    public Tile[][] floorBlocks;
     int height;
     int width;
     int size;

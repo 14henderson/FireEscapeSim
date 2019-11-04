@@ -117,11 +117,6 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.increaseFloor();
             mainBuilding.render();
             this.renderLineBlocks();
-            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-           //System.out.println("Wow");
-            //mainBuilding.increaseFloor();
-            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-           // floorNum++;
         }else{
             System.out.println("No next floor");
         }
@@ -134,11 +129,6 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.decreaseFloor();
             mainBuilding.render();
             this.renderLineBlocks();
-           // mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-           // System.out.println("Wow");
-           // mainBuilding.prevFloor();
-           // mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-         //   floorNum--;
         }else{
             System.out.println("No prev floor");
         }
@@ -147,17 +137,7 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void addRoom(){
-        //this.mainPane.getChildren().removeAll();
         mainBuilding.addFloor();
-        //mainBuilding.render();
-        /*
-        for(LineTile[] lineTileRow : this.lineTiles){
-            for(LineTile lineTile : lineTileRow){
-                lineTile.render();
-            }
-        }
-
-         */
         System.out.println("Floor added");
     }
 
@@ -167,6 +147,8 @@ public class FXMLBuildingController implements Initializable {
             //prefab.update();
         });*/
     }
+
+
     public static Tile.BlockType getActionType(){return actionType;}
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -271,18 +253,6 @@ public class FXMLBuildingController implements Initializable {
         characters.get(0).setVelocityX(1);
     }
 
-    /*
-    public void initFloors(int length, int width, double size){
-        floors = new ArrayList();
-        for(int i = 0; i < size * length; i += size){
-            for(int j = 0; j< size * width; j+= size){
-                floors.add(new Tile(j,i,size));
-            }
-        }
-
-        for(Tile floor : floors){mainPane.getChildren().add(floor.block);}
-    }
-     */
 
 
     public void initAnimation(){

@@ -3,13 +3,12 @@
   <component name="ChangeListManager">
     <list default="true" id="40c28104-ef9f-4a34-8eae-81a1ad759631" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Building.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Exit.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Exit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +74,9 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
           </value>
         </entry>
       </map>
@@ -86,7 +87,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java</url>
-          <line>105</line>
+          <line>149</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
       </breakpoints>

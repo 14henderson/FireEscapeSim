@@ -2,8 +2,10 @@ package fireescapedemo;
 
 import javafx.scene.shape.Rectangle;
 
-public class Exit {
-    public final Rectangle VIEW;
+import java.io.Serializable;
+
+public class Exit implements Serializable {
+    public final transient Rectangle VIEW;
     public final Tile position;
     public Exit(Rectangle r, Tile position) {this.VIEW = r; this.position = position;}
 
