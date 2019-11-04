@@ -28,9 +28,9 @@ public class SystemTools {
             this.unopenedNodes = new PriorityQueue<>();
             this.openedNodes = new PriorityQueue<>();
             this.velocitys = new ArrayList<>();
-            this.startNode = startNode;
-            this.endNode = exitNode;
             this.map = map;
+            this.startNode = this.map[startNode.getGridX()][startNode.getGridY()];
+            this.endNode = this.map[exitNode.getGridX()][exitNode.getGridY()];
             this.endX = endNode.getActualCords()[0];
             this.endY = endNode.getActualCords()[1];
         }
@@ -41,7 +41,7 @@ public class SystemTools {
             Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
                     goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
             this.unopenedNodes.add(start);
-
+            System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
             while (this.unopenedNodes.size() != 0) {
 
                 System.out.println("Size: " + this.openedNodes.size());

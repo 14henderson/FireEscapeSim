@@ -185,8 +185,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.parent = null;
         idCount++;
         this.walls = new boolean[4];
-        for(Boolean b : this.walls){
-            b = true;
+        int i;
+        for(i = 0; i < this.walls.length; i++){
+            this.walls[i] = true;
         }
         this.rerender();
     }

@@ -21,6 +21,7 @@ public class Building extends MapObject implements Serializable {
     private int height;
     private int width;
     private int size;
+    private int initialEmployeeCount;
     private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
 
@@ -42,16 +43,30 @@ public class Building extends MapObject implements Serializable {
              size = floorSize;
              floors.add(new Floor(floorHeight,floorWidth,floorSize));
              currentFloor = 0;
+             this.initialEmployeeCount = 0;
         }
     }
 
     @Override
-    public void render(){
-        this.floors.get(this.currentFloor).render();
-    }
+    public void render(){this.floors.get(this.currentFloor).render();}
 
     @Override
-    public void rerender(){this.floors.get(this.currentFloor).rerender();}
+    public void rerender(){
+        calculateInitialEmployeeCount();
+        this.floors.get(this.currentFloor).rerender();
+    }
+
+    public void calculateInitialEmployeeCount(){
+        this.initialEmployeeCount = 0;
+        for(Floor floor : this.floors){
+            for(Employee employee : floor.employees){
+                if(!employee.hasExited()){
+                    this.initialEmployeeCount++;
+                }
+            }
+        }
+    }
+
             /*
     public final ArrayList<Floor> getFloors(){return floors;}
     public final Pane getCurrentFloor(){ return  floors.get( currentFloor).getFloor(); }
@@ -84,6 +99,7 @@ public class Building extends MapObject implements Serializable {
     public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
     public final int getCurrentFloorIndex() {return this.currentFloor;}
     public int getTotalFloors(){return this.floors.size();}
+    public int getInitialEmployeeCount(){return this.initialEmployeeCount; }
     public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
     public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
     public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}

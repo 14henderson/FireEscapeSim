@@ -297,63 +297,6 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    class Employee extends Actor{
-        int speed;
-        boolean foundSteps;
-        Tile currentFloor;
-        Employee(Node view, Tile startingFloor){
-            super(view);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-        }
-        /*
-        Employee(Node view, Point2D vector, Tile startingFloor){
-            super(view,vector);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-        }
-         */
-        @Override
-        public void update(){
-
-        }
-
-
-
-        /*
-        @Override
-        public void update(){
-            if(this.foundSteps == false){
-                double width = ((Rectangle)(this.view)).getWidth();
-                double fWidth = this.currentFloor.getWidth();
-                if(this.view.getLayoutX() >= fWidth - width){
-                    this.setVelocityX(-1);
-                    this.speed = -speed;
-                }else if(this.view.getLayoutX() <= this.currentFloor.getLayoutX()){
-                    this.setVelocityX(1);
-                    this.speed = -speed;
-                }
-            }
-
-            //compute gravity
-            if(applyGravity())  { this.setVelocityY(3); }
-            else                { this.setVelocityY(0); }
-
-            this.view.setLayoutX(this.view.getLayoutX() +  velocity.getX() + speed);
-            this.view.setLayoutY(this.view.getLayoutY() +  velocity.getY());
-        }
-         */
-
-
-
-        public int getSpeed(){
-            return this.speed;
-        }
-    }
 
     public static final double[] normaliseCords(double cords[]){
         int i;

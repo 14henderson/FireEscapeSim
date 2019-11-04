@@ -109,6 +109,7 @@ public class Floor {
     }
 
     public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
+
     //public void addEmployee(Employee employee){employees.add(employee);}
     public void addWall(double[] cords){this.walls.add(cords);}
     public ArrayList<double[]> getWalls(){return this.walls;}

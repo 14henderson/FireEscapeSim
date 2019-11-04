@@ -112,15 +112,20 @@ public class Employee extends Actor {
                     break;
                 }
             }
-        }
+
         this.view.setLayoutX(view.getLayoutX() + velocity.getX());
         this.view.setLayoutY(view.getLayoutY() + velocity.getY());
         counter++;
+        }else{
+            this.view.setOpacity(0);
+        }
     }
 
     public ArrayList<Point2D> getPath(){return this.path;}
 
     public void setCurrentState(State state){this.currentState = state;}
     public void setPath(ArrayList<Point2D> newPath){this.path = newPath;}
+
+    public boolean hasExited(){return this.exited;}
 
 }
