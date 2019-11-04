@@ -13,14 +13,14 @@ import javafx.scene.shape.Rectangle;
 import java.net.URISyntaxException;
 import java.util.Random;
 
-public class Partical extends Actor{
+public class Particle extends Actor{
     private Point2D randomVel;
     private boolean expired;
     private double x ,y, fade;
     private int r,g,b;
 
 
-    public Partical(Rectangle rec, Tile tile) {
+    public Particle(Rectangle rec, Tile tile) {
         super(rec, tile);
         this.r = 255; this.g = 255; this.b = 0;
         ColorAdjust c = new ColorAdjust();
@@ -45,7 +45,7 @@ public class Partical extends Actor{
         this.expired = false;
     }
 
-    @Override
+    //@Override
     public void update(Floor floor){
         double opacity = this.view.getOpacity();
         if(opacity > 0){

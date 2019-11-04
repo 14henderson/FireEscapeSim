@@ -11,34 +11,55 @@ import javafx.scene.Node;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.io.Serializable;
 
-/**
- *
- * @author Leem
- */
-public class Actor {
-    Point2D velocity;
-    Node view;public
-    Tile oriTile;
+
+
+
+
+public class Actor extends MapObject implements Serializable {
+    protected transient Point2D velocity;
+    protected transient Node view;
     boolean swap;
+    //final int id;
+    private static int idCounter = 0;
+    public transient Tile oriTile;
 
-    public Actor(Node view, Tile tile){
+    @Override
+    public void render(){
+
+    }
+    @Override
+    public void rerender(){
+
+    }
+
+    public Actor(Node view){
+
         this.view = view;
-        this.oriTile = tile;
+        //this.oriTile;// = tile;
         this.velocity = new Point2D(0,0);
         this.swap = false;
-    } 
-    
+    }
+
+    public Actor(Node view, Tile t){
+        this.view = view;
+        this.oriTile = t;
+        this.velocity = new Point2D(0,0);
+        this.swap = false;
+    }
+
     public Actor(Node view, Tile tile, Point2D vector){
         this.view = view;
         this.oriTile = tile;
         this.velocity = vector;
         this.swap = false;
     } 
-    public int counter = 0;
-    public void update(Floor floor){
-        this.view.setLayoutX(view.getLayoutX() + velocity.getX());
-        this.view.setLayoutY(view.getLayoutY() + velocity.getY());
+
+    
+    public void update(){
+        this.view.setTranslateX(view.getTranslateX() + velocity.getX());
+        this.view.setTranslateY(view.getTranslateY() + velocity.getY());
     }
     
     public Node getView(){return this.view;}

@@ -31,15 +31,15 @@ public class SystemTools {
             this.startNode = startNode;
             this.endNode = exitNode;
             this.map = map;
-            this.endX = endNode.gridX;
-            this.endY = endNode.gridY;
+            this.endX = endNode.getActualCords()[0];
+            this.endY = endNode.getActualCords()[1];
         }
 
         public boolean findPath() {
             int nodeX, nodeY;
             double newDis;
-            Tile currentNode = null, start = this.map[this.startNode.gridX][this.startNode.gridY],
-                    goal = this.map[this.endNode.gridX][this.endNode.gridY];
+            Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
+                    goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
             this.unopenedNodes.add(start);
 
             while (this.unopenedNodes.size() != 0) {
@@ -49,8 +49,8 @@ public class SystemTools {
                 currentNode = this.unopenedNodes.poll();
                 this.openedNodes.add(currentNode);
                 if(currentNode == goal){break;}
-                nodeX = currentNode.gridX;
-                nodeY = currentNode.gridY;
+                nodeX = currentNode.getGridX();
+                nodeY = currentNode.getGridY();;
 
                 for (Tile t : getNeighbors(nodeX, nodeY,currentNode)) {
                     newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
@@ -59,7 +59,7 @@ public class SystemTools {
                         t.setGCost(newDis);
                         t.setHCost(calculateDistance(t, goal));
                         t.calculateFCost();
-                        t.setPerant(currentNode);
+                        t.setParent(currentNode);
                         if (!this.unopenedNodes.contains(t)) {
                             this.unopenedNodes.add(t);
                         }
@@ -76,7 +76,8 @@ public class SystemTools {
                 boolean test = true;
                 if (test) {
                     do {
-                        int prevX = currentNode.gridX, prevY = currentNode.gridY, proX = currentNode.getPerant().gridX, proY = currentNode.getPerant().gridY,vel =0;
+                        int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
+                                currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1],vel =0;
                         System.out.println("x: " + proX + ", y: " + proY);
                         if(prevX== proX){
                             vel = prevY > proY ? 1 : -1;
@@ -86,9 +87,10 @@ public class SystemTools {
                             this.velocitys.add(new Point2D(vel,0));
                         }
                         System.out.println("Count " + counter);
-                        System.out.println("x: " + currentNode.gridX + ", y: " + currentNode.gridY);
-                        currentNode.block.setFill(Color.RED);
-                        currentNode = currentNode.getPerant();
+                        System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
+                        //currentNode.block.setFill(Color.RED);
+                        //currentNode.setType(Tile.BlockType.Path);
+                        currentNode = currentNode.getParent();
                         counter++;
                     }while (currentNode != start);
                 }
@@ -100,8 +102,8 @@ public class SystemTools {
 
 
         private int calculateDistance(Tile a, Tile b){
-            int maxX = Math.abs(a.gridX - b.gridX);
-            int maxY = Math.abs(a.gridY - b.gridY);
+            int maxX = Math.abs(a.getActualCords()[0] - b.getActualCords()[0]);
+            int maxY = Math.abs(a.getActualCords()[1] - b.getActualCords()[1]);
             if(maxY < maxX)return 14 * maxY + 10 * (maxX - maxY);
             return 14 * maxX + 10 * (maxY - maxX);
 

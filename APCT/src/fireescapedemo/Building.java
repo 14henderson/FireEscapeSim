@@ -15,34 +15,44 @@ import javafx.scene.shape.Rectangle;
 
 
 
-public class Building extends Component implements Serializable {
-    private static ArrayList<Floor> floors;
-    private static int currentFloor;
-    private static int height;
-    private static int width;
-    private static int size;
+public class Building extends MapObject implements Serializable {
+    private ArrayList<Floor> floors;
+    private int currentFloor;
+    private int height;
+    private int width;
+    private int size;
+    private static final long serialVersionUID = 12345;
+    public static transient Pane windowContainer;
 
     public Building(){
+        System.out.println("In constructor ");
+        this.mainBuilding = this;
         if(floors == null){
             throw new RuntimeException();
         }
     }
 
-    public Building(int heigh, int widt, int siz){
+    public Building(int floorHeight, int floorWidth, int floorSize, Pane windowContainerParent){
+        this.mainBuilding = this;
+        this.windowContainer = windowContainerParent;
         if ( floors == null){
              floors = new ArrayList();
-             height = heigh;
-             width = widt;
-             size = siz;
-             floors.add(new Floor(heigh,widt,siz));
+             height = floorHeight;
+             width = floorWidth;
+             size = floorSize;
+             floors.add(new Floor(floorHeight,floorWidth,floorSize));
              currentFloor = 0;
         }
     }
 
-    public final void addFloor(){
-        floors.add(new Floor(height,width,size));
+    @Override
+    public void render(){
+        this.floors.get(this.currentFloor).render();
     }
 
+    @Override
+    public void rerender(){this.floors.get(this.currentFloor).rerender();}
+            /*
     public final ArrayList<Floor> getFloors(){return floors;}
     public final Pane getCurrentFloor(){ return  floors.get( currentFloor).getFloor(); }
     public final Pane getFloorPane(int index){return floors.get(index).getFloor(); }
@@ -58,22 +68,50 @@ public class Building extends Component implements Serializable {
              currentFloor += 1;
         }
         return  floors.get( currentFloor).getFloor();
+
+             */
+    @Override
+    public String toString(){
+        String output = "";
+        output += ("Num Floors:"+this.getTotalFloors()+"\n");
+        return output;
     }
-    public Pane prevFloor() {
-        if(hasPrevFloor()){
-             currentFloor -= 1;
-        }
-        return  floors.get( currentFloor).getFloor();
+
+    public int getHeight(){return this.height;}
+    public int getWidth(){return this.width;}
+    public int getSize(){return this.size;}
+    public final ArrayList<Floor> getFloors(){return this.floors;}
+    public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
+    public final int getCurrentFloorIndex() {return this.currentFloor;}
+    public int getTotalFloors(){return this.floors.size();}
+    public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
+    public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
+    public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
+    public void setCurrentFloor(int floor){this.currentFloor = floor;}
+
+    public Floor increaseFloor() {
+        if(hasNextFloor()){currentFloor += 1;}
+        return  floors.get( currentFloor);
     }
-    
+    public Floor decreaseFloor() {
+        if(hasPrevFloor()){currentFloor -= 1;}
+        return  floors.get( currentFloor);
+    }
+
+    /*
     public void renderBlocks(){
         int index = 0;
         for(Floor floor : floors){ floor.renderBlocks(index); index++;}
 
-    }
+    }*/
 
+    public final void addFloor() {
+        Floor newFloor = new Floor(this.height, this.width, this.size);
+        this.floors.add(newFloor);
+    }
 
 
 
 
 }
+

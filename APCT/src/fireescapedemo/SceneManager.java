@@ -11,10 +11,27 @@ import java.util.HashMap;
 public class SceneManager {
     static private HashMap<String, String> scenes = new HashMap<>();
     static private Stage rootStage;
+    static private boolean buildingSet;
+    static public Building globalBuilding;
 
     public SceneManager(Stage mainStage){
         this.rootStage = mainStage;
     }
+    public void setGlobalBuilding(Building b){
+        this.rootStage.setUserData(b);
+        this.buildingSet = true;
+    }
+    public Building getGlobalBuilding(){
+        if(!this.buildingSet) {
+            return null;
+        }
+        Building tmp = (Building) this.rootStage.getUserData();
+        this.buildingSet = false;
+        return tmp;
+
+    }
+
+
 
     public SceneManager() throws RuntimeException{
         if(this.rootStage == null){

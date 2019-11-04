@@ -21,18 +21,31 @@ public class FXMLSimulationController implements Initializable {
     Pane assetPane;
     @FXML
     Label floorLevel;
+    @FXML
+    Pane mapPane;
 
-    Building mainBuilding = new Building();
+    public Building mainBuilding;// = new Building();
     Fire p;
+    SceneManager manager;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        p = new Fire(50,200, new Tile(0,0,0));
-        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
-        mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+        this.manager = new SceneManager();
+        this.mainBuilding = manager.getGlobalBuilding();
+        mainBuilding.setWindowContainer(mapPane);
+        mainBuilding.disableBuild();
+
+        p = new Fire(50,200, new Tile(0,0, 0, 0, 0));
+        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
+        mainBuilding.rerender();
+
+        //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
         Button alarm = new Button("FIRE ALARM");
+
+
         alarm.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
+                System.out.println("in alarm handler");
                 for(Floor floor : mainBuilding.getFloors()){
                     for(Employee employee : floor.employees){
                         employee.setCurrentState(Employee.State.FindRoute);
@@ -55,44 +68,47 @@ public class FXMLSimulationController implements Initializable {
             public void handle(long now) {
                 onUpdate();
             }
-
         };
         t.start();
     }
 
     private void onUpdate() {
         for(Floor floor : mainBuilding.getFloors()){
-            for(Actor a : floor.employees){
+            for(Employee a : floor.employees){
                 a.update(floor);
             }
         }
-        p.update(mainBuilding.getFloor(mainBuilding.getFloorNum()));
+        p.update(mainBuilding.getCurrentFloor());
     }
 
     @FXML
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
-            mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            System.out.println("Wow");
-            mainBuilding.nextFloor();
-            mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+            mainBuilding.increaseFloor();
+            mainBuilding.render();
+            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
+            //System.out.println("Wow");
+
+            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
         }else{
             System.out.println("No next floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
+        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
     @FXML
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
-            mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            System.out.println("Wow");
-            mainBuilding.prevFloor();
-            mainPane.getChildren().add(mainBuilding.getCurrentFloor());
+            mainBuilding.increaseFloor();
+            mainBuilding.render();
+            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
+            //System.out.println("Wow");
+            //mainBuilding.prevFloor();
+            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
         }else{
             System.out.println("No prev floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.getFloorNum());
+        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
 

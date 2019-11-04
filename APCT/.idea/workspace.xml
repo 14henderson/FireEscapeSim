@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="8c2d4941-ad3b-482d-9bb3-2234ade80e62" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
+    <list default="true" id="40c28104-ef9f-4a34-8eae-81a1ad759631" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
-  <component name="ProjectId" id="1T4Vy0OEWqSX3zx4HJC2N3kAiRA" />
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -27,15 +20,9 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="FireEscapeDemo" type="Application" factoryName="Application" nameIsGenerated="true">
+    <configuration name="Run" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="fireescapedemo.FireEscapeDemo" />
       <module name="APCT" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="Application" factoryName="Application">
-      <option name="MAIN_CLASS_NAME" value="fireescapedemo.FireEscapeDemo" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -45,26 +32,6 @@
     <configuration />
   </component>
   <component name="TaskManager">
-    <task active="true" id="Default" summary="Default task">
-      <changelist id="8c2d4941-ad3b-482d-9bb3-2234ade80e62" name="Default Changelist" comment="" />
-      <created>1572707082713</created>
-      <option name="number" value="Default" />
-      <option name="presentableId" value="Default" />
-      <updated>1572707082713</updated>
-    </task>
     <servers />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
-          </value>
-        </entry>
-      </map>
-    </option>
   </component>
 </project>

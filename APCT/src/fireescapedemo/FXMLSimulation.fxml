@@ -20,5 +20,6 @@
             </children>
         </Pane>
     </children>
+    <Pane fx:id="mapPane" layoutX="0" layoutY="0" prefHeight="727.0" prefWidth="652.0" />
 </AnchorPane>
 

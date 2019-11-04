@@ -77,7 +77,6 @@ public class Employee extends Actor {
     }
 
 
-    @Override
     public void update(Floor floor){
         if(!this.exited){
             switch(this.currentState){
