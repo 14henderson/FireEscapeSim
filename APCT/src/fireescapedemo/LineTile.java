@@ -39,4 +39,5 @@ public class LineTile{
         this.mainBuilding.windowContainer.getChildren().add(this.lineTileRect);
         this.lineTileRect.toFront();
     }
+    public Rectangle getLineTileRect(){return this.lineTileRect;}
 }

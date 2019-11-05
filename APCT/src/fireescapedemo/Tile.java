@@ -120,12 +120,13 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
-                mainBuilding.getCurrentFloor().addEmployee(new Employee(c,tile));
+                Employee e = new Employee(c,tile);
+                mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);
                 System.out.println("HEERREEE");
+                tile.setActor(e);
 
-
-
+/*
 
 
                 c = new Circle(10);
@@ -143,7 +144,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 mainBuilding.windowContainer.getChildren().add(c);
                 System.out.println(mainBuilding.getFloors().get(index).employees.size());
                 System.out.println("Oh oh and I, I am an employee");
-
+                */
             }
         };
         
@@ -206,7 +207,10 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void initialiseView(){
         try{
             this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
-        } catch(Exception e){}
+            this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.view);
+        } catch(Exception e){
+            //System.out.println(e.toString());
+        }
         this.type.initialiseView(0, this);
 
 
@@ -215,7 +219,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.type = FXMLBuildingController.getActionType();
                 this.fxRef.setFill(this.getColor(this.type));
                 this.fxRef.setOpacity(0.5);
-                this.initialiseView();}
+                this.initialiseView();
+                FXMLBuildingController.refreshLineTiles();
+            }
         });
 
     }
@@ -268,21 +274,13 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     }
 
     public boolean containsActor(){return this.currentActor != null;}
-
+    public void setActor(Actor a){this.currentActor = a;}
 
     public void setParent(Tile t) {this.parent = t;}
     public void setGCost(double i) {this.gCost = i;}
     public void setHCost(double i) {this.hCost = i;}
     //public void setColor(Color c){this.color = c;}
     public void setType(BlockType t){this.type = t;}
-
-    public boolean setActor(Actor a){
-        if(canEdit && this.containsActor()){
-            this.currentActor = a;
-            return true;
-        }
-        return false;
-    }
 
 
     public final int getId(){return this.id;}
