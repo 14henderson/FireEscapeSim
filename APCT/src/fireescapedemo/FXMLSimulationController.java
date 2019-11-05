@@ -51,7 +51,7 @@ public class FXMLSimulationController implements Initializable {
 
         p = new Fire(50,200, new Tile(0,0, 0, 0, 0));
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
-        mainBuilding.rerender();
+        mainBuilding.initialiseView();
 
         //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
         Button alarm = new Button("FIRE ALARM");
@@ -146,7 +146,7 @@ public class FXMLSimulationController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
 
@@ -161,7 +161,7 @@ public class FXMLSimulationController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
             //mainBuilding.prevFloor();

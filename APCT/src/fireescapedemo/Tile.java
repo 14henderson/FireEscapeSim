@@ -43,7 +43,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     enum BlockType{
         Exit {
             @Override
-            public void render(int index,Tile tile) {
+            public void initialiseView(int index,Tile tile) {
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
@@ -66,7 +66,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         },
         Stairs {
             @Override
-            public void render(int index,Tile tile) {
+            public void initialiseView(int index,Tile tile) {
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
@@ -76,7 +76,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         },
         Path {
             @Override
-            public void render(int index,Tile tile) {
+            public void initialiseView(int index,Tile tile) {
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
                 tile.fxRef.setStroke(Color.RED);
                 tile.fxRef.setFill(tile.getColor(tile.type));
@@ -86,7 +86,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         },
         Default {
             @Override
-            public void render(int index, Tile tile) {
+            public void initialiseView(int index, Tile tile) {
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
@@ -96,7 +96,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         },
         Employee {
             @Override
-            public void render(int index,Tile tile) {
+            public void initialiseView(int index,Tile tile) {
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
@@ -147,7 +147,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             }
         };
         
-        public abstract void render(int index,Tile tile);
+        public abstract void initialiseView(int index,Tile tile);
 
     }
     public BlockType type;
@@ -190,7 +190,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         for(i = 0; i < this.walls.length; i++){
             this.walls[i] = true;
         }
-        this.rerender();
+        this.initialiseView();
     }
 
 
@@ -203,11 +203,11 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public int getGridY(){return this.gridCords[1];}
 
     @Override
-    public void rerender(){
+    public void initialiseView(){
         try{
             this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
         } catch(Exception e){}
-        this.type.render(0, this);
+        this.type.initialiseView(0, this);
 
 
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
@@ -215,16 +215,16 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.type = FXMLBuildingController.getActionType();
                 this.fxRef.setFill(this.getColor(this.type));
                 this.fxRef.setOpacity(0.5);
-                this.rerender();}
+                this.initialiseView();}
         });
 
     }
 
 
     @Override
-    public void render(){
+    public void updateView(){
         if(this.fxRef == null){
-            this.rerender();
+            this.initialiseView();
         }
         this.fxRef.setFill(this.getColor(this.type));
         this.fxRef.toFront();

@@ -14,10 +14,10 @@ public abstract class MapObject {
 
 
     //Using already created javafx Node objects
-    public abstract void render();
+    public abstract void updateView();
 
     //Re-instantiates the javafx Node object
-    public abstract void rerender();
+    public abstract void initialiseView();
 
     public static void enableBuild() {canEdit = true;}
     public static void disableBuild() {canEdit = false;}

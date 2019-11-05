@@ -109,7 +109,7 @@ public class FXMLBuildingController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             this.renderLineBlocks();
         }else{
             System.out.println("No next floor");
@@ -121,7 +121,7 @@ public class FXMLBuildingController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.decreaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             this.renderLineBlocks();
         }else{
             System.out.println("No prev floor");
@@ -132,7 +132,7 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private void addRoom(){
         mainBuilding.addFloor();
-        System.out.println("Floor added");
+        this.nextRoom();
     }
 
 
@@ -161,7 +161,7 @@ public class FXMLBuildingController implements Initializable {
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
 
-        mainBuilding.rerender();
+        mainBuilding.initialiseView();
         exitButton.setOnAction((ActionEvent e) -> {
             this.actionType = Tile.BlockType.Exit;
             c = Color.GRAY;

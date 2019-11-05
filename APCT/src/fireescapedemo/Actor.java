@@ -26,11 +26,11 @@ public class Actor extends MapObject implements Serializable {
     public transient Tile oriTile;
 
     @Override
-    public void render(){
+    public void updateView(){
 
     }
     @Override
-    public void rerender(){
+    public void initialiseView(){
 
     }
 

@@ -48,12 +48,12 @@ public class Building extends MapObject implements Serializable {
     }
 
     @Override
-    public void render(){this.floors.get(this.currentFloor).render();}
+    public void updateView(){this.floors.get(this.currentFloor).updateView();}
 
     @Override
-    public void rerender(){
+    public void initialiseView(){
         this.mainBuilding = this;
-        this.floors.get(this.currentFloor).rerender();
+        this.floors.get(this.currentFloor).initialiseView();
     }
 
     public void calculateInitialEmployeeCount(){

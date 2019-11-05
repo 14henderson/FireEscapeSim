@@ -60,14 +60,14 @@ public class Floor {
 
 
     @Override
-    public void render(){
+    public void updateView(){
         if(this.wallsNodes.size() != this.walls.size()){
-            this.rerender();
+            this.initialiseView();
         }
 
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
-                aTile.render();
+                aTile.updateView();
         }}
 
         for(int n=0; n<this.walls.size(); n++){
@@ -81,7 +81,7 @@ public class Floor {
 
 
     @Override
-    public void rerender(){
+    public void initialiseView(){
         this.wallsNodes = new ArrayList<>();
         try{this.exits.clear();}catch(Exception e){}
         try{this.employees.clear();}catch(Exception e){}
@@ -93,7 +93,7 @@ public class Floor {
         mainBuilding.windowContainer.setLayoutY(15);
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
-                aTile.rerender();
+                aTile.initialiseView();
         }}
         for(double[] line : this.walls){
             Line wallLine = new Line(line[0], line[1], line[2], line[3]);
