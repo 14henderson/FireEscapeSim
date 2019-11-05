@@ -123,6 +123,19 @@ public class Employee extends Actor implements Serializable{
         }
     }
 
+
+
+    @Override
+    public String toString(){
+        String a = "Length of path: "+this.path.size()+"\n";
+        String b = "Finding path:"+this.findingPath+" Excited: "+this.exited+"\n";
+        String c = "Tile Details: "+this.oriTile.toString()+"\n";
+        String d = "Vel: "+this.velocity.toString()+"\n";
+        return a+b+c+d;
+    }
+
+
+
     public ArrayList<Point2D> getPath(){return this.path;}
 
     public void setCurrentState(State state){this.currentState = state;}

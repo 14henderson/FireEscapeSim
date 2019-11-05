@@ -52,6 +52,7 @@ public class Building extends MapObject implements Serializable {
 
     @Override
     public void rerender(){
+        this.mainBuilding = this;
         this.floors.get(this.currentFloor).rerender();
     }
 

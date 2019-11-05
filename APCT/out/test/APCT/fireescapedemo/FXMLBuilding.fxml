@@ -31,16 +31,16 @@
                <font>
                   <Font size="15.0" />
                </font></Label>
-                <Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" />
+                <!--Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" /-->
 
             <Button fx:id="exitButton" layoutX="139.0" layoutY="164.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Exit" />
             <Button fx:id="stairsButton" layoutX="140.0" layoutY="198.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
             <Button fx:id="employeeButton" layoutX="140.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
                 <Pane layoutX="6.0" layoutY="681.0" />
                 <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
-                <Button fx:id="saveButton" layoutX="41.0" layoutY="669.0" mnemonicParsing="false" onAction="#saveBuilding" prefHeight="25.0" prefWidth="133.0" text="Save &amp; return home" />
-                <Button fx:id="cancelButton" layoutX="41.0" layoutY="702.0" mnemonicParsing="false" onAction="#saveToSim" text="Save &amp; run simulation" />
-                <Button fx:id="saveToSim" layoutX="41.0" layoutY="637.0" mnemonicParsing="false" onAction="#cancelBuilding" text="Cancel &amp; return home" />
+                <Button fx:id="saveButton" layoutX="41.0" layoutY="669.0" mnemonicParsing="false" onAction="#saveToHome" prefHeight="25.0" prefWidth="133.0" text="Save &amp; return home" />
+                <Button fx:id="saveToSim" layoutX="41.0" layoutY="702.0" mnemonicParsing="false" onAction="#saveToSim" text="Save &amp; run simulation" />
+                <Button fx:id="cancelButton" layoutX="41.0" layoutY="637.0" mnemonicParsing="false" onAction="#cancelToHome" text="Cancel &amp; return home" />
             <Label layoutY="168.0" text="Place a wall between tiles" />
             <Text layoutX="-1.0" layoutY="207.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Place stairs for access between floors" wrappingWidth="149.427734375" />
             <Text layoutX="-1.0" layoutY="252.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Place persons on tiles" wrappingWidth="149.427734375" />

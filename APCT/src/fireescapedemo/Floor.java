@@ -32,7 +32,7 @@ public class Floor {
     ArrayList<Exit> exits;
     Rectangle lastRec = null;
     private ArrayList<double[]> walls;
-    private ArrayList<Line> wallsNodes;
+    private transient ArrayList<Line> wallsNodes;
 
 
 
@@ -82,7 +82,10 @@ public class Floor {
 
     @Override
     public void rerender(){
-        this.wallsNodes.clear();
+        this.wallsNodes = new ArrayList<>();
+        try{this.exits.clear();}catch(Exception e){}
+        try{this.employees.clear();}catch(Exception e){}
+
         mainBuilding.windowContainer.getChildren().clear();
         mainBuilding.windowContainer.setPrefHeight(500);
         mainBuilding.windowContainer.setPrefWidth(500);
@@ -99,6 +102,10 @@ public class Floor {
             wallLine.setStrokeWidth(10);
             mainBuilding.windowContainer.getChildren().add(wallLine);
         }
+
+        for(Employee e : this.employees){
+            e.view.toFront();
+        }
     }
 
 
@@ -107,10 +114,7 @@ public class Floor {
     public final Tile getTestFirstExit(){
         return this.exits.isEmpty() ? null : this.exits.get(0).position;
     }
-
     public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
-
-    //public void addEmployee(Employee employee){employees.add(employee);}
     public void addWall(double[] cords){this.walls.add(cords);}
     public ArrayList<double[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}

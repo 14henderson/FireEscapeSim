@@ -72,13 +72,7 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void renderBlocks() throws IOException {
-        //mainBuilding.renderBlocks();
-        //manager.addScene("FXMLSimulation.fxml", "simulation");
-        Tile.disableBuild();
-        manager.setGlobalBuilding(this.mainBuilding);
-        manager.showScene("simulation");
 
-        //mainBuilding.render();
     }
 
     public static void refreshLineTiles(){
@@ -190,49 +184,25 @@ public class FXMLBuildingController implements Initializable {
      * Opens the save file dialog to save the serializable building object to be opened in the simulation.
      * @throws IOException
      */
-    public void saveBuilding() throws IOException {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Save Copy of Graphs");
-        fileChooser.setFileFilter(new FileNameExtensionFilter("map files (*.map)","map"));
-        fileChooser.setSelectedFile(new File("my_building.map"));
-
-        //If save window has been closed after successfully pressing save
-        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
-            String filename = fileChooser.getSelectedFile().getPath();
-            try{
-                //Building object is serializable which allows the saving of the object.
-                java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
-                ObjectOutputStream out = new ObjectOutputStream(fos);
-                System.out.println("Walls from Save function: "+mainBuilding.getCurrentFloor().getWalls().size());
-                out.writeObject(mainBuilding);
-                out.close();
-                fos.close();
-                System.out.println("Current Building Object"+this.mainBuilding.toString());
-
-                this.mainBuilding = null;
-                this.manager.showScene("home");
-            }catch(IOException ex){
-                errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");
-                System.out.println("Serializable Error thrown: "+ex);
-            }
+    public void saveToHome() throws IOException {
+        if(saveMap()){
+            this.mainBuilding = null;
+            this.manager.setGlobalBuilding(null);
+            this.manager.showScene("home");
         }
     }
 
-    public void cancelBuilding() throws IOException {
+    public void cancelToHome() throws IOException {
+        this.mainBuilding = null;
         this.manager.setGlobalBuilding(null);
         this.manager.showScene("home");
     }
 
     public void saveToSim() throws IOException{
-            Tile.disableBuild();
-            /*
-            mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            System.out.println("render done");
-            mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-            System.out.println("test");
-
-             */
+        if(saveMap()){
+            manager.setGlobalBuilding(this.mainBuilding);
             manager.showScene("simulation");
+        }
     }
 
     public void initTestLabel(){
@@ -281,6 +251,33 @@ public class FXMLBuildingController implements Initializable {
         return finalCords;
     }
 
+    public boolean saveMap(){
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Copy of Graphs");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("map files (*.map)","map"));
+        fileChooser.setSelectedFile(new File("my_building.map"));
+
+        //If save window has been closed after successfully pressing save
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().getPath();
+            try{
+                //Building object is serializable which allows the saving of the object.
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
+                ObjectOutputStream out = new ObjectOutputStream(fos);
+                System.out.println("Walls from Save function: "+mainBuilding.getCurrentFloor().getWalls().size());
+                out.writeObject(mainBuilding);
+                out.close();
+                fos.close();
+                System.out.println("Current Building Object"+this.mainBuilding.toString());
+                return true;
+            }catch(IOException ex){
+                errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");
+                System.out.println("Serializable Error thrown: "+ex);
+                return false;
+            }
+        }
+        return false;
+    }
 
     @FXML
     public static void setLineClicked(MouseEvent event){

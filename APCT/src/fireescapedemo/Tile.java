@@ -60,6 +60,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println(ex);
                 }
                 Exit exit = new Exit(rec,tile);
+
                 mainBuilding.getFloors().get(index).addExit(exit);
             }
         },
@@ -217,8 +218,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.rerender();}
         });
 
-
-        this.fxRef.toFront();
     }
 
 
