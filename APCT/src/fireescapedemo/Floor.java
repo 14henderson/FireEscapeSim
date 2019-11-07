@@ -29,6 +29,7 @@ public class Floor {
     int size;
     boolean lineClicked = false;
     double lineCords[] = new double[2];
+    public ArrayList<TileObject> tileObjects;
     ArrayList<Exit> exits;
     Rectangle lastRec = null;
     private ArrayList<double[]> walls;

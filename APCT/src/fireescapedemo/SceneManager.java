@@ -31,8 +31,6 @@ public class SceneManager {
 
     }
 
-
-
     public SceneManager() throws RuntimeException{
         if(this.rootStage == null){
             throw new RuntimeException();
@@ -44,10 +42,11 @@ public class SceneManager {
     }
 
     public void showScene(String name) throws IOException {
+        this.rootStage.setResizable(true);
         Parent tmpRef = FXMLLoader.load(getClass().getResource(this.scenes.get(name)));
         Scene tmpSceneRef = new Scene(tmpRef);
-
         this.rootStage.setScene(tmpSceneRef);
         this.rootStage.show();
+        this.rootStage.setResizable(false);
     }
 }

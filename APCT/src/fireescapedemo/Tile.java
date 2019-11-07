@@ -13,38 +13,32 @@ import java.net.URISyntaxException;
 import java.io.Serializable;
 
 
-/*
-public class Tile implements {
-    private static Building mainBuilding;
-    public Pane container;
-    public Rectangle block;
-    public boolean[] walls;
-    private Actor currentActor;
-    private Color color;
-    private Tile perant;
-
- */
-
-
 
 public class Tile extends MapObject implements Serializable, Comparable<fireescapedemo.Tile> {
-    public boolean[] walls;
+    public TileObject tileObject;                           //ref for any object residing on the tile
     private Actor currentActor;
-    public final int[] gridCords = new int[2];
-    public final int[] actualCords = new int[2];
-    public final double width, height;
-    private double gCost,fCost,hCost;
-    private static int idCount = 0;
+    public boolean[] walls;
+
+    //Tile Geometry Variables
+    public final int[] gridCords = new int[2];              //X, Y
+    public final int[] actualCords = new int[2];            //X, Y
+    public final double[] dimensions = new double[2];       //Width, Height
+
+    //Node Building Variables
+    private transient Rectangle fxRef = null;               //Tile Rectangle object
     private static boolean buildEnabled = true;
-    private int id;
+
+    //Path-finding Variables
+    private double gCost,fCost,hCost;
+    private static int tileID = 0;
     private Tile parent;
-    private transient Rectangle fxRef = null;
+
 
     enum BlockType{
         Exit {
             @Override
             public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
@@ -60,14 +54,14 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println(ex);
                 }
                 Exit exit = new Exit(rec,tile);
-
+                tile.setTileObject(exit);
                 mainBuilding.getFloors().get(index).addExit(exit);
             }
         },
         Stairs {
             @Override
             public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
@@ -77,7 +71,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         Path {
             @Override
             public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.RED);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
@@ -87,7 +81,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         Default {
             @Override
             public void initialiseView(int index, Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
@@ -97,7 +91,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         Employee {
             @Override
             public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.width, tile.height);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
@@ -123,8 +117,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);
-                System.out.println("HEERREEE");
                 tile.setActor(e);
+                tile.setTileObject(e);
 
 /*
 
@@ -176,16 +170,16 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.gridCords[0] = gridX;
         this.gridCords[1] = gridY;
 
-        this.width = size;
-        this.height = size;
+        this.dimensions[0] = size;
+        this.dimensions[1] = size;
         this.type = BlockType.Default;
         this.currentActor = null;
 
-        this.id = idCount;
+        this.tileID = 0;
         this.hCost = 0;
         this.fCost = 0;
         this.parent = null;
-        idCount++;
+        tileID++;
         this.walls = new boolean[4];
         int i;
         for(i = 0; i < this.walls.length; i++){
@@ -202,18 +196,23 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public int getActualY(){return this.actualCords[1];}
     public int getGridX(){return this.gridCords[0];}
     public int getGridY(){return this.gridCords[1];}
+    public double getWidth(){return this.dimensions[0];}
+    public double getHeight(){return this.dimensions[1];}
+    public void setTileObject(TileObject t){this.tileObject = t;}
+    public TileObject getTileObject(){return this.tileObject;}
 
     @Override
     public void initialiseView(){
         try{
             this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
             this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.view);
-        } catch(Exception e){
-            //System.out.println(e.toString());
+        } catch(Exception e){}
+        if(this.tileObject != null){
+            this.mainBuilding.windowContainer.getChildren().remove(this.tileObject.getNode());
+            this.tileObject = null;
         }
+        this.currentActor = null;
         this.type.initialiseView(0, this);
-
-
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
             if(mainBuilding.canEdit) {
                 this.type = FXMLBuildingController.getActionType();
@@ -223,7 +222,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 FXMLBuildingController.refreshLineTiles();
             }
         });
-
     }
 
 
@@ -279,11 +277,10 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void setParent(Tile t) {this.parent = t;}
     public void setGCost(double i) {this.gCost = i;}
     public void setHCost(double i) {this.hCost = i;}
-    //public void setColor(Color c){this.color = c;}
     public void setType(BlockType t){this.type = t;}
 
 
-    public final int getId(){return this.id;}
+    public final int getID(){return this.tileID;}
     public final Tile getParent(){return this.parent;}
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}

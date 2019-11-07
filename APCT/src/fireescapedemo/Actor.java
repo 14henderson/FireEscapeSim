@@ -17,7 +17,7 @@ import java.io.Serializable;
 
 
 
-public class Actor extends MapObject implements Serializable {
+public class Actor extends TileObject implements Serializable {
     protected transient Point2D velocity;
     protected transient Node view;
     boolean swap;
@@ -26,12 +26,12 @@ public class Actor extends MapObject implements Serializable {
     public transient Tile oriTile;
 
     @Override
-    public void updateView(){
-
+    public Node getNode(){
+        return this.view;
     }
     @Override
-    public void initialiseView(){
-
+    public void setNode(Node n){
+        this.view = n;
     }
 
     public Actor(Node view){
