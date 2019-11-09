@@ -21,12 +21,12 @@ public class Floor {
     private Rectangle[][] wallBlocks;
  */
 
-    public class Floor extends MapObject implements Serializable {
+public class Floor extends MapObject implements Serializable {
     public ArrayList<Employee> employees;
     public Tile[][] floorBlocks;
-    int height;
-    int width;
-    int size;
+    int mapHeight;
+    int mapWidth;
+    int tileSize;
     boolean lineClicked = false;
     double lineCords[] = new double[2];
     public ArrayList<TileObject> tileObjects;
@@ -37,20 +37,22 @@ public class Floor {
 
 
 
-    public Floor(int heigh, int widt, int siz){
-        this.height = heigh;
-        this.width = widt;
-        this.size = siz;
+    public Floor(int height, int width, int size){
+        this.mapHeight = height;
+        this.mapWidth = width;
+        this.tileSize = size;
 
-        this.floorBlocks = new Tile[this.width][this.height];
+        this.floorBlocks = new Tile[this.mapWidth][this.mapHeight];
         this.employees = new ArrayList<>();
         this.walls = new ArrayList<>();
         this.wallsNodes = new ArrayList<>();
         this.exits = new ArrayList<>();
 
-        for(int i = 0; i < this.floorBlocks.length; i ++){
-            for(int j = 0; j< this.floorBlocks[i].length; j++){
-                this.floorBlocks[i][j] = new Tile(i*size,j*size, i, j, size);
+
+        System.out.println("Tile size: "+this.tileSize);
+        for(int i = 0; i < this.mapWidth; i++){
+            for(int j = 0; j< this.mapHeight; j++){
+                this.floorBlocks[i][j] = new Tile(i*this.tileSize,j*this.tileSize, i, j, this.tileSize);
         }}
     }
 
@@ -80,25 +82,54 @@ public class Floor {
     }
 
     public void zoom(int zoomValue){
-        this.size += zoomValue;
-        for(int i = 0; i < this.floorBlocks.length; i ++){
-            for(int j = 0; j< this.floorBlocks[i].length; j++){
-                this.floorBlocks[i][j].setActualCords(i*this.size, j*this.size);
-                this.floorBlocks[i][j].zoom(zoomValue);
-            }}
-
-        double zoomFactor = this.size/20.0;
-        for(double[] line : this.walls) {
-            line[0] *= zoomFactor;
-            line[1] *= zoomFactor;
-            line[2] *= zoomFactor;
-            line[3] *= zoomFactor;
+        int newZoomValue = this.tileSize + zoomValue;
+        for(int i = 0; i < this.mapWidth; i++){
+            for(int j = 0; j< this.mapHeight; j++){
+                this.floorBlocks[i][j].setActualCords(
+                        (int)(this.floorBlocks[i][j].getActualX()/(double)this.tileSize*newZoomValue),
+                        (int)(this.floorBlocks[i][j].getActualY()/(double)this.tileSize*newZoomValue));
+                this.floorBlocks[i][j].setDimensions(newZoomValue, newZoomValue);
+                this.floorBlocks[i][j].updateView();
+        }}
+        System.out.println(this.floorBlocks[0][0].toString());
+        System.out.println(this.floorBlocks[0][1].toString());
+        for(int n=0; n<this.walls.size(); n++){
+            this.walls.get(n)[0] = this.walls.get(n)[0]/(double)this.tileSize*newZoomValue;
+            this.walls.get(n)[1] = this.walls.get(n)[1]/(double)this.tileSize*newZoomValue;
+            this.walls.get(n)[2] = this.walls.get(n)[2]/(double)this.tileSize*newZoomValue;
+            this.walls.get(n)[3] = this.walls.get(n)[3]/(double)this.tileSize*newZoomValue;
+            this.wallsNodes.get(n).setStartX(this.walls.get(n)[0]);
+            this.wallsNodes.get(n).setStartY(this.walls.get(n)[1]);
+            this.wallsNodes.get(n).setEndX(this.walls.get(n)[2]);
+            this.wallsNodes.get(n).setEndY(this.walls.get(n)[3]);
+            this.wallsNodes.get(n).setStrokeWidth(10*this.getTileSize()/50.0);
+            this.wallsNodes.get(n).toFront();
         }
-        this.updateView();
+        FXMLBuildingController.zoomLineBlocks(this.tileSize, newZoomValue);
+        this.tileSize = newZoomValue;
+    }
+
+    public void pan(int xinc, int yinc){
+        for(int i = 0; i < this.mapWidth; i++){
+            for(int j = 0; j< this.mapHeight; j++){
+                this.floorBlocks[i][j].translate(xinc, yinc);
+                this.floorBlocks[i][j].updateView();
+            }}
+        for(int n=0; n<this.walls.size(); n++){
+            this.walls.get(n)[0] += xinc;
+            this.walls.get(n)[1] += yinc;
+            this.walls.get(n)[2] += xinc;
+            this.walls.get(n)[3] += yinc;
+            this.wallsNodes.get(n).setStartX(this.walls.get(n)[0]);
+            this.wallsNodes.get(n).setStartY(this.walls.get(n)[1]);
+            this.wallsNodes.get(n).setEndX(this.walls.get(n)[2]);
+            this.wallsNodes.get(n).setEndY(this.walls.get(n)[3]);
+            this.wallsNodes.get(n).toFront();
+        }
+        FXMLBuildingController.panLineBlocks(xinc, yinc);
     }
 
     @Override
-
     public void initialiseView(){
         this.wallsNodes = new ArrayList<>();
         try{this.exits.clear();}catch(Exception e){}
@@ -116,7 +147,7 @@ public class Floor {
             Line wallLine = new Line(line[0], line[1], line[2], line[3]);
             this.wallsNodes.add(wallLine);
             wallLine.setStroke(Color.BLUE);
-            wallLine.setStrokeWidth(10*this.size/50.0);
+            wallLine.setStrokeWidth(10*this.tileSize/50.0);
             mainBuilding.windowContainer.getChildren().add(wallLine);
         }
         for(Employee e : this.employees){
@@ -132,11 +163,18 @@ public class Floor {
     }
 
     public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
-    public void addWall(double[] cords){this.walls.add(cords);}
+    public void addWall(double[] cords, Line l){
+        this.walls.add(cords);
+        this.wallsNodes.add(l);
+    }
     public ArrayList<double[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
+    public int getMapHeight(){return this.mapHeight;}
+    public int getMapWidth(){return this.mapWidth;}
+    public int getTileSize(){return this.tileSize;}
+    public void setTileSize(int size){this.tileSize = size;}
 
-
+}
 /*
     public void refactorFloorForSim(){
         this.floor = new Pane();
@@ -177,4 +215,4 @@ public class Floor {
     }}}
     */
 
-}
+

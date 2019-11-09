@@ -197,6 +197,10 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.actualCords[0] = x;
         this.actualCords[1] = y;
     }
+    public void setDimensions(int width, int height){
+        this.dimensions[0] = width;
+        this.dimensions[1] = height;
+    }
     public int getActualX(){return this.actualCords[0];}
     public int getActualY(){return this.actualCords[1];}
     public int getGridX(){return this.gridCords[0];}
@@ -236,15 +240,27 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             this.initialiseView();
         }
         this.fxRef.setFill(this.getColor(this.type));
+        this.fxRef.setX(this.getActualX());
+        this.fxRef.setY(this.getActualY());
+        this.fxRef.setWidth(this.getWidth());
+        this.fxRef.setHeight(this.getWidth());
+
+        if(this.getActualX() > 700 || this.getActualY() > 700){
+            this.fxRef.setVisible(false);
+        }else{
+            this.fxRef.setVisible(true);
+        }
         this.fxRef.toFront();
     }
 
 
-
-    public void zoom(int zoomValue){
-        this.dimensions[1] += (double) zoomValue;
-        this.dimensions[0] += (double) zoomValue;
+    public void translate(int xinc, int yinc){
+        this.actualCords[0] += xinc;
+        this.actualCords[1] += yinc;
     }
+
+
+
 
     //Returns Colour of block depending on a type of block
     public Color getColor(BlockType type){
@@ -307,4 +323,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public boolean getAccess(int dir){ return this.walls[dir];}
     public void removeActor(){this.currentActor = null;}
     public Actor getActor(){return this.currentActor;}
+
+    @Override
+    public String toString(){
+        return ("X:"+this.fxRef.getLayoutX()+" Y:"+this.fxRef.getLayoutY()+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
+    }
 }

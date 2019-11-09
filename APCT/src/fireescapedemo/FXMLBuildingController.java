@@ -10,6 +10,8 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.shape.Line;
@@ -73,6 +75,8 @@ public class FXMLBuildingController implements Initializable {
     static Color c = Color.WHITESMOKE;
     private static Tile.BlockType actionType;
     private static Line movingWall;
+    public final int minZoom = 10;
+    public final int maxZoom = 100;
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -99,8 +103,7 @@ public class FXMLBuildingController implements Initializable {
         this.lineTiles = new LineTile[width+1][height+1];
         for(int i = 0; i < this.lineTiles.length; i ++){
             for(int j = 0; j< this.lineTiles[i].length; j++) {
-                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 2)) ,((j*size) - (size / 2)),
-                                            size, this.mainPane, this.mainBuilding);
+                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 2)) ,((j*size) - (size / 2)), size, this.mainBuilding);
             }}
     }
     public void renderLineBlocks(){
@@ -110,7 +113,20 @@ public class FXMLBuildingController implements Initializable {
             }
         }
     }
-
+    public static void zoomLineBlocks(int oldZoom, int newZoom){
+        for(int i = 0; i < lineTiles.length; i ++) {
+            for (int j = 0; j < lineTiles[i].length; j++) {
+                lineTiles[i][j].zoom(oldZoom, newZoom);
+            }
+        }
+    }
+    public static void panLineBlocks(int xinc, int yinc){
+        for(int i = 0; i < lineTiles.length; i ++) {
+            for (int j = 0; j < lineTiles[i].length; j++) {
+                lineTiles[i][j].pan(xinc, yinc);
+            }
+        }
+    }
 
     public void enableLineBlocks(){
         for (LineTile[] lineTileRow : this.lineTiles) {
@@ -124,7 +140,7 @@ public class FXMLBuildingController implements Initializable {
         for (LineTile[] lineTileRow : this.lineTiles) {
             for (LineTile lineTile : lineTileRow) {
                 lineTile.getLineTileRect().setVisible(false);
-            }
+           }
         }
     }
 
@@ -183,7 +199,7 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding = manager.getGlobalBuilding();
         if(mainBuilding == null){
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(40,30,20, mapPane);
+            mainBuilding = new Building(20,20,50, mapPane);
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
@@ -208,20 +224,37 @@ public class FXMLBuildingController implements Initializable {
 
 
         this.mapPane.setOnScroll((ScrollEvent event) -> {
-            if(event.getDeltaY() < 0) {
+            cancelLineClicked();
+            double scroll = event.getDeltaY();
+            if(scroll < 0 && mainBuilding.getSize() > minZoom) {
                 mainBuilding.zoom(-1);
-            }else if(event.getDeltaY() > 0){
+            }else if(scroll > 0 && mainBuilding.getSize() < maxZoom){
                 mainBuilding.zoom(1);
             }
-            //System.out.println(mainBuilding.getSize());
-            //mainBuilding.render();
-            //renderLineBlocks();
         });
+
+        this.mainPane.setOnKeyPressed((KeyEvent event) -> {
+            cancelLineClicked();
+            if(event.getCode() == KeyCode.RIGHT){
+                mainBuilding.pan(-10, 0);
+            }else if(event.getCode() == KeyCode.DOWN){
+                mainBuilding.pan(0, -10);
+            }else if(event.getCode() == KeyCode.LEFT){
+                mainBuilding.pan(10, 0);
+            }else if(event.getCode() == KeyCode.UP){
+                mainBuilding.pan(0, 10);
+            }
+        });
+
+
         this.initLineBlocks();
         this.renderLineBlocks();
         this.disableLineBlocks();
         this.renderDragLine();
     }
+
+
+
 
     @FXML
     public void defaultTileButton(){
@@ -296,13 +329,14 @@ public class FXMLBuildingController implements Initializable {
     public void renderDragLine(){
         this.movingWall = new Line(0, 0, 0, 0);
         this.movingWall.setStroke(Color.GREEN);
-        this.movingWall.setStrokeWidth(10*mainBuilding.getSize()/50.0);
+
         mainBuilding.windowContainer.getChildren().add(this.movingWall);
         this.movingWall.setVisible(false);
 
         this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                movingWall.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 if(lineClicked){
                     double[] newCords = {lineCords[0], lineCords[1], event.getX(), event.getY()};
                     newCords = normaliseCords(newCords);
@@ -348,7 +382,15 @@ public class FXMLBuildingController implements Initializable {
         double a;
         double[] finalCords = new double[4];
         for(i = 0; i < 4; i++){
-            a = cords[i] %  mainBuilding.getSize();
+            System.out.println("Y pan offset: "+mainBuilding.getYPanOffset());
+            System.out.println("X pan offset: "+mainBuilding.getXPanOffset());
+            if(i == 0 || i == 2){
+                a = (cords[i]-mainBuilding.getXPanOffset()) %  mainBuilding.getSize();
+            }else if (i == 1 || i == 3){
+                a = (cords[i]-mainBuilding.getYPanOffset()) %  mainBuilding.getSize();
+            }else{return null;}
+
+            //a = cords[i] %  mainBuilding.getSize();
             System.out.println("Before: " + cords[i]);
             finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
             System.out.println("After: " + finalCords[i]);
@@ -404,12 +446,14 @@ public class FXMLBuildingController implements Initializable {
 
             if(cords[1] == cords[3]){
                 System.out.println("Drawing Line!");
-                mainBuilding.getCurrentFloor().addWall(cords);
+
+                //mainBuilding.getCurrentFloor().add
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
                 l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 l.toBack();
                 mainBuilding.windowContainer.getChildren().add(l);
+                mainBuilding.getCurrentFloor().addWall(cords, l);
 
                 int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
                 int xx = (int)x2 == 0 ? 0 : (int)cords[2] / mainBuilding.getSize();
@@ -431,12 +475,12 @@ public class FXMLBuildingController implements Initializable {
                 }
             }else if (cords[0] == cords[2]){
                 System.out.println("Drawing Line!");
-                mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
                 l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 l.toBack();
                 mainBuilding.windowContainer.getChildren().add(l);
+                mainBuilding.getCurrentFloor().addWall(cords, l);
                 int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
                 int y = (int)y1 == 0 ? 0 : (int)cords[1] / mainBuilding.getSize();
                 int yy = (int)y2 == 0 ? 0 : (int)cords[3] / mainBuilding.getSize();
