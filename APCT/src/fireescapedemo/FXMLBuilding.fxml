@@ -34,10 +34,10 @@
                   <Font size="15.0" />
                </font></Label>
                 <!--Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" /-->
-            <Button fx:id="defaultButton" layoutX="30.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Default" />
-            <Button fx:id="exitButton" layoutX="31.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Exit" />
-            <Button fx:id="stairsButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
-            <Button fx:id="employeeButton" layoutX="118.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
+            <Button fx:id="defaultButton" onAction="#defaultTileButton" layoutX="30.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Default" />
+            <Button fx:id="exitButton" onAction="#exitTileButton" layoutX="31.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Exit" />
+            <Button fx:id="stairsButton" onAction="#stairsTileButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
+            <Button fx:id="employeeButton" onAction="#employeeTileButton" layoutX="118.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
 
                 <Pane layoutX="6.0" layoutY="681.0" />
                 <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />

@@ -135,7 +135,9 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.increaseFloor();
             mainBuilding.initialiseView();
             this.renderLineBlocks();
+            this.disableLineBlocks();
             this.renderDragLine();
+            lineClicked = false;
         }else{
             System.out.println("No next floor");
         }
@@ -148,7 +150,9 @@ public class FXMLBuildingController implements Initializable {
             mainBuilding.decreaseFloor();
             mainBuilding.initialiseView();
             this.renderLineBlocks();
+            this.disableLineBlocks();
             this.renderDragLine();
+            lineClicked = false;
         }else{
             System.out.println("No prev floor");
         }
@@ -188,23 +192,6 @@ public class FXMLBuildingController implements Initializable {
         floorLevel.setText("Floor " + floorNum);
 
         mainBuilding.initialiseView();
-        exitButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Exit;
-            this.disableLineBlocks();
-        });
-        employeeButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Employee;
-            c = Color.RED;
-            this.disableLineBlocks();
-        });
-        stairsButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Stairs;
-            this.disableLineBlocks();
-        });
-        defaultButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Default;
-            this.disableLineBlocks();
-        });
         normWall.setOnAction((ActionEvent e) -> {
             this.actionType = Tile.BlockType.Default;
             this.enableLineBlocks();
@@ -213,17 +200,36 @@ public class FXMLBuildingController implements Initializable {
             this.actionType = Tile.BlockType.Default;
             this.enableLineBlocks();
         });
-
-
-
-
         errorText.setText("");
-
         this.initLineBlocks();
         this.renderLineBlocks();
         this.disableLineBlocks();
         this.renderDragLine();
     }
+
+    @FXML
+    public void defaultTileButton(){
+        this.actionType = Tile.BlockType.Default;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void exitTileButton(){
+        this.actionType = Tile.BlockType.Exit;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void stairsTileButton(){
+        this.actionType = Tile.BlockType.Stairs;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void employeeTileButton(){
+        this.actionType = Tile.BlockType.Employee;
+        this.disableLineBlocks();
+    }
+
+
+
 
     /**
      * Opens the save file dialog to save the serializable building object to be opened in the simulation.
