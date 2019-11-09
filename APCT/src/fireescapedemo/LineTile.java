@@ -1,6 +1,7 @@
 package fireescapedemo;
 
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -29,8 +30,12 @@ public class LineTile{
         this.lineTileRect.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(Tile.isBuildEnabled()){
-                    FXMLBuildingController.setLineClicked(mouseEvent);
+                if(Tile.isBuildEnabled() ){
+                    if(mouseEvent.getButton() == MouseButton.PRIMARY) {
+                        FXMLBuildingController.setLineClicked(mouseEvent);
+                    }else{
+                        FXMLBuildingController.cancelLineClicked();
+                    }
                 }
             }
         });
@@ -39,4 +44,5 @@ public class LineTile{
         this.mainBuilding.windowContainer.getChildren().add(this.lineTileRect);
         this.lineTileRect.toFront();
     }
+    public Rectangle getLineTileRect(){return this.lineTileRect;}
 }

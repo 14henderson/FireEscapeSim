@@ -2,6 +2,7 @@ package fireescapedemo;
 
 import javafx.animation.AnimationTimer;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -27,6 +28,8 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.ResourceBundle;
 
+import static javax.swing.text.html.HTML.Tag.HEAD;
+
 public class FXMLBuildingController implements Initializable {
 
     @FXML
@@ -40,11 +43,13 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Label floorLevel;
     @FXML
-    private Button wallButton;
+    private Button exitButton;
     @FXML
     private Button stairsButton;
     @FXML
     private Button employeeButton;
+    @FXML
+    private Button defaultButton;
     @FXML
     private Button saveButton;
     @FXML
@@ -53,7 +58,12 @@ public class FXMLBuildingController implements Initializable {
     private Button saveToSim;
     @FXML
     private Text errorText;
+    @FXML
+    private Button normWall;
+    @FXML
+    private Button stairWall;
     int floorNum = 0;
+
     SceneManager manager;
     public static LineTile[][] lineTiles = null;
     private static double lineCords[] = new double[2];
@@ -62,7 +72,7 @@ public class FXMLBuildingController implements Initializable {
     public static Building mainBuilding;// = new Building();
     static Color c = Color.WHITESMOKE;
     private static Tile.BlockType actionType;
-
+    private static Line movingWall;
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -70,12 +80,9 @@ public class FXMLBuildingController implements Initializable {
 
     @FXML
     private void renderBlocks() throws IOException {
-        //mainBuilding.renderBlocks();
-        manager.addScene("FXMLSimulation.fxml", "simulation");
-        manager.showScene("simulation");
-        Tile.disableBuild();
-        mainBuilding.render();
+
     }
+
     public static void refreshLineTiles(){
         for(LineTile[] tiles : lineTiles){
             for(LineTile tile : tiles){
@@ -83,6 +90,8 @@ public class FXMLBuildingController implements Initializable {
             }
         }
     }
+
+
     public void initLineBlocks(){
         int size = this.mainBuilding.getSize();
         int width = this.mainBuilding.getWidth();
@@ -90,8 +99,8 @@ public class FXMLBuildingController implements Initializable {
         this.lineTiles = new LineTile[width+1][height+1];
         for(int i = 0; i < this.lineTiles.length; i ++){
             for(int j = 0; j< this.lineTiles[i].length; j++) {
-                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 4)) ,((j*size) - (size / 4)),
-                                            size/2, this.mainPane, this.mainBuilding);
+                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 2)) ,((j*size) - (size / 2)),
+                                            size, this.mainPane, this.mainBuilding);
             }}
     }
     public void renderLineBlocks(){
@@ -100,7 +109,23 @@ public class FXMLBuildingController implements Initializable {
                 lineTile.render();
             }
         }
+    }
 
+
+    public void enableLineBlocks(){
+        for (LineTile[] lineTileRow : this.lineTiles) {
+            for (LineTile lineTile : lineTileRow) {
+                lineTile.getLineTileRect().setVisible(true);
+            }
+        }
+    }
+
+    public void disableLineBlocks(){
+        for (LineTile[] lineTileRow : this.lineTiles) {
+            for (LineTile lineTile : lineTileRow) {
+                lineTile.getLineTileRect().setVisible(false);
+            }
+        }
     }
 
 
@@ -109,8 +134,11 @@ public class FXMLBuildingController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             this.renderLineBlocks();
+            this.disableLineBlocks();
+            this.renderDragLine();
+            cancelLineClicked();
         }else{
             System.out.println("No next floor");
         }
@@ -121,8 +149,11 @@ public class FXMLBuildingController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.decreaseFloor();
-            mainBuilding.render();
+            mainBuilding.initialiseView();
             this.renderLineBlocks();
+            this.disableLineBlocks();
+            this.renderDragLine();
+            cancelLineClicked();
         }else{
             System.out.println("No prev floor");
         }
@@ -132,14 +163,17 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private void addRoom(){
         mainBuilding.addFloor();
+        this.nextRoom();
     }
 
 
     private void onUpdate(){
-        characters.forEach((prefab) -> {
-            prefab.update();
-        });
+        /*characters.forEach((prefab) -> {
+            //prefab.update();
+        });*/
     }
+
+
     public static Tile.BlockType getActionType(){return actionType;}
 
 
@@ -149,28 +183,28 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding = manager.getGlobalBuilding();
         if(mainBuilding == null){
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(30,30,20, mapPane);
+            mainBuilding = new Building(40,30,20, mapPane);
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
         this.mainBuilding.setWindowContainer(mapPane);
-
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
-        mainBuilding.render();
-        wallButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Office;
-            c = Color.GRAY;
+        mainBuilding.updateView();
+        normWall.setOnAction((ActionEvent e) -> {
+           //
         });
-        employeeButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Employee;
-            c = Color.RED;
+        mainBuilding.initialiseView();
+        normWall.setOnAction((ActionEvent e) -> {
+            this.actionType = Tile.BlockType.Default;
+            this.enableLineBlocks();
         });
-        stairsButton.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Stairs;
-            c = Color.AQUAMARINE;
+        stairWall.setOnAction((ActionEvent e) -> {
+            this.actionType = Tile.BlockType.Default;
+            this.enableLineBlocks();
         });
         errorText.setText("");
+
 
 
         this.mapPane.setOnScroll((ScrollEvent event) -> {
@@ -183,20 +217,147 @@ public class FXMLBuildingController implements Initializable {
             //mainBuilding.render();
             //renderLineBlocks();
         });
-
-
-
-
         this.initLineBlocks();
         this.renderLineBlocks();
+        this.disableLineBlocks();
+        this.renderDragLine();
     }
+
+    @FXML
+    public void defaultTileButton(){
+        this.actionType = Tile.BlockType.Default;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void exitTileButton(){
+        this.actionType = Tile.BlockType.Exit;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void stairsTileButton(){
+        this.actionType = Tile.BlockType.Stairs;
+        this.disableLineBlocks();
+    }
+    @FXML
+    public void employeeTileButton(){
+        System.out.println("Bere");
+        this.actionType = Tile.BlockType.Employee;
+        this.disableLineBlocks();
+    }
+
 
 
     /**
      * Opens the save file dialog to save the serializable building object to be opened in the simulation.
      * @throws IOException
      */
-    public void saveBuilding() throws IOException {
+    public void saveToHome() throws IOException {
+        if(saveMap()){
+            this.manager.setGlobalBuilding(null);
+            this.uninitialise();
+            this.manager.showScene("home");
+        }
+    }
+
+    public void cancelToHome() throws IOException {
+        this.manager.setGlobalBuilding(null);
+        this.uninitialise();
+        this.manager.showScene("home");
+    }
+
+    public void saveToSim() throws IOException{
+        if(saveMap()){
+            manager.setGlobalBuilding(this.mainBuilding);
+            this.uninitialise();
+            manager.showScene("simulation");
+        }
+    }
+
+    public void initTestLabel(){
+        Label l;
+        for(int i = 0; i < 550; i+=50) {
+            l = new Label();
+            l.setLayoutX(i);
+            l.setLayoutY(0);
+            l.setText(Double.toString(l.getLayoutX()));
+            mainPane.getChildren().add(l);
+        }
+    }
+
+
+    public void initCharacters(){
+        characters = new ArrayList();
+        characters.add(new Employee(play, mainBuilding.getCurrentFloor().getTile(0, 0)));
+        characters.get(0).setVelocityX(1);
+    }
+
+
+
+    public void renderDragLine(){
+        this.movingWall = new Line(0, 0, 0, 0);
+        this.movingWall.setStroke(Color.GREEN);
+        this.movingWall.setStrokeWidth(10*mainBuilding.getSize()/50.0);
+        mainBuilding.windowContainer.getChildren().add(this.movingWall);
+        this.movingWall.setVisible(false);
+
+        this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(lineClicked){
+                    double[] newCords = {lineCords[0], lineCords[1], event.getX(), event.getY()};
+                    newCords = normaliseCords(newCords);
+                    movingWall.setStartX(newCords[0]);
+                    movingWall.setStartY(newCords[1]);
+                    movingWall.setEndX(newCords[2]);
+                    movingWall.setEndY(newCords[3]);
+                    movingWall.setVisible(true);
+
+                    if(newCords[0] != newCords[2] && newCords[1] != newCords[3]){
+                        movingWall.setStroke(Color.RED);
+                    }else{
+                        movingWall.setStroke(Color.GREEN);
+                    }
+                }else{
+                    movingWall.setVisible(false);
+                }
+            }
+        });
+    }
+
+    public void initAnimation(){
+        AnimationTimer t = new AnimationTimer(){
+            @Override
+            public void handle(long now) {
+                onUpdate();
+            }
+        };
+        t.start();
+    }
+
+    public void uninitialise(){
+        this.mapPane.getChildren().clear();
+        cancelLineClicked();
+        lineCords[0] = 0;lineCords[1] = 0;
+        this.actionType = Tile.BlockType.Default;
+        this.mainBuilding = null;
+    }
+
+
+    public static final double[] normaliseCords(double cords[]){
+        int i;
+        double a;
+        double[] finalCords = new double[4];
+        for(i = 0; i < 4; i++){
+            a = cords[i] %  mainBuilding.getSize();
+            System.out.println("Before: " + cords[i]);
+            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
+            System.out.println("After: " + finalCords[i]);
+            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
+        }
+        return finalCords;
+    }
+
+    public boolean saveMap(){
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Save Copy of Graphs");
         fileChooser.setFileFilter(new FileNameExtensionFilter("map files (*.map)","map"));
@@ -214,133 +375,35 @@ public class FXMLBuildingController implements Initializable {
                 out.close();
                 fos.close();
                 System.out.println("Current Building Object"+this.mainBuilding.toString());
-
-                this.mainBuilding = null;
-                this.manager.showScene("home");
+                return true;
             }catch(IOException ex){
                 errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");
                 System.out.println("Serializable Error thrown: "+ex);
+                return false;
             }
         }
+        return false;
     }
 
-    public void cancelBuilding() throws IOException {
-        this.manager.setGlobalBuilding(null);
-        this.manager.showScene("home");
+    public static void cancelLineClicked(){
+        lineClicked = false;
     }
-
-    public void saveToSim(){
-        System.out.println("Saving to simulation");
-    }
-
-    public void initTestLabel(){
-        Label l;
-        for(int i = 0; i < 550; i+=50) {
-            l = new Label();
-            l.setLayoutX(i);
-            l.setLayoutY(0);
-            l.setText(Double.toString(l.getLayoutX()));
-            mainPane.getChildren().add(l);
-        }
-    }
-
-    public void initCharacters(){
-        characters = new ArrayList();
-        characters.add(new Employee(play, mainBuilding.getCurrentFloor().getTile(0, 0)));
-        characters.get(0).setVelocityX(1);
-    }
-
-
-
-    public void initAnimation(){
-        AnimationTimer t = new AnimationTimer(){
-            @Override
-            public void handle(long now) {
-                onUpdate();
-            }
-        };
-        t.start();
-    }
-
-
-    class Employee extends Actor{
-        int speed;
-        boolean foundSteps;
-        Tile currentFloor;
-        Employee(Node view, Tile startingFloor){
-            super(view);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-        }
-        Employee(Node view, Point2D vector, Tile startingFloor){
-            super(view,vector);
-            Random rand = new Random();
-            this.speed = (rand.nextInt(2)+1);
-            this.foundSteps = false;
-            this.currentFloor = startingFloor;
-        }
-        @Override
-        public void update(){
-
-        }
-
-
-
-        /*
-        @Override
-        public void update(){
-            if(this.foundSteps == false){
-                double width = ((Rectangle)(this.view)).getWidth();
-                double fWidth = this.currentFloor.getWidth();
-                if(this.view.getLayoutX() >= fWidth - width){
-                    this.setVelocityX(-1);
-                    this.speed = -speed;
-                }else if(this.view.getLayoutX() <= this.currentFloor.getLayoutX()){
-                    this.setVelocityX(1);
-                    this.speed = -speed;
-                }
-            }
-
-            //compute gravity
-            if(applyGravity())  { this.setVelocityY(3); }
-            else                { this.setVelocityY(0); }
-
-            this.view.setLayoutX(this.view.getLayoutX() +  velocity.getX() + speed);
-            this.view.setLayoutY(this.view.getLayoutY() +  velocity.getY());
-        }
-         */
-
-
-
-        public int getSpeed(){
-            return this.speed;
-        }
-    }
-
-    public static final double[] normaliseCords(double cords[]){
-        int i;
-        double a;
-        double[] finalCords = new double[4];
-        for(i = 0; i < 4; i++){
-            a = cords[i] %  mainBuilding.getSize();
-            System.out.println("Before: " + cords[i]);
-            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
-            System.out.println("After: " + finalCords[i]);
-        }
-        return finalCords;
-    }
-
-
-    @FXML
     public static void setLineClicked(MouseEvent event){
         refreshLineTiles();
+        System.out.println("Line clicked: "+lineClicked);
+        //if()
         if(lineClicked){
             double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
             double [] cords = {x1,y1,x2,y2};
             cords = normaliseCords(cords);
+            System.out.println(cords[0]+" "+cords[1]+" "+cords[2]+" "+cords[3]);
+            if(cords[0] == cords[2] && cords[1] == cords[3]){
+                lineClicked = false;
+                System.out.println("same click");
+            }
+
             if(cords[1] == cords[3]){
+                System.out.println("Drawing Line!");
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
@@ -367,6 +430,7 @@ public class FXMLBuildingController implements Initializable {
                     }
                 }
             }else if (cords[0] == cords[2]){
+                System.out.println("Drawing Line!");
                 mainBuilding.getCurrentFloor().addWall(cords);
                 Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
                 l.setStroke(Color.BLUE);
@@ -392,15 +456,16 @@ public class FXMLBuildingController implements Initializable {
                     }
                 }
             }
-            lineClicked = false;
-            lineCords[0] = 0;
-            lineCords[1] = 0;
+            if(cords[0] == cords[2] || cords[1] == cords[3]) {
+                lineCords[0] = cords[0];
+                lineCords[1] = cords[1];
+            }
         }else{
+            System.out.println("FIrst click");
             lineClicked = true;
             lineCords[0] = event.getX();
             lineCords[1] = event.getY();
         }
         refreshLineTiles();
     }
-
 }

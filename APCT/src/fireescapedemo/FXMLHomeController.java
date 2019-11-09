@@ -25,8 +25,38 @@ public class FXMLHomeController implements Initializable{
         this.manager = new SceneManager();
     }
 
-    public void simulateCurrent(ActionEvent actionEvent) {
+    public void simulateCurrent(ActionEvent actionEvent) throws IOException {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Save Copy of Graphs");
+        fileChooser.setFileFilter(new FileNameExtensionFilter("map files (*.map)", "map"));
+        fileChooser.setSelectedFile(new File("my_building.map"));
+
+        //If save window has been closed after successfully pressing save
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            String filename = fileChooser.getSelectedFile().getPath();
+            try {
+                java.io.FileInputStream fis = new java.io.FileInputStream(filename);
+                ObjectInputStream in = new ObjectInputStream(fis);
+                Building loadedBuilding = (Building) in.readObject();
+                in.close();
+                fis.close();
+                System.out.println("Loading from homecont"+loadedBuilding.toString());
+                loadedBuilding.setCurrentFloor(0);
+
+                manager.setGlobalBuilding(loadedBuilding);
+                manager.showScene("simulation");
+            } catch (IOException | ClassNotFoundException ex) {
+                System.out.println("Serializable Error thrown: " + ex);
+
+            }
+        }else{
+            System.out.println("If clause not entered");
+        }
+
     }
+
+
+
 
     public void buildCurrent(ActionEvent actionEvent) throws IOException {
         JFileChooser fileChooser = new JFileChooser();
@@ -45,15 +75,15 @@ public class FXMLHomeController implements Initializable{
                 fis.close();
                 System.out.println("Loading from homecont"+loadedBuilding.toString());
                 loadedBuilding.setCurrentFloor(0);
-                manager.globalBuilding = loadedBuilding;
+
                 manager.setGlobalBuilding(loadedBuilding);
+                manager.showScene("building");
             } catch (IOException | ClassNotFoundException ex) {
                 System.out.println("Serializable Error thrown: " + ex);
             }
         }else{
             System.out.println("If clause not entered");
         }
-        manager.showScene("building");
     }
 
 
