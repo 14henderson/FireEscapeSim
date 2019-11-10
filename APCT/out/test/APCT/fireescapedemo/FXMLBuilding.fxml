@@ -16,7 +16,7 @@
 
             <children>
                 <Rectangle fx:id="colourPane" fill="#c7dcff" height="773.0" layoutX="-14.0" layoutY="-13.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="249.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="108.0" layoutX="11.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="146.0" layoutX="11.0" layoutY="166.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
                 <Button layoutX="165.0" layoutY="125.0" mnemonicParsing="false" onAction="#prevRoom" prefHeight="31.0" prefWidth="27.0" text="↓" wrapText="true">
                <font>
                   <Font name="System Bold" size="15.0" />
@@ -34,10 +34,13 @@
                   <Font size="15.0" />
                </font></Label>
                 <!--Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" /-->
-            <Button fx:id="defaultButton" onAction="#defaultTileButton" layoutX="30.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Default" />
-            <Button fx:id="exitButton" onAction="#exitTileButton" layoutX="31.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Exit" />
-            <Button fx:id="stairsButton" onAction="#stairsTileButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Stair" />
-            <Button fx:id="employeeButton" onAction="#employeeTileButton" layoutX="118.0" layoutY="235.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Employee" />
+            <Button fx:id="defaultButton" layoutX="30.0" layoutY="196.0" mnemonicParsing="false" onAction="#defaultTileButton" prefHeight="25.0" prefWidth="68.0" text="Default" />
+            <Button fx:id="exitButton" layoutX="30.0" layoutY="235.0" mnemonicParsing="false" onAction="#exitTileButton" prefHeight="25.0" prefWidth="68.0" text="Exit" />
+            <Button fx:id="stairsButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" onAction="#stairsTileButton" prefHeight="25.0" prefWidth="68.0" text="Stair" />
+            <Button fx:id="employeeButton" layoutX="118.0" layoutY="235.0" mnemonicParsing="false" onAction="#employeeTileButton" prefHeight="25.0" prefWidth="68.0" text="Employee" />
+            <Button layoutX="30.0" onAction="#blockedTileButton" layoutY="272.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Blocked" />
+            <Button layoutX="119.0" layoutY="272.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Button" />
+
 
                 <Pane layoutX="6.0" layoutY="681.0" />
                 <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
@@ -56,14 +59,14 @@
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label layoutX="38.0" layoutY="292.0" text="Wall Type Placement">
+            <Label layoutX="42.0" layoutY="365.0" text="Wall Type Placement">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="108.0" layoutX="11.0" layoutY="281.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-            <Button fx:id="normWall" layoutX="66.0" layoutY="315.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Normal Wall" />
-            <Button fx:id="stairWall" layoutX="66.0" layoutY="349.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Stair Exit" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="108.0" layoutX="11.0" layoutY="359.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+            <Button fx:id="normWall" layoutX="66.0" layoutY="393.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Normal Wall" />
+            <Button fx:id="stairWall" layoutX="66.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Stair Exit" />
             </children>
         </Pane>
     </children>

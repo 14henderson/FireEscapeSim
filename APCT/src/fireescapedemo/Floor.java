@@ -86,10 +86,15 @@ public class Floor extends MapObject implements Serializable {
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){
                 this.floorBlocks[i][j].setActualCords(
-                        (int)(this.floorBlocks[i][j].getActualX()/(double)this.tileSize*newZoomValue),
-                        (int)(this.floorBlocks[i][j].getActualY()/(double)this.tileSize*newZoomValue));
+                        (int) (this.floorBlocks[i][j].getActualX() / (double) this.tileSize * newZoomValue),
+                        (int) (this.floorBlocks[i][j].getActualY() / (double) this.tileSize * newZoomValue));
                 this.floorBlocks[i][j].setDimensions(newZoomValue, newZoomValue);
-                this.floorBlocks[i][j].updateView();
+                if(this.floorBlocks[i][j].tileObject != null){
+                    this.floorBlocks[i][j].initialiseView();
+                }else {
+
+                    this.floorBlocks[i][j].updateView();
+                }
         }}
         System.out.println(this.floorBlocks[0][0].toString());
         System.out.println(this.floorBlocks[0][1].toString());

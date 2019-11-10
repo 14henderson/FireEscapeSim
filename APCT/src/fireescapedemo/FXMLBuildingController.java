@@ -77,6 +77,7 @@ public class FXMLBuildingController implements Initializable {
     private static Line movingWall;
     public final int minZoom = 10;
     public final int maxZoom = 100;
+    public boolean currentTranslation;
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -226,23 +227,35 @@ public class FXMLBuildingController implements Initializable {
         this.mapPane.setOnScroll((ScrollEvent event) -> {
             cancelLineClicked();
             double scroll = event.getDeltaY();
-            if(scroll < 0 && mainBuilding.getSize() > minZoom) {
+            if(scroll < 0 && mainBuilding.getSize() > minZoom && currentTranslation==false) {
+                currentTranslation = true;
                 mainBuilding.zoom(-1);
-            }else if(scroll > 0 && mainBuilding.getSize() < maxZoom){
+                currentTranslation = false;
+            }else if(scroll > 0 && mainBuilding.getSize() < maxZoom && currentTranslation==false){
+                currentTranslation = true;
                 mainBuilding.zoom(1);
+                currentTranslation = false;
             }
         });
 
         this.mainPane.setOnKeyPressed((KeyEvent event) -> {
             cancelLineClicked();
-            if(event.getCode() == KeyCode.RIGHT){
+            if(event.getCode() == KeyCode.RIGHT && currentTranslation==false){
+                currentTranslation = true;
                 mainBuilding.pan(-10, 0);
-            }else if(event.getCode() == KeyCode.DOWN){
+                currentTranslation = false;
+            }else if(event.getCode() == KeyCode.DOWN && currentTranslation==false){
+                currentTranslation = true;
                 mainBuilding.pan(0, -10);
-            }else if(event.getCode() == KeyCode.LEFT){
+                currentTranslation = false;
+            }else if(event.getCode() == KeyCode.LEFT && currentTranslation==false){
+                currentTranslation = true;
                 mainBuilding.pan(10, 0);
-            }else if(event.getCode() == KeyCode.UP){
+                currentTranslation = false;
+            }else if(event.getCode() == KeyCode.UP && currentTranslation==false){
+                currentTranslation = true;
                 mainBuilding.pan(0, 10);
+                currentTranslation = false;
             }
         });
 
@@ -255,7 +268,11 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-
+    @FXML
+    public void blockedTileButton(){
+        this.actionType = Tile.BlockType.Blocked;
+        this.disableLineBlocks();
+    }
     @FXML
     public void defaultTileButton(){
         this.actionType = Tile.BlockType.Default;

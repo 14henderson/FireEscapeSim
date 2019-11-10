@@ -1,6 +1,7 @@
 package fireescapedemo;
 
 import javafx.geometry.Insets;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -15,7 +16,7 @@ import java.io.Serializable;
 
 
 public class Tile extends MapObject implements Serializable, Comparable<fireescapedemo.Tile> {
-    public TileObject tileObject;                           //ref for any object residing on the tile
+    public TileObject tileObject = null;                           //ref for any object residing on the tile
     private Actor currentActor;
     public boolean[] walls;
 
@@ -79,6 +80,28 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
             }
         },
+        Blocked{
+            @Override
+            public void initialiseView(int index, Tile tile) {
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
+                tile.fxRef.setStroke(Color.BLACK);
+                tile.fxRef.setFill(tile.getColor(tile.type));
+                tile.fxRef.setOpacity(0.5);
+                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+
+                Rectangle rec = new Rectangle(tile.getActualX(),tile.getActualY(),tile.mainBuilding.getSize(),tile.mainBuilding.getSize());
+                Image image;
+                try {
+                    image = new Image(getClass().getResource("/Assets/no_entrance.fw.png").toURI().toString());
+                    rec.setFill(new ImagePattern(image));
+                    mainBuilding.windowContainer.getChildren().add(rec);
+                } catch (URISyntaxException ex) {
+                    System.out.println(ex);
+                }
+                DefaultAssetHolder blocked = new Tile.DefaultAssetHolder(rec);
+                tile.setTileObject(blocked);
+            }
+        },
         Default {
             @Override
             public void initialiseView(int index, Tile tile) {
@@ -120,7 +143,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 mainBuilding.windowContainer.getChildren().add(c);
                 tile.setActor(e);
                 tile.setTileObject(e);
-
 /*
 
 
@@ -231,6 +253,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 FXMLBuildingController.refreshLineTiles();
             }
         });
+        this.fxRef.toFront();
     }
 
 
@@ -257,6 +280,12 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void translate(int xinc, int yinc){
         this.actualCords[0] += xinc;
         this.actualCords[1] += yinc;
+
+        if(this.tileObject != null) {
+            this.initialiseView();
+            //this.tileObject.fxNode.setLayoutX(0);//this.tileObject.fxNode.getLayoutX() + this.getActualX());
+            //this.tileObject.fxNode.setLayoutY(0);//this.tileObject.fxNode.getLayoutY() + this.getActualY());
+        }
     }
 
 
@@ -328,4 +357,29 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public String toString(){
         return ("X:"+this.fxRef.getLayoutX()+" Y:"+this.fxRef.getLayoutY()+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
     }
+
+
+
+
+    public static class DefaultAssetHolder extends TileObject{
+        DefaultAssetHolder(Node nodeObj){
+            this.fxNode = nodeObj;
+        }
+        @Override
+        public Node getNode(){
+            return this.fxNode;
+        }
+
+        @Override
+        public void setNode(Node n) {
+            this.fxNode = n;
+        }
+
+
+    }
+
+
+
+
+
 }
