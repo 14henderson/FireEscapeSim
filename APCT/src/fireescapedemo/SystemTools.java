@@ -31,8 +31,8 @@ public class SystemTools {
             this.map = map;
             this.startNode = this.map[startNode.getGridX()][startNode.getGridY()];
             this.endNode = this.map[exitNode.getGridX()][exitNode.getGridY()];
-            this.endX = endNode.getActualCords()[0];
-            this.endY = endNode.getActualCords()[1];
+            this.endX = (int)endNode.getActualCords()[0];
+            this.endY = (int)endNode.getActualCords()[1];
         }
 
         public boolean findPath() {
@@ -76,8 +76,8 @@ public class SystemTools {
                 boolean test = true;
                 if (test) {
                     do {
-                        int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                                currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1],vel =0;
+                        int prevX = (int)currentNode.getActualCords()[0], prevY = (int)currentNode.getActualCords()[1], proX =
+                                (int)currentNode.getParent().getActualCords()[0], proY = (int)currentNode.getParent().getActualCords()[1],vel =0;
                         System.out.println("x: " + proX + ", y: " + proY);
                         if(prevX== proX){
                             vel = prevY > proY ? 1 : -1;
@@ -102,8 +102,8 @@ public class SystemTools {
 
 
         private int calculateDistance(Tile a, Tile b){
-            int maxX = Math.abs(a.getActualCords()[0] - b.getActualCords()[0]);
-            int maxY = Math.abs(a.getActualCords()[1] - b.getActualCords()[1]);
+            int maxX = (int)Math.abs(a.getActualCords()[0] - b.getActualCords()[0]);
+            int maxY = (int)Math.abs(a.getActualCords()[1] - b.getActualCords()[1]);
             if(maxY < maxX)return 14 * maxY + 10 * (maxX - maxY);
             return 14 * maxX + 10 * (maxY - maxX);
 

@@ -287,6 +287,7 @@ public class FXMLBuildingController implements Initializable {
     public void stairsTileButton(){
         this.actionType = Tile.BlockType.Stairs;
         this.disableLineBlocks();
+
     }
     @FXML
     public void employeeTileButton(){

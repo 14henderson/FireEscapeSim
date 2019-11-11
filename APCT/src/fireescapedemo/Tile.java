@@ -21,9 +21,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public boolean[] walls;
 
     //Tile Geometry Variables
-    public final int[] gridCords = new int[2];              //X, Y
-    public final int[] actualCords = new int[2];            //X, Y
-    public final double[] dimensions = new double[2];       //Width, Height
+    public int[] gridCords = new int[2];              //X, Y
+    public double[] actualCords = new double[2];            //X, Y
+    public double[] dimensions = new double[2];       //Width, Height
 
     //Node Building Variables
     private transient Rectangle fxRef = null;               //Tile Rectangle object
@@ -126,10 +126,10 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Actor a;
                 Circle c;
-                c = new Circle(tile.mainBuilding.getSize()/5);
+                c = new Circle(tile.mainBuilding.getSize()/2);
                 c.setFill(Color.PINK);
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
-                c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/3);
+                c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -143,25 +143,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 mainBuilding.windowContainer.getChildren().add(c);
                 tile.setActor(e);
                 tile.setTileObject(e);
-/*
-
-
-                c = new Circle(10);
-                c.setFill(Color.PINK);
-                c.setLayoutX(tile.getActualX()+25);
-                c.setLayoutY(tile.getActualY()+35);
-                try {
-                    image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
-                    c.setFill(new ImagePattern(image));
-                    System.out.println("Complete");
-                } catch (URISyntaxException ex) {
-                    System.out.println(ex);
-                }
-                mainBuilding.getCurrentFloor().addEmployee(new Employee(c,tile));
-                mainBuilding.windowContainer.getChildren().add(c);
-                System.out.println(mainBuilding.getFloors().get(index).employees.size());
-                System.out.println("Oh oh and I, I am an employee");
-                */
             }
         };
         
@@ -213,9 +194,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
     public BlockType getType(){return this.type;}
-    public int[] getActualCords(){return this.actualCords;}
+    public double[] getActualCords(){return this.actualCords;}
     public int[] getGridCords(){return this.gridCords;}
-    public void setActualCords(int x, int y){
+    public void setActualCords(double x, double y){
         this.actualCords[0] = x;
         this.actualCords[1] = y;
     }
@@ -223,8 +204,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.dimensions[0] = width;
         this.dimensions[1] = height;
     }
-    public int getActualX(){return this.actualCords[0];}
-    public int getActualY(){return this.actualCords[1];}
+    public double getActualX(){return this.actualCords[0];}
+    public double getActualY(){return this.actualCords[1];}
     public int getGridX(){return this.gridCords[0];}
     public int getGridY(){return this.gridCords[1];}
     public double getWidth(){return this.dimensions[0];}
@@ -313,11 +294,12 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
     public final int getID(){return this.tileID;}
+    public final Rectangle getFxRef(){return this.fxRef;}
     public final Tile getParent(){return this.parent;}
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}
     public final double getHCost(){return this.hCost;}
-
+    public final double getSize(){return this.fxRef.getHeight();}
 
     /**
      * Check if actor has access to a certain direction

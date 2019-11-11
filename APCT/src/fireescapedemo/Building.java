@@ -110,10 +110,10 @@ public class Building extends MapObject implements Serializable {
     public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
     public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
     public void setCurrentFloor(int floor){this.currentFloor = floor;}
-    public int getXPanOffset(){
+    public double getXPanOffset(){
         return this.getCurrentFloor().floorBlocks[0][0].getActualX();
     }
-    public int getYPanOffset(){
+    public double getYPanOffset(){
         return this.getCurrentFloor().floorBlocks[0][0].getActualY();
     }
 

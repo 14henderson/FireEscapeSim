@@ -66,14 +66,8 @@ public class LineTile{
 
 
     public void zoom(int oldZoom, int newZoom){
-        System.out.println("Old x: "+this.getX());
-        System.out.println("Old y: "+this.getY());
-        System.out.println("Old and new zoom: "+oldZoom+" "+newZoom);
-        System.out.println("New x 2:"+((this.getX()/(double)oldZoom)*newZoom));
         this.setX((this.getX()/(double)oldZoom)*newZoom);
         this.setY((this.getY()/(double)oldZoom)*newZoom);
-        System.out.println("New x 3:"+this.getX());
-
         this.size = newZoom;
         this.lineTileRect.setX(Math.round(this.getX()));
         this.lineTileRect.setY(Math.round(this.getY()));
