@@ -313,11 +313,12 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
     public final int getID(){return this.tileID;}
+    public final Rectangle getFxRef(){return this.fxRef;}
     public final Tile getParent(){return this.parent;}
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}
     public final double getHCost(){return this.hCost;}
-
+    public final double getSize(){return this.fxRef.getHeight();}
 
     /**
      * Check if actor has access to a certain direction
