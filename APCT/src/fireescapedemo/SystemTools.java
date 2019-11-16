@@ -7,6 +7,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
 
 import java.net.URISyntaxException;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class SystemTools {
@@ -14,6 +15,7 @@ public class SystemTools {
     public SystemTools(Tile startNode, Tile[][] map){
         this.pathFinder = new AStarPath(startNode,map);
     }
+
 
     public Queue<Tile> getOpenedNodes(){return this.pathFinder.openedNodes;}
 
@@ -23,7 +25,9 @@ public class SystemTools {
         private ArrayList<Point2D> velocitys;
         private Tile[][] map;
         private Tile startNode, endNode;
+        boolean foundExit;
         private int endX,endY;
+        private double range;
 
         public AStarPath(Tile startNode, Tile[][] map){
             this.unopenedNodes = new PriorityQueue<>();
@@ -39,9 +43,10 @@ public class SystemTools {
                 this.endX = 0;
                 this.endY = 0;
             }
+            this.range = 0;
         }
 
-        public boolean findPath() {
+        public boolean findPath(boolean avoiding) {
             if(this.endNode != null){
                 int nodeX, nodeY;
                 double newDis;
@@ -59,7 +64,7 @@ public class SystemTools {
                     nodeX = currentNode.getGridX();
                     nodeY = currentNode.getGridY();;
 
-                    for (Tile t : getNeighbors(nodeX, nodeY,currentNode)) {
+                    for (Tile t : getNeighbors(nodeX, nodeY,currentNode,avoiding)) {
                         newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
                         if(this.openedNodes.contains(t)){continue;}
                         if (newDis < t.getGCost() || !this.unopenedNodes.contains(t)) {
@@ -82,15 +87,19 @@ public class SystemTools {
                     currentNode = goal;
                     boolean test = true;
                     if (test) {
+                        Random rand = new Random();
+                        this.range = Math.round((rand.nextDouble()+0.5) * 100.0) / 100.0;
+                        double vel = 0;
                         do {
                             int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                                    currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1],vel =0;
+                                    currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
                             System.out.println("x: " + proX + ", y: " + proY);
                             if(prevX== proX){
-                                vel = prevY > proY ? 1 : -1;
+
+                                vel = prevY > proY ? range : -range;
                                 this.velocitys.add(new Point2D(0,vel));
                             }else{
-                                vel = prevX > proX ? 1 : -1;
+                                vel = prevX > proX ? range : -range;
                                 this.velocitys.add(new Point2D(vel,0));
                             }
                             System.out.println("Count " + counter);
@@ -117,9 +126,10 @@ public class SystemTools {
 
         }
 
-        private ArrayList<Tile> getNeighbors(int nodeX,int nodeY, Tile node){
+        private ArrayList<Tile> getNeighbors(int nodeX,int nodeY, Tile node, boolean avoiding){
             ArrayList<Tile> nodesToExplore = new ArrayList<>();
             int i, j, aX, aY, newX, newY, mapLength = this.map.length;
+            boolean add = true;
             boolean[] dirAcess = new boolean[2];
             for(i = -1; i < 2; i++){
                 for(j = -1; j < 2; j++){
@@ -135,14 +145,21 @@ public class SystemTools {
                         newY = j + nodeY;
 
                         if(newX < mapLength && newX > -1 && newY < mapLength && newY > -1 ){
-                            if(i == 0 && dirAcess[0]){
-                                nodesToExplore.add(this.map[newX][newY]);
+                            if((i == 0 && dirAcess[0])){
+                                if(avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Employee)){
+                                    add = false;
+                                }
+                                if(add){nodesToExplore.add(this.map[newX][newY]);}
                             }else if(j == 0 && dirAcess[1]){
-                                nodesToExplore.add(this.map[newX][newY]);
+                                if(avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Employee)){
+                                    add = false;
+                                }
+                                if(add){nodesToExplore.add(this.map[newX][newY]);}
                             }/*else if(dirAcess[0] && dirAcess[1]){
                                 nodesToExplore.add(this.map[newX][newY]);
                             }*/
                         }
+                        add = true;
                     }
                 }
             }
@@ -164,8 +181,8 @@ public class SystemTools {
                     currentTile = unopenList.poll();
                     lockoutCounter++;
                     openList.add(currentTile);
-                    currentTile.setColour(Color.LIGHTBLUE);
-                    neighbors = getNeighbors(currentTile.getGridX(),currentTile.getGridY(),currentTile);
+                    //currentTile.setColour(Color.LIGHTBLUE);
+                    neighbors = getNeighbors(currentTile.getGridX(),currentTile.getGridY(),currentTile,false);
                     for (Tile neighbor : neighbors){
                         if(!openList.contains(neighbor) && !unopenList.contains(neighbor)){
                             if(neighbor.type.equals(Tile.BlockType.Exit)){
@@ -185,10 +202,13 @@ public class SystemTools {
                 }else{this.endNode = null; exitCondition = true; success = false;}
             }
             System.out.println("Finished, success: " + success);
+            this.foundExit = success;
             return exitTile;
         }
 
         public PriorityQueue<Tile> getPath(){return this.openedNodes;}
+        public double getRange(){return this.range;}
+        public boolean exitFound(){return this.foundExit;}
         public ArrayList<Point2D> getVelocities() {return this.velocitys;}
     }
 

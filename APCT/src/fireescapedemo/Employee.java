@@ -7,10 +7,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Employee extends Actor implements Serializable{
-    private int counter = 0;
+    private double counter = 0, velAmount = 0;
     private transient ArrayList<Point2D> path;
     private boolean findingPath, exited;
     public Tile proTile;
+    public SystemTools tools;
     enum State{
         Idle {
             @Override
@@ -21,15 +22,19 @@ public class Employee extends Actor implements Serializable{
         FindRoute{
             @Override
             public void act(Employee employee, Floor floor){
-                SystemTools tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock());
+                employee.tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock());
                 System.out.println("Route found");
-                boolean stateSwitch = tools.pathFinder.findPath();
-                if(stateSwitch){ employee.setPath(tools.pathFinder.getVelocities()); }
+                boolean stateSwitch = employee.tools.pathFinder.exitFound();
+                if(stateSwitch){
+                    employee.tools.pathFinder.findPath(false);
+                    employee.setPath(employee.tools.pathFinder.getVelocities());
+                }
                 State state = stateSwitch? State.Escape : State.Idle;
                 System.out.println("Now set to " + state.toString());
                 employee.proTile = employee.oriTile;
                 employee.setCurrentState(state);
                 employee.findingPath = false;
+                employee.setVelAmount(employee.tools.pathFinder.getRange());
             }
         },
         Escape {
@@ -37,9 +42,7 @@ public class Employee extends Actor implements Serializable{
             public void act(Employee employee, Floor floor) {
                 System.out.println("Now escaping");
                 Point2D vel = new Point2D(0,0);
-                for(Point2D p : employee.getPath()){
-                    System.out.println(p);
-                }
+
                 if(employee.getPath().isEmpty() ){
                     employee.exited = true;
                 }
@@ -95,7 +98,7 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
-                    if(this.counter >= 50){
+                    if(this.counter >= this.oriTile.getWidth()){
                         this.findingPath = false;
                         this.counter = 0;
                     }
@@ -115,9 +118,9 @@ public class Employee extends Actor implements Serializable{
                 }
             }
 
+            counter += velAmount;
         this.view.setLayoutX(view.getLayoutX() + velocity.getX());
         this.view.setLayoutY(view.getLayoutY() + velocity.getY());
-        counter++;
         }else{
             this.view.setOpacity(0);
         }
@@ -140,6 +143,7 @@ public class Employee extends Actor implements Serializable{
 
     public void setCurrentState(State state){this.currentState = state;}
     public void setPath(ArrayList<Point2D> newPath){this.path = newPath;}
+    public void setVelAmount(double vel){this.velAmount = vel;}
     public void toggleExited(){this.exited = !exited;}
     public boolean hasExited(){return this.exited;}
 
