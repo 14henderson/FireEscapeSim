@@ -21,7 +21,7 @@ public class Employee extends Actor implements Serializable{
         FindRoute{
             @Override
             public void act(Employee employee, Floor floor){
-                SystemTools tools = new SystemTools(employee.oriTile,floor.getTestFirstExit(),floor.getCurrentFloorBlock());
+                SystemTools tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock());
                 System.out.println("Route found");
                 boolean stateSwitch = tools.pathFinder.findPath();
                 if(stateSwitch){ employee.setPath(tools.pathFinder.getVelocities()); }

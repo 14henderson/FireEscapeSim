@@ -275,6 +275,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void setActor(Actor a){this.currentActor = a;}
 
     public void setParent(Tile t) {this.parent = t;}
+    public void setColour(Color c){this.fxRef.setFill(c);}
     public void setGCost(double i) {this.gCost = i;}
     public void setHCost(double i) {this.hCost = i;}
     public void setType(BlockType t){this.type = t;}

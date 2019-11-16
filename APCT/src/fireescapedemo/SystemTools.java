@@ -11,8 +11,8 @@ import java.util.*;
 
 public class SystemTools {
     public AStarPath pathFinder;
-    public SystemTools(Tile startNode, Tile endNode, Tile[][] map){
-        this.pathFinder = new AStarPath(startNode,endNode,map);
+    public SystemTools(Tile startNode, Tile[][] map){
+        this.pathFinder = new AStarPath(startNode,map);
     }
 
     public Queue<Tile> getOpenedNodes(){return this.pathFinder.openedNodes;}
@@ -24,78 +24,86 @@ public class SystemTools {
         private Tile[][] map;
         private Tile startNode, endNode;
         private int endX,endY;
-        public AStarPath(Tile startNode, Tile exitNode, Tile[][] map){
+
+        public AStarPath(Tile startNode, Tile[][] map){
             this.unopenedNodes = new PriorityQueue<>();
             this.openedNodes = new PriorityQueue<>();
             this.velocitys = new ArrayList<>();
             this.map = map;
             this.startNode = this.map[startNode.getGridX()][startNode.getGridY()];
-            this.endNode = this.map[exitNode.getGridX()][exitNode.getGridY()];
-            this.endX = endNode.getActualCords()[0];
-            this.endY = endNode.getActualCords()[1];
+            this.endNode = findClosestExit(startNode);
+            if(this.endNode != null){
+                this.endX = endNode.getActualCords()[0];
+                this.endY = endNode.getActualCords()[1];
+            }else{
+                this.endX = 0;
+                this.endY = 0;
+            }
         }
 
         public boolean findPath() {
-            int nodeX, nodeY;
-            double newDis;
-            Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
-                    goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
-            this.unopenedNodes.add(start);
-            System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
-            while (this.unopenedNodes.size() != 0) {
+            if(this.endNode != null){
+                int nodeX, nodeY;
+                double newDis;
+                Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
+                        goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
+                this.unopenedNodes.add(start);
+                System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
+                while (this.unopenedNodes.size() != 0) {
 
-                System.out.println("Size: " + this.openedNodes.size());
-                System.out.println("");
-                currentNode = this.unopenedNodes.poll();
-                this.openedNodes.add(currentNode);
-                if(currentNode == goal){break;}
-                nodeX = currentNode.getGridX();
-                nodeY = currentNode.getGridY();;
+                    System.out.println("Size: " + this.openedNodes.size());
+                    System.out.println("");
+                    currentNode = this.unopenedNodes.poll();
+                    this.openedNodes.add(currentNode);
+                    if(currentNode == goal){break;}
+                    nodeX = currentNode.getGridX();
+                    nodeY = currentNode.getGridY();;
 
-                for (Tile t : getNeighbors(nodeX, nodeY,currentNode)) {
-                    newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
-                    if(this.openedNodes.contains(t)){continue;}
-                    if (newDis < t.getGCost() || !this.unopenedNodes.contains(t)) {
-                        t.setGCost(newDis);
-                        t.setHCost(calculateDistance(t, goal));
-                        t.calculateFCost();
-                        t.setParent(currentNode);
-                        if (!this.unopenedNodes.contains(t)) {
-                            this.unopenedNodes.add(t);
+                    for (Tile t : getNeighbors(nodeX, nodeY,currentNode)) {
+                        newDis = currentNode.getGCost() + calculateDistance(currentNode, t);
+                        if(this.openedNodes.contains(t)){continue;}
+                        if (newDis < t.getGCost() || !this.unopenedNodes.contains(t)) {
+                            t.setGCost(newDis);
+                            t.setHCost(calculateDistance(t, goal));
+                            t.calculateFCost();
+                            t.setParent(currentNode);
+                            if (!this.unopenedNodes.contains(t)) {
+                                this.unopenedNodes.add(t);
+                            }
                         }
                     }
-                }
 
 
-            }
-            Point2D point;
-            System.out.println("Finished");
-            if(this.openedNodes.contains(goal)){
-                int counter = 1;
-                currentNode = goal;
-                boolean test = true;
-                if (test) {
-                    do {
-                        int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                                currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1],vel =0;
-                        System.out.println("x: " + proX + ", y: " + proY);
-                        if(prevX== proX){
-                            vel = prevY > proY ? 1 : -1;
-                            this.velocitys.add(new Point2D(0,vel));
-                        }else{
-                            vel = prevX > proX ? 1 : -1;
-                            this.velocitys.add(new Point2D(vel,0));
-                        }
-                        System.out.println("Count " + counter);
-                        System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                        //currentNode.block.setFill(Color.RED);
-                        //currentNode.setType(Tile.BlockType.Path);
-                        currentNode = currentNode.getParent();
-                        counter++;
-                    }while (currentNode != start);
                 }
-                Collections.reverse(this.velocitys);
-                return true;
+                Point2D point;
+                System.out.println("Finished");
+                if(this.openedNodes.contains(goal)){
+                    int counter = 1;
+                    currentNode = goal;
+                    boolean test = true;
+                    if (test) {
+                        do {
+                            int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
+                                    currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1],vel =0;
+                            System.out.println("x: " + proX + ", y: " + proY);
+                            if(prevX== proX){
+                                vel = prevY > proY ? 1 : -1;
+                                this.velocitys.add(new Point2D(0,vel));
+                            }else{
+                                vel = prevX > proX ? 1 : -1;
+                                this.velocitys.add(new Point2D(vel,0));
+                            }
+                            System.out.println("Count " + counter);
+                            System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
+                            //currentNode.block.setFill(Color.RED);
+                            //currentNode.setType(Tile.BlockType.Path);
+                            currentNode = currentNode.getParent();
+                            counter++;
+                        }while (currentNode != start);
+                    }
+                    Collections.reverse(this.velocitys);
+                    return true;
+                }
             }
             return false;
         }
@@ -139,6 +147,45 @@ public class SystemTools {
                 }
             }
             return nodesToExplore;
+        }
+
+        public Tile findClosestExit(Tile startNode){
+            //  for iteration       the amount of blocks in grid                         total amount of blocks to check before lockout
+            int lockoutCounter = 0, lockoutLocal = this.map.length * this.map[0].length, lockoutMax = 182;
+            boolean exitCondition = false, success = false;
+            ArrayList<Tile> neighbors = new ArrayList<>();
+            Queue<Tile> unopenList = new LinkedList<>();
+            Queue<Tile> openList = new LinkedList<>();
+            unopenList.add(startNode);
+            Tile currentTile, exitTile = null;
+            while(!exitCondition){
+                System.out.println("lockoutCounter: " + lockoutCounter);
+                if(lockoutCounter < lockoutLocal && lockoutCounter < lockoutMax){
+                    currentTile = unopenList.poll();
+                    lockoutCounter++;
+                    openList.add(currentTile);
+                    currentTile.setColour(Color.LIGHTBLUE);
+                    neighbors = getNeighbors(currentTile.getGridX(),currentTile.getGridY(),currentTile);
+                    for (Tile neighbor : neighbors){
+                        if(!openList.contains(neighbor) && !unopenList.contains(neighbor)){
+                            if(neighbor.type.equals(Tile.BlockType.Exit)){
+                                exitTile = neighbor;
+                                exitCondition = true;
+                                success = true;
+                                break;
+                            }else{
+                                unopenList.add(neighbor);
+                            }
+                        }
+
+                    }
+                    System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
+                    neighbors.clear();
+                    //if exit not found
+                }else{this.endNode = null; exitCondition = true; success = false;}
+            }
+            System.out.println("Finished, success: " + success);
+            return exitTile;
         }
 
         public PriorityQueue<Tile> getPath(){return this.openedNodes;}
