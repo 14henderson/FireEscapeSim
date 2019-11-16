@@ -286,6 +286,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}
     public final double getHCost(){return this.hCost;}
+    public final Rectangle getFxRef(){return this.fxRef;}
 
 
     /**

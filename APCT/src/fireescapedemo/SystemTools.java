@@ -5,6 +5,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Shape;
+import javafx.util.Pair;
 
 import java.net.URISyntaxException;
 import java.text.DecimalFormat;
@@ -22,7 +23,7 @@ public class SystemTools {
     public class AStarPath{
         private PriorityQueue<Tile> unopenedNodes;
         private PriorityQueue<Tile> openedNodes;
-        private ArrayList<Point2D> velocitys;
+        private ArrayList<Pair<Point2D, Tile>> velocitys;
         private Tile[][] map;
         private Tile startNode, endNode;
         boolean foundExit;
@@ -90,24 +91,29 @@ public class SystemTools {
                         Random rand = new Random();
                         this.range = Math.round((rand.nextDouble()+0.5) * 100.0) / 100.0;
                         double vel = 0;
+                        int skip = 0,skipMax = 3;
                         do {
-                            int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                                    currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
-                            System.out.println("x: " + proX + ", y: " + proY);
-                            if(prevX== proX){
+                            if(currentNode == startNode){skip = 0;}
+                                if(skip < skipMax){
+                                int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
+                                        currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
+                                System.out.println("x: " + proX + ", y: " + proY);
+                                if(prevX== proX){
 
-                                vel = prevY > proY ? range : -range;
-                                this.velocitys.add(new Point2D(0,vel));
-                            }else{
-                                vel = prevX > proX ? range : -range;
-                                this.velocitys.add(new Point2D(vel,0));
-                            }
-                            System.out.println("Count " + counter);
-                            System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                            //currentNode.block.setFill(Color.RED);
-                            //currentNode.setType(Tile.BlockType.Path);
-                            currentNode = currentNode.getParent();
-                            counter++;
+                                    vel = prevY > proY ? range : -range;
+                                    this.velocitys.add(new Pair(new Point2D(0,vel),currentNode));
+                                }else{
+                                    vel = prevX > proX ? range : -range;
+                                    this.velocitys.add(new Pair(new Point2D(0,vel),currentNode));
+                                }
+                                System.out.println("Count " + counter);
+                                System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
+                                //currentNode.block.setFill(Color.RED);
+                                //currentNode.setType(Tile.BlockType.Path);
+                                currentNode = currentNode.getParent();
+                                counter++;
+                                skip++;
+                            }else{skip = 0;}
                         }while (currentNode != start);
                     }
                     Collections.reverse(this.velocitys);
@@ -209,7 +215,7 @@ public class SystemTools {
         public PriorityQueue<Tile> getPath(){return this.openedNodes;}
         public double getRange(){return this.range;}
         public boolean exitFound(){return this.foundExit;}
-        public ArrayList<Point2D> getVelocities() {return this.velocitys;}
+        public ArrayList<Pair<Point2D,Tile>> getVelocities() {return this.velocitys;}
     }
 
 }
