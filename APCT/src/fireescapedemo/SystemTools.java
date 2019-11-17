@@ -91,9 +91,9 @@ public class SystemTools {
                         Random rand = new Random();
                         this.range = Math.round((rand.nextDouble()+0.5) * 100.0) / 100.0;
                         double vel = 0;
-                        int skip = 0,skipMax = 2;
+                        int skip = 0,skipMax = 10;
                         do {
-                            if(currentNode == startNode || currentNode == endNode){skip = skipMax;}
+                            if(/*currentNode == startNode ||*/ currentNode == endNode){skip = skipMax;}
                             if(skip == skipMax){
                                 int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
                                         currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];

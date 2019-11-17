@@ -4,15 +4,10 @@
     <list default="true" id="40c28104-ef9f-4a34-8eae-81a1ad759631" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$2.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -83,6 +78,7 @@
       <workItem from="1573858136924" duration="10616000" />
       <workItem from="1573917141574" duration="7286000" />
       <workItem from="1573943634383" duration="11995000" />
+      <workItem from="1573990955101" duration="7389000" />
     </task>
     <servers />
   </component>
@@ -112,7 +108,7 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/fireescapedemo/Employee.java</url>
-          <line>152</line>
+          <line>151</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
       </breakpoints>

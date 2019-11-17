@@ -69,8 +69,7 @@ public class Employee extends Actor implements Serializable{
     private void setCurPoint() {
         this.postPoint = this.curPoint;
         System.out.println("Test 3: " + this.path.isEmpty());
-        if(this.path.isEmpty()){this.exited = true;}
-        else{this.curPoint = this.path.remove(0);}
+        this.curPoint = this.path.remove(0);
     }
 
     private State currentState;
@@ -155,7 +154,7 @@ public class Employee extends Actor implements Serializable{
         System.out.println("Line path value: " + linePathValue);
         if(linePathValue < 1){
             System.out.println("Test 1: " + this.path.isEmpty());
-            if(!this.path.isEmpty()){
+            if(this.path.isEmpty()){
                 this.exited = true;
             }else{
                 System.out.println("Test 2: " + this.path.isEmpty());
@@ -173,37 +172,36 @@ public class Employee extends Actor implements Serializable{
         double yThreshold = this.curPoint.getKey().getY();
         double startX = this.view.getLayoutX(), endX = end.getActualX() + (end.getWidth()/2) ,
                 startY=  this.view.getLayoutY(), endY =  end.getActualY() + (end.getHeight()/2);
-        double magStart = Math.sqrt(Math.pow(startX,2) + Math.pow(startY,2));
+        /*double magStart = Math.sqrt(Math.pow(startX,2) + Math.pow(startY,2));
         double magEnd = Math.sqrt(Math.pow(endX,2) + Math.pow(endY,2));
         double dotProd = (startX * endX) + (startY * endY);
         double crossProd = (startX + xThreshold - startX)*(endY - startY)-(endX - startX)*(startY + yThreshold - startY);
         double theta = Math.acos(dotProd / (magStart * magEnd));
         if(crossProd > 0 ){theta = -theta;}
         this.view.setRotate(theta);
-        System.out.println("Theta: " + theta);
-        double mX = xThreshold;
-        double mY = yThreshold;
-        if(xThreshold == 0){
-            mX = -((startX - endX) / 100);
-        }else if(yThreshold == 0){
-            mY = -((startY - endY) / 100);
+        *///System.out.println("Theta: " + theta);
+        double mX = endX - startX ;
+        double mY = endY - startY;
+        if(mX == mY){
+            mX = mX < 0 ? -1 : 1;
+            mY = mY < 0 ? -1 : 1;
+
+        }else{
+            //set x velocity
+            if(mX ==0){ mX = 0; }
+            else{ mX= startX <= endX ? startX / endX : -(endX / startX); }
+
+
+            if(mY ==0 ){ mY = 0; }
+            else{ mY= startY <= endY ? startY / endY : -(endY / startY); }
         }
+
+
 
         System.out.println("mX: " + mX + ", mY: " + mY);
 
-        /*
-        if(xThreshold < 0 ){ if(rotX < -this.range){rotX = xThreshold;}}
-        if(xThreshold > 0 ){ if(rotX > this.range){rotX = xThreshold;}}
-        if(yThreshold < 0 ){ if(rotY < -this.range){rotY = yThreshold;}}
-        if(yThreshold > 0 ){ if(rotY > this.range){rotY = yThreshold;}}
-        */
 
-        //rotX = rotX < xThreshold && rotX > -xThreshold ? rotX : xThreshold;
-        //rotY = rotY < yThreshold && rotY > -yThreshold ? rotY : yThreshold;
-       // System.out.println("Range: " + this.range);
-       // System.out.println("xThreshold: " + xThreshold + ", yThreshold: " + yThreshold);
-        //System.out.println("rotX: " + rotX + ", rotY: " + rotY);
         this.velocity = new Point2D(mX, mY);
-        return Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY,2));
+        return Math.sqrt(Math.pow(endX - startX,2) + Math.pow(endY - startY,2));
     }
 }
