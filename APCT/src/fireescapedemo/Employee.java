@@ -3,16 +3,18 @@ package fireescapedemo;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Employee extends Actor implements Serializable{
-    private double counter = 0, velAmount = 0;
+    private double counter = 0, range = 0;
     private transient ArrayList<Pair<Point2D,Tile>> path;
     private boolean findingPath, exited;
-    Pair<Point2D,Tile> curPoint;
+    Pair<Point2D,Tile> curPoint,postPoint;
     public Tile proTile;
     public SystemTools tools;
 
@@ -38,7 +40,8 @@ public class Employee extends Actor implements Serializable{
                 employee.proTile = employee.oriTile;
                 employee.setCurrentState(state);
                 employee.findingPath = false;
-                employee.setVelAmount(employee.tools.pathFinder.getRange());
+                employee.setrange(employee.tools.pathFinder.getRange());
+                employee.curPoint = employee.getPath().get(0);
                 employee.setCurPoint();
             }
         },
@@ -47,12 +50,9 @@ public class Employee extends Actor implements Serializable{
             public void act(Employee employee, Floor floor) {
                 System.out.println("Now escaping");
 
-                if(employee.getPath().isEmpty() ){
-                    employee.exited = true;
-                }
-                else if(employee.getPath() != null){
+                //if(employee.getPath() != null){
                     employee.updatePathPoint();
-                }
+                //}
             }
         },
 
@@ -66,7 +66,12 @@ public class Employee extends Actor implements Serializable{
         public abstract void act(Employee employee, Floor floor);
     }
 
-    private void setCurPoint() { this.curPoint = this.path.remove(0);}
+    private void setCurPoint() {
+        this.postPoint = this.curPoint;
+        System.out.println("Test 3: " + this.path.isEmpty());
+        if(this.path.isEmpty()){this.exited = true;}
+        else{this.curPoint = this.path.remove(0);}
+    }
 
     private State currentState;
 
@@ -104,14 +109,7 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
-                    //if(this.counter >= this.oriTile.getWidth()){
-                      //  this.findingPath = false;
-                     //   this.counter = 0;
-                    //}
-                    //if(!this.findingPath){
-                   //     this.findingPath = true;
                     this.currentState.act(this,floor);
-                    //}
                     break;
                 }
                 case Extinguish:{
@@ -124,11 +122,10 @@ public class Employee extends Actor implements Serializable{
                 }
             }
 
-            counter += velAmount;
         this.view.setLayoutX(view.getLayoutX() + velocity.getX());
         this.view.setLayoutY(view.getLayoutY() + velocity.getY());
         }else{
-            this.view.setOpacity(0);
+            this.view.setOpacity(0.5);
         }
     }
 
@@ -149,17 +146,19 @@ public class Employee extends Actor implements Serializable{
 
     public void setCurrentState(State state){this.currentState = state;}
     public void setPath(ArrayList<Pair<Point2D, Tile>> newPath){this.path = newPath;}
-    public void setVelAmount(double vel){this.velAmount = vel;}
+    public void setrange(double vel){this.range = vel;}
     public void toggleExited(){this.exited = !exited;}
     public boolean hasExited(){return this.exited;}
 
     void updatePathPoint(){
         double linePathValue = findLineAndRotate(curPoint.getValue());
         System.out.println("Line path value: " + linePathValue);
-        if(linePathValue < 5){
+        if(linePathValue < 1){
+            System.out.println("Test 1: " + this.path.isEmpty());
             if(!this.path.isEmpty()){
                 this.exited = true;
             }else{
+                System.out.println("Test 2: " + this.path.isEmpty());
                 this.setCurPoint();
             }
         }
@@ -170,17 +169,41 @@ public class Employee extends Actor implements Serializable{
 
     double findLineAndRotate(Tile end){
         //line of sight to end node
-        double rotX = this.view.getLayoutX() - end.getGridX();
-        double rotY = this.view.getLayoutY() - end.getGridY();
-        double rot = Math.atan2(rotX, rotY);
-        System.out.println("rot: " + rot);
-        this.view.setRotate(rotX + rotY);
-        //distance from line of site
-        rotX = this.velocity.getX() - rot;
-        rotY = this.velocity.getY() - rot;
-        rotX = rot < 1 && rot > -1 ? this.curPoint.getKey().getX() : rotX;
-        rotY = rot < 1 && rot > -1 ? this.curPoint.getKey().getY() : rotY;
-        this.velocity = new Point2D(rotX, rotY);
-        return Math.sqrt(this.view.getLayoutX() - end.getGridX() + this.view.getLayoutY() - end.getGridY());
+        double xThreshold = this.curPoint.getKey().getX();
+        double yThreshold = this.curPoint.getKey().getY();
+        double startX = this.view.getLayoutX(), endX = end.getActualX() + (end.getWidth()/2) ,
+                startY=  this.view.getLayoutY(), endY =  end.getActualY() + (end.getHeight()/2);
+        double magStart = Math.sqrt(Math.pow(startX,2) + Math.pow(startY,2));
+        double magEnd = Math.sqrt(Math.pow(endX,2) + Math.pow(endY,2));
+        double dotProd = (startX * endX) + (startY * endY);
+        double crossProd = (startX + xThreshold - startX)*(endY - startY)-(endX - startX)*(startY + yThreshold - startY);
+        double theta = Math.acos(dotProd / (magStart * magEnd));
+        if(crossProd > 0 ){theta = -theta;}
+        this.view.setRotate(theta);
+        System.out.println("Theta: " + theta);
+        double mX = xThreshold;
+        double mY = yThreshold;
+        if(xThreshold == 0){
+            mX = -((startX - endX) / 100);
+        }else if(yThreshold == 0){
+            mY = -((startY - endY) / 100);
+        }
+
+        System.out.println("mX: " + mX + ", mY: " + mY);
+
+        /*
+        if(xThreshold < 0 ){ if(rotX < -this.range){rotX = xThreshold;}}
+        if(xThreshold > 0 ){ if(rotX > this.range){rotX = xThreshold;}}
+        if(yThreshold < 0 ){ if(rotY < -this.range){rotY = yThreshold;}}
+        if(yThreshold > 0 ){ if(rotY > this.range){rotY = yThreshold;}}
+        */
+
+        //rotX = rotX < xThreshold && rotX > -xThreshold ? rotX : xThreshold;
+        //rotY = rotY < yThreshold && rotY > -yThreshold ? rotY : yThreshold;
+       // System.out.println("Range: " + this.range);
+       // System.out.println("xThreshold: " + xThreshold + ", yThreshold: " + yThreshold);
+        //System.out.println("rotX: " + rotX + ", rotY: " + rotY);
+        this.velocity = new Point2D(mX, mY);
+        return Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY,2));
     }
 }

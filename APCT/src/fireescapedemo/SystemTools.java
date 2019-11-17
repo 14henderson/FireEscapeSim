@@ -91,15 +91,14 @@ public class SystemTools {
                         Random rand = new Random();
                         this.range = Math.round((rand.nextDouble()+0.5) * 100.0) / 100.0;
                         double vel = 0;
-                        int skip = 0,skipMax = 3;
+                        int skip = 0,skipMax = 2;
                         do {
-                            if(currentNode == startNode){skip = 0;}
-                                if(skip < skipMax){
+                            if(currentNode == startNode || currentNode == endNode){skip = skipMax;}
+                            if(skip == skipMax){
                                 int prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
                                         currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
                                 System.out.println("x: " + proX + ", y: " + proY);
                                 if(prevX== proX){
-
                                     vel = prevY > proY ? range : -range;
                                     this.velocitys.add(new Pair(new Point2D(0,vel),currentNode));
                                 }else{
@@ -108,15 +107,17 @@ public class SystemTools {
                                 }
                                 System.out.println("Count " + counter);
                                 System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                //currentNode.block.setFill(Color.RED);
+                                currentNode.getFxRef().setFill(Color.LIGHTBLUE);
                                 //currentNode.setType(Tile.BlockType.Path);
-                                currentNode = currentNode.getParent();
                                 counter++;
-                                skip++;
-                            }else{skip = 0;}
+                                skip = 0;
+                            }
+                            currentNode = currentNode.getParent();
+                            skip++;
                         }while (currentNode != start);
                     }
                     Collections.reverse(this.velocitys);
+                    System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
                     return true;
                 }
             }

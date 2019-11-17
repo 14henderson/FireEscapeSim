@@ -7,12 +7,9 @@
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$3.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State$4.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee$State.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
@@ -85,6 +82,7 @@
       <workItem from="1572880233963" duration="5209000" />
       <workItem from="1573858136924" duration="10616000" />
       <workItem from="1573917141574" duration="7286000" />
+      <workItem from="1573943634383" duration="11995000" />
     </task>
     <servers />
   </component>
@@ -112,12 +110,18 @@
           <line>153</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/fireescapedemo/Employee.java</url>
+          <line>152</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="this.map" language="JAVA" />
         <watch expression="((java.util.LinkedList)unopenList).get(2)" custom="java.util.LinkedList" />
+        <watch expression="this.map" language="JAVA" />
       </configuration>
     </watches-manager>
   </component>

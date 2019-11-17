@@ -104,8 +104,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 Circle c;
                 c = new Circle(10);
                 c.setFill(Color.PINK);
-                c.setLayoutX(tile.getActualX()+25);
-                c.setLayoutY(tile.getActualY()+15);
+                c.setLayoutX(tile.getActualX()+ (tile.getWidth()/2));
+                c.setLayoutY(tile.getActualY()+ (tile.getHeight()/2));
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
