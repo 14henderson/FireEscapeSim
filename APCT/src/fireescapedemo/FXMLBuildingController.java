@@ -211,53 +211,8 @@ public class FXMLBuildingController implements Initializable {
         normWall.setOnAction((ActionEvent e) -> {
            //
         });
-        mainBuilding.initialiseView();
-        normWall.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Default;
-            this.enableLineBlocks();
-        });
-        stairWall.setOnAction((ActionEvent e) -> {
-            this.actionType = Tile.BlockType.Default;
-            this.enableLineBlocks();
-        });
         errorText.setText("");
 
-
-
-        this.mapPane.setOnScroll((ScrollEvent event) -> {
-            cancelLineClicked();
-            double scroll = event.getDeltaY();
-            if(scroll < 0 && mainBuilding.getSize() > minZoom && currentTranslation==false) {
-                currentTranslation = true;
-                mainBuilding.zoom(-1);
-                currentTranslation = false;
-            }else if(scroll > 0 && mainBuilding.getSize() < maxZoom && currentTranslation==false){
-                currentTranslation = true;
-                mainBuilding.zoom(1);
-                currentTranslation = false;
-            }
-        });
-
-        this.mainPane.setOnKeyPressed((KeyEvent event) -> {
-            cancelLineClicked();
-            if(event.getCode() == KeyCode.RIGHT && currentTranslation==false){
-                currentTranslation = true;
-                mainBuilding.pan(-10, 0);
-                currentTranslation = false;
-            }else if(event.getCode() == KeyCode.DOWN && currentTranslation==false){
-                currentTranslation = true;
-                mainBuilding.pan(0, -10);
-                currentTranslation = false;
-            }else if(event.getCode() == KeyCode.LEFT && currentTranslation==false){
-                currentTranslation = true;
-                mainBuilding.pan(10, 0);
-                currentTranslation = false;
-            }else if(event.getCode() == KeyCode.UP && currentTranslation==false){
-                currentTranslation = true;
-                mainBuilding.pan(0, 10);
-                currentTranslation = false;
-            }
-        });
 
 
         this.initLineBlocks();
@@ -266,6 +221,48 @@ public class FXMLBuildingController implements Initializable {
         this.renderDragLine();
     }
 
+    @FXML
+    public void zoomIn(){
+        if(this.mainBuilding.getSize()+2 > this.minZoom && this.mainBuilding.getSize()+2 < this.maxZoom) {
+            currentTranslation = true;
+            mainBuilding.zoom(2);
+            currentTranslation = false;
+        }
+    }
+    @FXML
+    public void zoomOut(){
+        if(this.mainBuilding.getSize()-2 > this.minZoom && this.mainBuilding.getSize()-2 < this.maxZoom) {
+            currentTranslation = true;
+            mainBuilding.zoom(-2);
+            currentTranslation = false;
+        }
+    }
+
+
+    @FXML
+    public void panUp(){
+        currentTranslation = true;
+        mainBuilding.pan(0, 30);
+        currentTranslation = false;
+    }
+    @FXML
+    public void panDown(){
+        currentTranslation = true;
+        mainBuilding.pan(0, -30);
+        currentTranslation = false;
+    }
+    @FXML
+    public void panRight(){
+        currentTranslation = true;
+        mainBuilding.pan(-30, 0);
+        currentTranslation = false;
+    }
+    @FXML
+    public void panLeft(){
+        currentTranslation = true;
+        mainBuilding.pan(30, 0);
+        currentTranslation = false;
+    }
 
 
     @FXML

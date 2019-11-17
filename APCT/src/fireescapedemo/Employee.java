@@ -95,7 +95,7 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
-                    if(this.counter >= this.proTile.getSize()){
+                    if(this.counter >= this.proTile.getHeight()){
                         this.findingPath = false;
                         this.counter = 0;
                     }

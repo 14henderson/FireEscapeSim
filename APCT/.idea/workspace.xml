@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f12d5092-e3b0-468f-86af-b4760c6ecf18" name="Default Changelist" comment="" />
+    <list default="true" id="692b54ce-decb-4619-a652-30714193ae18" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuilding.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuilding.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuilding.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuilding.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="project.structure.last.edited" value="Problems" />
-    <property name="project.structure.proportion" value="0.15" />
-    <property name="project.structure.side.proportion" value="0.2" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -25,7 +32,7 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration name="run" type="Application" factoryName="Application">
+    <configuration name="Unnamed" type="Application" factoryName="Application" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="fireescapedemo.FireEscapeDemo" />
       <module name="APCT" />
       <method v="2">
