@@ -10,12 +10,14 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
@@ -126,18 +128,15 @@ public class FXMLSimulationController implements Initializable {
     }
 
     private void onUpdate() {
-        double bX , bY,
-                bW, bH;
         for(Floor floor : mainBuilding.getFloors()){
 
+            for(Employee e : floor.employees){ e.update(floor); }
             quadTree = new QuadTree(4,floor.getActualX(),floor.getActualY(),floor.getActualWidth(),floor.getActualHeight());
             quadTree.insertAll(floor.employees);
-            quadTree.drawLines(Building.windowContainer);
+            //quadTree.insertAll(floor.employees);
+            quadTree.drawLines(mapPane);
             quadTree.checkCollisions();
 
-            for(Employee a : floor.employees){
-                a.update(floor);
-            }
         }
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());

@@ -29,42 +29,57 @@ public class QuadTree{
         this.children = new QuadTree[4];
     }
 
-    private void createChildren(){
-        //northwest
-        QuadTree northwest = new QuadTree(this.cap,this.x + this.w/2,this.y,this.w/2,this.h/2);
-        //northeast
-        QuadTree northeast = new  QuadTree(this.cap, this.x,this.y,this.h/2,this.w/2);
-        //southwest
-        QuadTree southwest = new QuadTree(this.cap, this.x, this.y - this.h/2,this.w/2,this.h/2);
-        //southeast (represent)
-        QuadTree southeast = new QuadTree(this.cap,this.x  + this.w/2,this.y - this.h/2,this.w/2,this.h/2);
-        this.children[0] = northeast;
-        this.children[1] = northwest;
-        this.children[2] = southwest;
-        this.children[3] = southeast;
-    }
-
-    public boolean contains(Actor a){
-        double aX = a.view.getLayoutX(), aY =  a.view.getLayoutX();
-        return aX > this.x && aX < this.x+this.w && aY > this.y && aY < this.x+this.h;
+    //inserting all actors at once
+    public void insertAll(ArrayList<?> actors){
+        int i, len = actors.size();
+        for( i = 0; i < len; i++){
+            if(actors.get(i) instanceof Actor){
+                this.insert((Actor)actors.get(i));
+            }
+        }
     }
 
     public void insert(Actor a){
-        if(this.iter+1 <= this.cap){
+        if(!this.contains(a)){return;}
+        if(!this.divided && this.iter+1 <= this.cap){
             this.points[this.iter] = a;
-            System.out.println("Child added");
             iter++;
         }else{
             if(!this.divided){
                 this.createChildren();
-                System.out.println("Split created");
-                this.divided = true;
             }
             int i = 0, len = this.children.length;
-            //for each child, if the actor is within the bounds, run childs insert method
-            for(i  = 0; i < len; i++){ if(this.children[i].contains(a)){ this.children[i].insert(a);} }
+            for(i  = 0; i < len; i++){  this.children[i].insert(a); }
         }
     }
+    private void createChildren(){
+        double hW = this.w/2, hH = this.h/2;
+        //northwest
+        QuadTree northwest = new QuadTree(this.cap,    this.x,         this.y,       hW,hH);
+        //northeast
+        QuadTree northeast = new  QuadTree(this.cap,this.x + hW,    this.y,       hW,hH);
+        //southwest
+        QuadTree southwest = new QuadTree(this.cap,    this.x,      this.y + hH,  hW,hH);
+        //southeast (represent)
+        QuadTree southeast = new QuadTree(this.cap, this.x  + hW,this.y + hH,  hW,hH);
+        this.children[0] = northeast;
+        this.children[1] = northwest;
+        this.children[2] = southwest;
+        this.children[3] = southeast;
+        this.divided = true;
+    }
+
+    public boolean contains(Actor a){
+        double aX = a.view.getLayoutX(), aY =  a.view.getLayoutX();
+
+        return  aX > this.x - this.w &&
+                aX < this.x + this.w &&
+                aY > this.y - this.h &&
+                aY < this.y + this.h;
+    }
+
+
+
     public void checkCollisions(){
         int i,j, pointLen = this.points.length, childLen = this.children.length;
         Actor point, target;
@@ -75,16 +90,16 @@ public class QuadTree{
 
             for(j = 0; j < pointLen; j++){
                 target = this.points[j];
-                if(point == null || target == null){continue;}
-                if(point instanceof Employee && target instanceof Employee){
-                    if(collisionBetween((Employee)point,(Employee)target)){
+                if(point == null || target == null || point == target){continue;}
+                //if(point instanceof Employee && target instanceof Employee){
+                    if(this.collisionBetween((Employee)point,(Employee)target)){
                         ((Circle)point.view).setFill(Color.GREEN);
                         ((Circle)target.view).setFill(Color.GREEN);
                     }else{
-                            ((Circle)point.view).setFill(Color.LIGHTBLUE);
-                            ((Circle)target.view).setFill(Color.LIGHTBLUE);
+                        ((Circle)point.view).setFill(Color.LIGHTBLUE);
+                        ((Circle)target.view).setFill(Color.LIGHTBLUE);
                     }
-                }
+                //}
             }
         }
         if(this.divided){
@@ -96,35 +111,47 @@ public class QuadTree{
     }
 
     private boolean collisionBetween(Employee a, Employee b){
-        return ((((a.view.getLayoutX()-b.view.getLayoutX())*2) + ((a.view.getLayoutY()-b.view.getLayoutY())*2)) <
-                ((Circle)(a.view)).getRadius() + ((Circle)(b.view)).getRadius());
+        double dis = Math.sqrt(Math.pow(a.view.getLayoutX() - b.view.getLayoutX(),2) +
+                Math.pow(a.view.getLayoutY() - b.view.getLayoutY(),2));
+        return dis < ((Circle)(a.view)).getRadius() + ((Circle)(b.view)).getRadius();
     }
 
 
 
-    //inserting all actors at once
-    public void insertAll(ArrayList<?> actors){
-        int i, len = actors.size();
-        for( i = 0; i < len; i++){
-            if(actors.get(i) instanceof Actor){
-                this.insert((Actor)actors.get(i));
-            }
-        }
-    }
 
 
     public void drawLines(Pane floor){
-        Rectangle rec = new Rectangle(this.x,this.y,this.w,this.h);
-        rec.setStroke(Color.TRANSPARENT);
-        rec.setStroke(Color.ORANGE);
-        rec.setOpacity(0.01);
-        floor.getChildren().add(rec);
+        //LEFT 2 RIGHT UPPER
+        Line line1 = new Line(this.x,this.y,this.x + this.w, this.y);
+        //LEFT 2 RIGHT LOWER
+        Line line2 = new Line(this.x,this.y + this.h,this.x, this.y + this.h);
+        //UP TO DOWN LEFT
+        Line line3 = new Line(this.x,this.y,this.x, this.y + this.h);
+        //UP TO DOWN RIGHT
+        Line line4 = new Line(this.x+ this.w,this.y,this.x + this.w, this.y + this.h);
+
+        line1.setStroke(Color.ORANGE);
+        line2.setStroke(Color.ORANGE);
+        line3.setStroke(Color.ORANGE);
+        line4.setStroke(Color.ORANGE);
+        floor.getChildren().add(line1);
+        floor.getChildren().add(line2);
+        floor.getChildren().add(line3);
+        floor.getChildren().add(line4);
         if(this.divided){
             int i, len = this.children.length;
             for(i = 0; i < len; i++){
                 this.children[i].drawLines(floor);
             }
         }
+    }
+
+    public void clear(){
+        int i, lenP = this.points.length, lenC = this.children.length;
+        this.iter = 0;
+        this.divided = false;
+        for(i = 0; i < lenP; i++){this.points[i] = null;}
+        for(i = 0; i < lenC; i++){this.children[i] = null;}
     }
 
 
