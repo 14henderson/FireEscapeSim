@@ -18,9 +18,6 @@ import javafx.scene.shape.Rectangle;
 public class Building extends MapObject implements Serializable {
     private ArrayList<Floor> floors;
     private int currentFloor;
-    //private int height;
-    //private int width;
-    //private int tileSize;
     private int initialEmployeeCount;
     private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
@@ -111,11 +108,12 @@ public class Building extends MapObject implements Serializable {
     public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
     public void setCurrentFloor(int floor){this.currentFloor = floor;}
     public double getXPanOffset(){
-        return this.getCurrentFloor().floorBlocks[0][0].getActualX();
+        return this.getCurrentFloor().getPanXOffset();
     }
     public double getYPanOffset(){
-        return this.getCurrentFloor().floorBlocks[0][0].getActualY();
+        return this.getCurrentFloor().getPanYOffset();
     }
+
 
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}

@@ -3,21 +3,48 @@
   <component name="ChangeListManager">
     <list default="true" id="692b54ce-decb-4619-a652-30714193ae18" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Building.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Building.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuilding.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuilding.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLBuildingController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/LineTile$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/LineTile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/LineTile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SceneManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SceneManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$2.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType$4.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile$BlockType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Tile.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Building.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Building.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuilding.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuilding.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/LineTile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/LineTile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SceneManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SceneManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/TileObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/TileObject.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">

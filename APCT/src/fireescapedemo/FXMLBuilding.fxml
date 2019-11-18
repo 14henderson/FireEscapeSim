@@ -11,48 +11,68 @@
 
 <AnchorPane id="AnchorPane" fx:id="mainPane" prefHeight="750.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLBuildingController">
     <children>
-      <Pane fx:id="mapPane" layoutX="0" layoutY="0" prefHeight="727.0" prefWidth="652.0">
-         <children>
-
-         </children></Pane>
+      <Pane fx:id="mapPane" layoutY="-3.0" prefHeight="727.0" prefWidth="652.0" />
         <!--<Rectangle fx:id="play" arcHeight="5.0" arcWidth="5.0" fill="#ff1f1f" height="50.0" stroke="BLACK" strokeType="INSIDE" width="25.0" />-->
-        <Pane fx:id="zoomAndPanPane">
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="95.0" layoutX="504.0" layoutY="21.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
-            <Label layoutX="517.0" layoutY="28.0" text="Zoom" />
-            <Label layoutX="599.0" layoutY="28.0" text="Pan" />
-            <Line endX="0.25" endY="61.0" layoutX="557.0" layoutY="48.0" startX="0.25" startY="-16.0" />
-            <Button onAction="#zoomIn" layoutX="520.0" layoutY="48.0" mnemonicParsing="false" text="+">
+
+
+
+        <Pane fx:id="zoomAndPanPane" layoutX="498.0" layoutY="14.0" prefHeight="96.0" prefWidth="160.0">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="102.0" layoutX="7.0" layoutY="1.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
+            <Label layoutX="20.0" layoutY="8.0" text="Zoom">
+            <font>
+               <Font name="System Bold" size="13.0" />
+            </font>
+         </Label>
+            <Label layoutX="102.0" layoutY="8.0" text="Pan">
+            <font>
+               <Font name="System Bold" size="13.0" />
+            </font>
+         </Label>
+            <Line endX="0.25" endY="61.0" layoutX="60.0" layoutY="28.0" startX="0.25" startY="-16.0" />
+            <Button layoutX="23.0" layoutY="28.0" mnemonicParsing="false" onAction="#zoomIn" text="+">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
-            <Button onAction="#zoomOut" layoutX="520.0" layoutY="77.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="24.0" text="-">
+            <Button layoutX="23.0" layoutY="57.0" mnemonicParsing="false" onAction="#zoomOut" prefHeight="25.0" prefWidth="24.0" text="-">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
-            <Button onAction="#panUp" layoutX="596.0" layoutY="52.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="22.0" text="↑">
+            <Button layoutX="99.0" layoutY="32.0" mnemonicParsing="false" onAction="#panUp" prefHeight="20.0" prefWidth="22.0" text="↑">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
-            <Button onAction="#panLeft" layoutX="566.0" layoutY="67.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="28.0" text="←">
+            <Button layoutX="69.0" layoutY="47.0" mnemonicParsing="false" onAction="#panLeft" prefHeight="25.0" prefWidth="28.0" text="←">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
-            <Button onAction="#panRight" layoutX="620.0" layoutY="67.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="28.0" text="→">
+            <Button layoutX="123.0" layoutY="47.0" mnemonicParsing="false" onAction="#panRight" prefHeight="25.0" prefWidth="28.0" text="→">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
-            <Button onAction="#panDown" layoutX="596.0" layoutY="80.0" mnemonicParsing="false" prefHeight="20.0" prefWidth="22.0" text="↓">
+            <Button layoutX="99.0" layoutY="60.0" mnemonicParsing="false" onAction="#panDown" prefHeight="20.0" prefWidth="22.0" text="↓">
                 <font>
                     <Font name="System Bold" size="12.0" />
                 </font>
             </Button>
         </Pane>
 
+        <Pane fx:id="stairOptionsPane" layoutX="498.0" layoutY="125.0" prefHeight="135.0" prefWidth="160.0">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="135.0" layoutX="8.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
+            <Label layoutX="46.0" layoutY="3.0" text="Stair Options">
+                <font>
+                    <Font name="System Bold" size="13.0" />
+                </font>
+            </Label>
+            <Button layoutX="130.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateRight" prefHeight="25.0" prefWidth="27.0" text="⭮" />
+            <Button layoutX="13.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateLeft" text="⭯" />
+            <Button layoutX="17.0" layoutY="106.0" mnemonicParsing="false" text="Connect to other stairs" />
+         <Rectangle fx:id="stairTileContainer" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="85.0" layoutX="43.0" layoutY="19.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
+        </Pane>
 
 
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="750.0" prefWidth="221.0">
@@ -78,11 +98,10 @@
                 <!--Button layoutX="37.0" layoutY="506.0" mnemonicParsing="false" onAction="#renderBlocks" text="RENDER" /-->
             <Button fx:id="defaultButton" layoutX="30.0" layoutY="196.0" mnemonicParsing="false" onAction="#defaultTileButton" prefHeight="25.0" prefWidth="68.0" text="Default" />
             <Button fx:id="exitButton" layoutX="30.0" layoutY="235.0" mnemonicParsing="false" onAction="#exitTileButton" prefHeight="25.0" prefWidth="68.0" text="Exit" />
-            <Button fx:id="stairsButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" onAction="#stairsTileButton" prefHeight="25.0" prefWidth="68.0" text="Stair" />
-            <Button fx:id="employeeButton" layoutX="118.0" layoutY="235.0" mnemonicParsing="false" onAction="#employeeTileButton" prefHeight="25.0" prefWidth="68.0" text="Employee" />
+            <Button fx:id="stairsButton" layoutX="118.0" layoutY="196.0" mnemonicParsing="false" onAction="#stairsUpButton" prefHeight="25.0" prefWidth="80.0" text="Stair Up" />
+            <Button fx:id="employeeButton" layoutX="118.0" layoutY="272.0" mnemonicParsing="false" onAction="#employeeTileButton" prefHeight="25.0" prefWidth="80.0" text="Employee" />
             <Button layoutX="30.0" layoutY="272.0" mnemonicParsing="false" onAction="#blockedTileButton" prefHeight="25.0" prefWidth="68.0" text="Blocked" />
-            <Button layoutX="119.0" layoutY="272.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="68.0" text="Button" />
-
+            <Button layoutX="118.0" layoutY="235.0" mnemonicParsing="false" onAction="#stairsDownButton" prefHeight="25.0" prefWidth="80.0" text="Stair Down" />
 
                 <Pane layoutX="6.0" layoutY="681.0" />
                 <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
@@ -107,8 +126,8 @@
                </font>
             </Label>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="108.0" layoutX="11.0" layoutY="359.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-            <Button fx:id="normWall" layoutX="66.0" layoutY="393.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Normal Wall" />
-            <Button fx:id="stairWall" layoutX="66.0" layoutY="427.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="82.0" text="Stair Exit" />
+            <Button fx:id="normWall" layoutX="66.0" layoutY="393.0" mnemonicParsing="false" onAction="#normWallButton" prefHeight="25.0" prefWidth="82.0" text="Normal Wall" />
+            <Button fx:id="deleteWall" layoutX="66.0" layoutY="427.0" mnemonicParsing="false" onAction="#deleteWallButton" prefHeight="25.0" prefWidth="82.0" text="Delete Wall" />
             </children>
         </Pane>
     </children>

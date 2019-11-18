@@ -2,6 +2,7 @@ package fireescapedemo;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -27,12 +28,13 @@ public class Floor extends MapObject implements Serializable {
     int mapHeight;
     int mapWidth;
     int tileSize;
+    int panXOffset;
+    int panYOffset;
     boolean lineClicked = false;
     double lineCords[] = new double[2];
     public ArrayList<TileObject> tileObjects;
     ArrayList<Exit> exits;
-    Rectangle lastRec = null;
-    private ArrayList<double[]> walls;
+    private ArrayList<int[]> walls;
     private transient ArrayList<Line> wallsNodes;
 
 
@@ -48,6 +50,8 @@ public class Floor extends MapObject implements Serializable {
         this.wallsNodes = new ArrayList<>();
         this.exits = new ArrayList<>();
 
+        this.panXOffset = 0;
+        this.panYOffset = 0;
 
         System.out.println("Tile size: "+this.tileSize);
         for(int i = 0; i < this.mapWidth; i++){
@@ -61,77 +65,103 @@ public class Floor extends MapObject implements Serializable {
     public void addExit(Exit exit)          { this.exits.add(exit); }
 
 
+    public void initialiseWalls(){
+        for(Node wall : this.wallsNodes) {
+            this.mainBuilding.windowContainer.getChildren().remove(wall);
+        }
+        this.wallsNodes.clear();
+        for(int[] line : this.walls){
+            Line wallLine = new Line(
+                    (line[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
+                    (line[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset(),
+                    (line[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
+                    (line[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.add(wallLine);
+            wallLine.setStroke(Color.BLUE);
+            wallLine.setStrokeWidth(10*this.tileSize/50.0);
+            mainBuilding.windowContainer.getChildren().add(wallLine);
+        }
+    }
+
+
+
+
+
 
     @Override
     public void updateView(){
-        if(this.wallsNodes.size() != this.walls.size()){
-            this.initialiseView();
-        }
-
-        for(Tile[] tileRow : this.floorBlocks){
+        if (this.wallsNodes == null) {this.initialiseView();}       //if wall nodes never initialised.
+        if(this.wallsNodes.size() != this.walls.size()){this.initialiseWalls();}    //re-draw walls if required
+        for(Tile[] tileRow : this.floorBlocks){                     //update tiles
             for(Tile aTile : tileRow){
                 aTile.updateView();
         }}
-
-        for(int n=0; n<this.walls.size(); n++){
-            this.wallsNodes.get(n).setStartX(this.walls.get(n)[0]);
-            this.wallsNodes.get(n).setStartY(this.walls.get(n)[1]);
-            this.wallsNodes.get(n).setEndX(this.walls.get(n)[2]);
-            this.wallsNodes.get(n).setEndY(this.walls.get(n)[3]);
+        for(int n=0; n<this.walls.size(); n++){                     //reposition walls with cords
+            this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).toFront();
         }
     }
+
+
+
+
+
 
     public void zoom(int zoomValue){
         int newZoomValue = this.tileSize + zoomValue;
-        for(int i = 0; i < this.mapWidth; i++){
+
+        this.mainBuilding.setSize(newZoomValue);
+        this.tileSize = newZoomValue;
+
+        FXMLBuildingController.zoomLineBlocks(this.tileSize, newZoomValue);
+        for(int i = 0; i < this.mapWidth; i++){             //Zoom Tiles
             for(int j = 0; j< this.mapHeight; j++){
                 this.floorBlocks[i][j].setActualCords(
-                        this.floorBlocks[i][j].getActualX() / (double) this.tileSize * newZoomValue,
-                        this.floorBlocks[i][j].getActualY() / (double) this.tileSize * newZoomValue);
-                this.floorBlocks[i][j].setDimensions(newZoomValue, newZoomValue);
+                        (this.floorBlocks[i][j].getGridX()*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
+                        (this.floorBlocks[i][j].getGridY()*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+                this.floorBlocks[i][j].setDimensions(this.mainBuilding.getSize(), this.mainBuilding.getSize());
                 if(this.floorBlocks[i][j].tileObject != null){
                     this.floorBlocks[i][j].initialiseView();
                 }else {
-
                     this.floorBlocks[i][j].updateView();
-                }
-        }}
+        }}}
+
         for(int n=0; n<this.walls.size(); n++){
-            this.walls.get(n)[0] = this.walls.get(n)[0]/(double)this.tileSize*newZoomValue;
-            this.walls.get(n)[1] = this.walls.get(n)[1]/(double)this.tileSize*newZoomValue;
-            this.walls.get(n)[2] = this.walls.get(n)[2]/(double)this.tileSize*newZoomValue;
-            this.walls.get(n)[3] = this.walls.get(n)[3]/(double)this.tileSize*newZoomValue;
-            this.wallsNodes.get(n).setStartX(this.walls.get(n)[0]);
-            this.wallsNodes.get(n).setStartY(this.walls.get(n)[1]);
-            this.wallsNodes.get(n).setEndX(this.walls.get(n)[2]);
-            this.wallsNodes.get(n).setEndY(this.walls.get(n)[3]);
-            this.wallsNodes.get(n).setStrokeWidth(10*this.getTileSize()/50.0);
+            this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
             this.wallsNodes.get(n).toFront();
         }
-        FXMLBuildingController.zoomLineBlocks(this.tileSize, newZoomValue);
-        this.tileSize = newZoomValue;
-        this.mainBuilding.setSize(newZoomValue);
     }
 
+    public int getPanXOffset(){return this.panXOffset;}
+    public int getPanYOffset(){return this.panYOffset;}
+
     public void pan(int xinc, int yinc){
+        this.panXOffset += xinc;
+        this.panYOffset += yinc;
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){
                 this.floorBlocks[i][j].translate(xinc, yinc);
                 this.floorBlocks[i][j].updateView();
             }}
         for(int n=0; n<this.walls.size(); n++){
-            this.walls.get(n)[0] += xinc;
-            this.walls.get(n)[1] += yinc;
-            this.walls.get(n)[2] += xinc;
-            this.walls.get(n)[3] += yinc;
-            this.wallsNodes.get(n).setStartX(this.walls.get(n)[0]);
-            this.wallsNodes.get(n).setStartY(this.walls.get(n)[1]);
-            this.wallsNodes.get(n).setEndX(this.walls.get(n)[2]);
-            this.wallsNodes.get(n).setEndY(this.walls.get(n)[3]);
+            this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
             this.wallsNodes.get(n).toFront();
         }
         FXMLBuildingController.panLineBlocks(xinc, yinc);
     }
+
+
+
+
 
     @Override
     public void initialiseView(){
@@ -147,13 +177,7 @@ public class Floor extends MapObject implements Serializable {
             for(Tile aTile : tileRow){
                 aTile.initialiseView();
         }}
-        for(double[] line : this.walls){
-            Line wallLine = new Line(line[0], line[1], line[2], line[3]);
-            this.wallsNodes.add(wallLine);
-            wallLine.setStroke(Color.BLUE);
-            wallLine.setStrokeWidth(10*this.tileSize/50.0);
-            mainBuilding.windowContainer.getChildren().add(wallLine);
-        }
+        initialiseWalls();
         for(Employee e : this.employees){
             e.view.toFront();
         }
@@ -166,12 +190,36 @@ public class Floor extends MapObject implements Serializable {
         return this.exits.isEmpty() ? null : this.exits.get(0).position;
     }
 
-    public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
-    public void addWall(double[] cords, Line l){
+    public Tile getTile(int x, int y){
+        if(x<this.floorBlocks.length && y<this.floorBlocks[0].length
+        && x>= 0 && y >= 0) {
+            return this.floorBlocks[x][y];
+        }else{
+            return new Tile();
+        }
+    }
+    public void addWall(int[] cords, Line l){
         this.walls.add(cords);
         this.wallsNodes.add(l);
     }
-    public ArrayList<double[]> getWalls(){return this.walls;}
+    public void removeWall(int[] cords){
+        for(int n=this.walls.size()-1; n>0; n--){
+            System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
+
+
+            if(this.walls.get(n)[0] == cords[0] && this.walls.get(n)[1] == cords[1]
+            && this.walls.get(n)[2] == cords[2] && this.walls.get(n)[3] == cords[3]){
+                this.walls.remove(n);
+                System.out.println("REMOVED WALL");
+            }else if(this.walls.get(n)[0] == cords[2] && this.walls.get(n)[1] == cords[3]
+                    && this.walls.get(n)[2] == cords[0] && this.walls.get(n)[3] == cords[1]){
+                this.walls.remove(n);
+                System.out.println("REMOVED WALL");
+            }
+        }
+    }
+
+    public ArrayList<int[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
     public int getMapHeight(){return this.mapHeight;}
     public int getMapWidth(){return this.mapWidth;}

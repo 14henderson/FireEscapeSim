@@ -16,17 +16,18 @@ import java.io.Serializable;
 
 
 public class Tile extends MapObject implements Serializable, Comparable<fireescapedemo.Tile> {
-    public TileObject tileObject = null;                           //ref for any object residing on the tile
+    public TileObject tileObject = null;              //ref for any object residing on the tile
     private Actor currentActor;
     public boolean[] walls;
 
     //Tile Geometry Variables
     public int[] gridCords = new int[2];              //X, Y
-    public double[] actualCords = new double[2];            //X, Y
+    public double[] actualCords = new double[2];      //X, Y
     public double[] dimensions = new double[2];       //Width, Height
+    public int rotation = 0;
 
     //Node Building Variables
-    private transient Rectangle fxRef = null;               //Tile Rectangle object
+    private transient Rectangle fxRef = null;          //Tile Rectangle object
     private static boolean buildEnabled = true;
 
     //Path-finding Variables
@@ -66,8 +67,64 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
+                tile.fxRef.setOpacity(0.1);
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+
+                if(tile.tileObject != null && tile.tileObject.hasNode()){
+                    mainBuilding.windowContainer.getChildren().add(tile.tileObject.getNode());
+                    System.out.println("Reloading");
+                }else{
+                    Rectangle rec = new Rectangle(tile.getActualX(), tile.getActualY(), tile.mainBuilding.getSize(), tile.mainBuilding.getSize());
+                    Image image;
+                    char orientation = 'N';
+                    int rotation;
+                    String direction;
+                    String filename = "/Assets/stairs_%s_%c.fw.png";
+                    if(tile.tileObject != null){
+                        Staircase tmpRef = (Staircase)tile.tileObject;
+                        rotation = tmpRef.getRotation();
+                        direction = tmpRef.getDirection();
+                    }else {
+                        rotation = FXMLBuildingController.currStairOrientation;
+                        direction = FXMLBuildingController.currStairDirection;
+                    }
+                    switch (rotation) {
+                        case 0:
+                            orientation = 'N';
+                            tile.removeAccess(1);
+                            tile.removeAccess(2);
+                            tile.removeAccess(3);
+                            break;
+                        case 90:
+                            orientation = 'E';
+                            tile.removeAccess(0);
+                            tile.removeAccess(2);
+                            tile.removeAccess(3);
+                            break;
+                        case 180:
+                            orientation = 'S';
+                            tile.removeAccess(0);
+                            tile.removeAccess(1);
+                            tile.removeAccess(3);
+                            break;
+                        case 270:
+                            orientation = 'W';
+                            tile.removeAccess(0);
+                            tile.removeAccess(1);
+                            tile.removeAccess(2);
+                            break;
+                    }
+                    filename = String.format(filename, direction, orientation);
+                    try {
+                        image = new Image(getClass().getResource(filename).toURI().toString());
+                        rec.setFill(new ImagePattern(image));
+                    } catch (URISyntaxException ex) {}
+                    mainBuilding.windowContainer.getChildren().add(rec);
+                    Staircase stair = new Staircase(rec, tile);
+                    stair.setDirection(direction);
+                    stair.setRotation(rotation);
+                    tile.setTileObject(stair);
+                }
             }
         },
         Path {
@@ -167,12 +224,19 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         return 0;
     }
 
+    public Tile(){
+        this.type = null;
+        this.walls = new boolean[4];
+    }
+
+
     public Tile(int x, int y, int gridX, int gridY, double size){
         this.type = null;
         this.actualCords[0] = x;
         this.actualCords[1] = y;
         this.gridCords[0] = gridX;
         this.gridCords[1] = gridY;
+        this.rotation = FXMLBuildingController.currStairOrientation;
 
         this.dimensions[0] = size;
         this.dimensions[1] = size;
@@ -221,7 +285,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         } catch(Exception e){}
         if(this.tileObject != null){
             this.mainBuilding.windowContainer.getChildren().remove(this.tileObject.getNode());
-            this.tileObject = null;
         }
         this.currentActor = null;
         this.type.initialiseView(0, this);
@@ -248,6 +311,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.fxRef.setY(this.getActualY());
         this.fxRef.setWidth(this.getWidth());
         this.fxRef.setHeight(this.getWidth());
+        this.fxRef.setRotate(this.rotation);
 
         if(this.getActualX() > 700 || this.getActualY() > 700){
             this.fxRef.setVisible(false);
@@ -311,7 +375,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
      *              3:  Checks Left
      */
     public final void removeAccess(int dir){ this.walls[dir] = false;}
-
+    public final void grantAccess(int dir){ this.walls[dir] = true;}
     public static void toggleBuild() {buildEnabled = !buildEnabled;}
     public static boolean isBuildEnabled(){return buildEnabled;}
 
@@ -356,8 +420,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         public void setNode(Node n) {
             this.fxNode = n;
         }
-
-
     }
 
 

@@ -10,21 +10,22 @@ import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
+import javafx.scene.image.Image;
+import javafx.scene.input.*;
+import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import sun.security.krb5.internal.crypto.CksumType;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
@@ -37,11 +38,15 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Rectangle play;
     @FXML
+    private Rectangle stairTileContainer;
+    @FXML
     private AnchorPane mainPane;
     @FXML
     private Pane assetPane;
     @FXML
     private Pane mapPane;
+    @FXML
+    private Pane stairOptionsPane;
     @FXML
     private Label floorLevel;
     @FXML
@@ -77,7 +82,15 @@ public class FXMLBuildingController implements Initializable {
     private static Line movingWall;
     public final int minZoom = 10;
     public final int maxZoom = 100;
-    public boolean currentTranslation;
+    public boolean buildingWalls;
+    public wallType currentWall;
+    public Rectangle stairPreview;
+    public static int currStairOrientation = 0;
+    public static String currStairDirection = "up";
+    enum wallType{
+        Wall,
+        Delete
+    }
 
     @FXML
     private void handleButtonAction(ActionEvent event) {
@@ -104,7 +117,7 @@ public class FXMLBuildingController implements Initializable {
         this.lineTiles = new LineTile[width+1][height+1];
         for(int i = 0; i < this.lineTiles.length; i ++){
             for(int j = 0; j< this.lineTiles[i].length; j++) {
-                this.lineTiles[i][j] = new LineTile(((i*size) - (size / 2)) ,((j*size) - (size / 2)), size, this.mainBuilding);
+                this.lineTiles[i][j] = new LineTile(i*size, j*size, i, j, this.mainBuilding);
             }}
     }
     public void renderLineBlocks(){
@@ -117,7 +130,7 @@ public class FXMLBuildingController implements Initializable {
     public static void zoomLineBlocks(int oldZoom, int newZoom){
         for(int i = 0; i < lineTiles.length; i ++) {
             for (int j = 0; j < lineTiles[i].length; j++) {
-                lineTiles[i][j].zoom(oldZoom, newZoom);
+                lineTiles[i][j].zoom();
             }
         }
     }
@@ -138,6 +151,7 @@ public class FXMLBuildingController implements Initializable {
     }
 
     public void disableLineBlocks(){
+        this.buildingWalls = false;
         for (LineTile[] lineTileRow : this.lineTiles) {
             for (LineTile lineTile : lineTileRow) {
                 lineTile.getLineTileRect().setVisible(false);
@@ -198,9 +212,9 @@ public class FXMLBuildingController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.manager = new SceneManager();
         mainBuilding = manager.getGlobalBuilding();
-        if(mainBuilding == null){
+        if (mainBuilding == null) {
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(20,20,50, mapPane);
+            mainBuilding = new Building(5, 5, 50, mapPane);
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
@@ -208,89 +222,158 @@ public class FXMLBuildingController implements Initializable {
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
         mainBuilding.updateView();
-        normWall.setOnAction((ActionEvent e) -> {
-           //
-        });
         errorText.setText("");
-
-
-
         this.initLineBlocks();
         this.renderLineBlocks();
         this.disableLineBlocks();
         this.renderDragLine();
+        this.stairPaneInitialise();
+
+        Image image;
+        try {
+            image = new Image(getClass().getResource("/Assets/stair_direction.fw.png").toURI().toString());
+            this.stairTileContainer.setFill(new ImagePattern(image));
+        } catch (URISyntaxException ex) {}
+
+
+        this.mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(buildingWalls){
+                    if(event.getButton() == MouseButton.PRIMARY) {
+                        setLineClicked(event);
+                    }else{
+                        FXMLBuildingController.cancelLineClicked();
+                    }
+                }
+            }
+        });
     }
+
+
+
+        @FXML
+    public void normWallButton(){
+        this.enableLineBlocks();
+        this.buildingWalls = true;
+        this.currentWall = wallType.Wall;
+        this.actionType = Tile.BlockType.Default;
+        this.stairOptionsPane.setVisible(false);
+    }
+
+
+    @FXML
+    public void deleteWallButton(){
+        this.enableLineBlocks();
+        this.buildingWalls = true;
+        this.currentWall = wallType.Delete;
+        this.actionType = Tile.BlockType.Default;
+        this.stairOptionsPane.setVisible(false);
+    }
+
 
     @FXML
     public void zoomIn(){
         if(this.mainBuilding.getSize()+2 > this.minZoom && this.mainBuilding.getSize()+2 < this.maxZoom) {
-            currentTranslation = true;
             mainBuilding.zoom(2);
-            currentTranslation = false;
         }
     }
     @FXML
     public void zoomOut(){
         if(this.mainBuilding.getSize()-2 > this.minZoom && this.mainBuilding.getSize()-2 < this.maxZoom) {
-            currentTranslation = true;
             mainBuilding.zoom(-2);
-            currentTranslation = false;
         }
     }
-
-
     @FXML
-    public void panUp(){
-        currentTranslation = true;
-        mainBuilding.pan(0, 30);
-        currentTranslation = false;
-    }
+    public void panUp(){mainBuilding.pan(0, 30);}
     @FXML
-    public void panDown(){
-        currentTranslation = true;
-        mainBuilding.pan(0, -30);
-        currentTranslation = false;
-    }
+    public void panDown(){mainBuilding.pan(0, -30);}
     @FXML
-    public void panRight(){
-        currentTranslation = true;
-        mainBuilding.pan(-30, 0);
-        currentTranslation = false;
-    }
+    public void panRight(){mainBuilding.pan(-30, 0);}
     @FXML
-    public void panLeft(){
-        currentTranslation = true;
-        mainBuilding.pan(30, 0);
-        currentTranslation = false;
-    }
+    public void panLeft(){mainBuilding.pan(30, 0);}
 
 
     @FXML
     public void blockedTileButton(){
         this.actionType = Tile.BlockType.Blocked;
         this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(false);
     }
     @FXML
     public void defaultTileButton(){
         this.actionType = Tile.BlockType.Default;
         this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(false);
     }
     @FXML
     public void exitTileButton(){
         this.actionType = Tile.BlockType.Exit;
         this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(false);
+    }
+    public void stairPaneInitialise(){
+        this.stairOptionsPane.setVisible(false);
+        this.stairPreview = new Rectangle(60, 35, 50, 50);
+        this.stairPreview.setFill(Color.WHITE);
+        this.stairPreview.setStrokeWidth(2);
+        this.stairPreview.setStroke(Color.BLACK);
+        this.stairOptionsPane.getChildren().add(this.stairPreview);
+        currStairOrientation = 0;
+        currStairDirection = "up";
+    }
+
+
+    @FXML
+    public void stairsUpButton(){
+        this.actionType = Tile.BlockType.Stairs;
+        this.currStairDirection = "up";
+        this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(true);
+        Image image;
+        try {
+            image = new Image(getClass().getResource("/Assets/stairs_up.fw.png").toURI().toString());
+            this.stairPreview.setFill(new ImagePattern(image));
+            stairTileContainer.toFront();
+        } catch (URISyntaxException ex) {}
     }
     @FXML
-    public void stairsTileButton(){
+    public void stairsDownButton(){
         this.actionType = Tile.BlockType.Stairs;
+        this.currStairDirection = "down";
         this.disableLineBlocks();
-
+        this.stairOptionsPane.setVisible(true);
+        Image image;
+        try {
+            image = new Image(getClass().getResource("/Assets/stairs_down.fw.png").toURI().toString());
+            this.stairPreview.setFill(new ImagePattern(image));
+            stairTileContainer.toFront();
+        } catch (URISyntaxException ex) {}
     }
+
+
+
+
+    @FXML
+    public void rotateLeft(){
+        currStairOrientation-=90;
+        if(currStairOrientation == -90){currStairOrientation = 270;}
+        this.stairTileContainer.setRotate(this.stairTileContainer.getRotate()-90);
+    }
+
+    @FXML
+    public void rotateRight(){
+        currStairOrientation+=90;
+        if(currStairOrientation == 360){currStairOrientation = 0;}
+        this.stairTileContainer.setRotate(this.stairTileContainer.getRotate()+90);
+    }
+
+
     @FXML
     public void employeeTileButton(){
-        System.out.println("Bere");
         this.actionType = Tile.BlockType.Employee;
         this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(false);
     }
 
 
@@ -344,10 +427,8 @@ public class FXMLBuildingController implements Initializable {
     public void renderDragLine(){
         this.movingWall = new Line(0, 0, 0, 0);
         this.movingWall.setStroke(Color.GREEN);
-
         mainBuilding.windowContainer.getChildren().add(this.movingWall);
         this.movingWall.setVisible(false);
-
         this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -362,9 +443,16 @@ public class FXMLBuildingController implements Initializable {
                     movingWall.setVisible(true);
 
                     if(newCords[0] != newCords[2] && newCords[1] != newCords[3]){
-                        movingWall.setStroke(Color.RED);
+                        movingWall.setStroke(Color.rgb(191, 191, 191));
                     }else{
-                        movingWall.setStroke(Color.GREEN);
+                        switch(currentWall){
+                            case Wall:
+                                movingWall.setStroke(Color.GREEN);
+                                break;
+                            case Delete:
+                                movingWall.setStroke(Color.RED);
+                                break;
+                        }
                     }
                 }else{
                     movingWall.setVisible(false);
@@ -397,18 +485,11 @@ public class FXMLBuildingController implements Initializable {
         double a;
         double[] finalCords = new double[4];
         for(i = 0; i < 4; i++){
-            System.out.println("Y pan offset: "+mainBuilding.getYPanOffset());
-            System.out.println("X pan offset: "+mainBuilding.getXPanOffset());
             if(i == 0 || i == 2){
                 a = (cords[i]-mainBuilding.getXPanOffset()) %  mainBuilding.getSize();
             }else if (i == 1 || i == 3){
                 a = (cords[i]-mainBuilding.getYPanOffset()) %  mainBuilding.getSize();
             }else{return null;}
-
-            //a = cords[i] %  mainBuilding.getSize();
-            System.out.println("Before: " + cords[i]);
-            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
-            System.out.println("After: " + finalCords[i]);
             finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
         }
         return finalCords;
@@ -445,10 +526,20 @@ public class FXMLBuildingController implements Initializable {
     public static void cancelLineClicked(){
         lineClicked = false;
     }
-    public static void setLineClicked(MouseEvent event){
+
+    public static int convertToGridXCord(double n){return (int)(n-mainBuilding.getXPanOffset())/mainBuilding.getSize();}
+    public static int convertToGridYCord(double n){return (int)(n-mainBuilding.getYPanOffset())/mainBuilding.getSize();}
+    public static double convertToActualXCord(int n){return (double)n*(mainBuilding.getSize())+mainBuilding.getXPanOffset();}
+    public static double convertToActualYCord(int n){return (double)n*(mainBuilding.getSize())+mainBuilding.getYPanOffset();}
+
+
+
+
+
+
+
+    public void setLineClicked(MouseEvent event){
         refreshLineTiles();
-        System.out.println("Line clicked: "+lineClicked);
-        //if()
         if(lineClicked){
             double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
             double [] cords = {x1,y1,x2,y2};
@@ -456,71 +547,106 @@ public class FXMLBuildingController implements Initializable {
             System.out.println(cords[0]+" "+cords[1]+" "+cords[2]+" "+cords[3]);
             if(cords[0] == cords[2] && cords[1] == cords[3]){
                 lineClicked = false;
-                System.out.println("same click");
+            }
+            int gridCord1;
+            int gridCord2;
+            int length;
+            Line l;
+            double[] lActualCords;
+            int[] lGridCords;
+
+            if(cords[1] == cords[3]) {      //HORIZONTAL LINE
+                gridCord1 = convertToGridXCord(cords[0]);
+                gridCord2 = convertToGridXCord(cords[2]);
+                length = Math.abs(gridCord2 - gridCord1);
+                for (int n = 0; n < length; n++) {
+                    lActualCords = new double[4];
+                    lGridCords = new int[4];
+                    lActualCords[0] = convertToActualXCord(Math.min(gridCord1, gridCord2) + n);
+                    lActualCords[1] = cords[1];
+                    lActualCords[2] = convertToActualXCord(Math.min(gridCord1, gridCord2) + n + 1);
+                    lActualCords[3] = cords[1];
+
+                    lGridCords[0] = Math.min(gridCord1, gridCord2)+n;
+                    lGridCords[1] = convertToGridXCord(cords[1]);
+                    lGridCords[2] = Math.min(gridCord1, gridCord2)+n+1;
+                    lGridCords[3] = convertToGridXCord(cords[1]);
+
+                    if(this.currentWall == wallType.Wall) {
+                        l = new Line(lActualCords[0], lActualCords[1], lActualCords[2], lActualCords[3]);
+                        l.setStroke(Color.BLUE);
+                        l.setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
+                        l.toBack();
+                        mainBuilding.windowContainer.getChildren().add(l);
+                        mainBuilding.getCurrentFloor().addWall(lGridCords, l);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]-1).removeAccess(2);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]).removeAccess(0);
+                    }else if(this.currentWall == wallType.Delete){
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]-1).grantAccess(2);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]).grantAccess(0);
+                        mainBuilding.getCurrentFloor().removeWall(lGridCords);
+                        mainBuilding.updateView();
+                        lineClicked = false;
+                    }
+                    this.movingWall.toFront();
+                }
             }
 
-            if(cords[1] == cords[3]){
-                System.out.println("Drawing Line!");
 
-                //mainBuilding.getCurrentFloor().add
-                Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
-                l.setStroke(Color.BLUE);
-                l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
-                l.toBack();
-                mainBuilding.windowContainer.getChildren().add(l);
-                mainBuilding.getCurrentFloor().addWall(cords, l);
+            if(cords[0] == cords[2]) {      //VERTICAL LINE
+                gridCord1 = convertToGridYCord(cords[1]);
+                gridCord2 = convertToGridYCord(cords[3]);
+                length = Math.abs(gridCord2 - gridCord1);
+                for (int n = 0; n < length; n++) {
+                    lActualCords = new double[4];
+                    lGridCords = new int[4];
 
-                int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
-                int xx = (int)x2 == 0 ? 0 : (int)cords[2] / mainBuilding.getSize();
-                int y = (int)y1 == 0 ? 0 : (int)cords[1] / mainBuilding.getSize();
-                int max = x - xx < 0 ? xx : x;
-                int min = x - xx < 0 ? x : xx;
-                System.out.println("Min: " + min + ", Max: " + max);
-                System.out.println("x: " + x + ", xx: " + xx + ", y: " + y);
-                for(int i = min; i < max; i++){
-                    mainBuilding.getCurrentFloor().getTile(i,y).removeAccess(0);
-                    System.out.println("Block [" + i + "], [" + y + "] has removed access " + 0);
-                }
-                if(y != 0){
-                    y -= 1;
-                    for(int i = min; i < max; i++){
-                        mainBuilding.getCurrentFloor().getTile(i,y).removeAccess(2);
-                        System.out.println("Block [" + i + "], [" + y + "] has removed access " + 2);
+                    lActualCords[0] = cords[0];
+                    lActualCords[1] = convertToActualYCord(Math.min(gridCord1, gridCord2) + n);
+                    lActualCords[2] = cords[0];
+                    lActualCords[3] = convertToActualYCord(Math.min(gridCord1, gridCord2) + n + 1);
+
+                    lGridCords[0] = convertToGridXCord(cords[0]);
+                    lGridCords[1] = Math.min(gridCord1, gridCord2)+n;
+                    lGridCords[2] = convertToGridXCord(cords[0]);
+                    lGridCords[3] = Math.min(gridCord1, gridCord2)+n+1;
+
+                    if(this.currentWall == wallType.Wall) {
+                        l = new Line(lActualCords[0], lActualCords[1], lActualCords[2], lActualCords[3]);
+                        l.setStroke(Color.BLUE);
+                        l.setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
+                        l.toBack();
+                        mainBuilding.windowContainer.getChildren().add(l);
+                        mainBuilding.getCurrentFloor().addWall(lGridCords, l);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0]-1, lGridCords[1]).removeAccess(1);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]).removeAccess(3);
+                    }else if(this.currentWall == wallType.Delete){
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0]-1, lGridCords[1]).grantAccess(1);
+                        mainBuilding.getCurrentFloor().getTile(lGridCords[0], lGridCords[1]).grantAccess(3);
+                        mainBuilding.getCurrentFloor().removeWall(lGridCords);
+                        mainBuilding.updateView();
+                        lineClicked = false;
                     }
-                }
-            }else if (cords[0] == cords[2]){
-                System.out.println("Drawing Line!");
-                Line l = new Line(cords[0],cords[1],cords[2],cords[3]);
-                l.setStroke(Color.BLUE);
-                l.setStrokeWidth(10*mainBuilding.getSize()/50.0);
-                l.toBack();
-                mainBuilding.windowContainer.getChildren().add(l);
-                mainBuilding.getCurrentFloor().addWall(cords, l);
-                int x = (int)x1 == 0 ? 0 : (int)cords[0] / mainBuilding.getSize();
-                int y = (int)y1 == 0 ? 0 : (int)cords[1] / mainBuilding.getSize();
-                int yy = (int)y2 == 0 ? 0 : (int)cords[3] / mainBuilding.getSize();
-                int max = y - yy < 0 ? yy : y;
-                int min = y - yy < 0 ? y : yy;
-                System.out.println("Min: " + min + ", Max: " + max);
-                System.out.println("y: " + y + ", yy: " + yy + ", x: " + x);
-                for(int i = min; i < max; i++){
-                    mainBuilding.getCurrentFloor().getTile(x,i).removeAccess(3);
-                    System.out.println("Block [" + x + "], [" + i + "] has removed access " + 3);
-                }
-                if(x != 0){
-                    x -= 1;
-                    for(int i = min; i < max; i++){
-                        mainBuilding.getCurrentFloor().getTile(x,i).removeAccess(1);
-                        System.out.println("Block [" + i + "], [" + y + "] has removed access " + 1);
-                    }
+                    this.movingWall.toFront();
                 }
             }
+
+/*
+            System.out.println("Printing current lines:");
+            for(int n=0; n<this.mainBuilding.getCurrentFloor().getWalls().size(); n++){
+                System.out.println(this.mainBuilding.getCurrentFloor().getWalls().get(n)[0]+" "+
+                        this.mainBuilding.getCurrentFloor().getWalls().get(n)[1]+" "+
+                        this.mainBuilding.getCurrentFloor().getWalls().get(n)[2]+" "+
+                        this.mainBuilding.getCurrentFloor().getWalls().get(n)[3]);
+                System.out.println("=============================");
+            }
+*/
+
             if(cords[0] == cords[2] || cords[1] == cords[3]) {
                 lineCords[0] = cords[0];
                 lineCords[1] = cords[1];
             }
         }else{
-            System.out.println("FIrst click");
             lineClicked = true;
             lineCords[0] = event.getX();
             lineCords[1] = event.getY();
