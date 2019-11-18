@@ -31,9 +31,8 @@ public class FXMLSimulationController implements Initializable {
     Label floorLevel;
     @FXML
     Pane mapPane;
-
+    QuadTree quadTree;
     public Building mainBuilding;// = new Building();
-    Fire p;
     SceneManager manager;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -49,7 +48,6 @@ public class FXMLSimulationController implements Initializable {
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
 
-        p = new Fire(50,200, new Tile(0,0, 0, 0, 0));
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
         mainBuilding.initialiseView();
 
@@ -104,7 +102,6 @@ public class FXMLSimulationController implements Initializable {
         employeesLeft.setLayoutY(100);
         assetPane.getChildren().add(alarm);
         //assetPane.getChildren().add(reset);
-        assetPane.getChildren().add(p.view);
         assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
         initAnimation();
@@ -128,12 +125,15 @@ public class FXMLSimulationController implements Initializable {
     }
 
     private void onUpdate() {
+        double bX = Building.windowContainer.getLayoutX(), bY = Building.windowContainer.getLayoutY(),
+                bW = Building.windowContainer.getWidth(), bH = Building.windowContainer.getHeight();
         for(Floor floor : mainBuilding.getFloors()){
+            quadTree = new QuadTree(4,bX,bY,bW,bH);
             for(Employee a : floor.employees){
+                quadTree.insert(a);
                 a.update(floor);
             }
         }
-        p.update(mainBuilding.getCurrentFloor());
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         if(mainBuilding.getInitialEmployeeCount() <= 0){

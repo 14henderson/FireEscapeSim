@@ -168,24 +168,14 @@ public class Employee extends Actor implements Serializable{
 
     double findLineAndRotate(Tile end){
         //line of sight to end node
-        double xThreshold = this.curPoint.getKey().getX();
-        double yThreshold = this.curPoint.getKey().getY();
         double startX = this.view.getLayoutX(), endX = end.getActualX() + (end.getWidth()/2) ,
                 startY=  this.view.getLayoutY(), endY =  end.getActualY() + (end.getHeight()/2);
-        /*double magStart = Math.sqrt(Math.pow(startX,2) + Math.pow(startY,2));
-        double magEnd = Math.sqrt(Math.pow(endX,2) + Math.pow(endY,2));
-        double dotProd = (startX * endX) + (startY * endY);
-        double crossProd = (startX + xThreshold - startX)*(endY - startY)-(endX - startX)*(startY + yThreshold - startY);
-        double theta = Math.acos(dotProd / (magStart * magEnd));
-        if(crossProd > 0 ){theta = -theta;}
-        this.view.setRotate(theta);
-        *///System.out.println("Theta: " + theta);
+
         double mX = endX - startX ;
         double mY = endY - startY;
         if(mX == mY){
             mX = mX < 0 ? -1 : 1;
             mY = mY < 0 ? -1 : 1;
-
         }else{
             //set x velocity
             if(mX ==0){ mX = 0; }
