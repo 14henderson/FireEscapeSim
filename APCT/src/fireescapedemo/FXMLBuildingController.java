@@ -486,11 +486,12 @@ public class FXMLBuildingController implements Initializable {
         double[] finalCords = new double[4];
         for(i = 0; i < 4; i++){
             if(i == 0 || i == 2){
-                a = (cords[i]-mainBuilding.getXPanOffset()) %  mainBuilding.getSize();
+                a = Math.round((cords[i]-mainBuilding.getXPanOffset())/mainBuilding.getSize());
+                finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getXPanOffset();
             }else if (i == 1 || i == 3){
-                a = (cords[i]-mainBuilding.getYPanOffset()) %  mainBuilding.getSize();
+                a = Math.round((cords[i]-mainBuilding.getYPanOffset())/mainBuilding.getSize());
+                finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getYPanOffset();
             }else{return null;}
-            finalCords[i] = a < ( mainBuilding.getSize()/2) ? cords[i] - a : cords[i] + (mainBuilding.getSize() - a);
         }
         return finalCords;
     }
