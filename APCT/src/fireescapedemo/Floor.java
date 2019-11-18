@@ -119,6 +119,10 @@ public class Floor {
     public void addWall(double[] cords){this.walls.add(cords);}
     public ArrayList<double[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
+    public final double getActualX(){return this.floorBlocks[0][0].getActualX();}
+    public final double getActualY(){return this.floorBlocks[0][0].getActualY();}
+    public final double getActualWidth(){return this.floorBlocks.length * this.floorBlocks[0][0].getWidth();}
+    public final double getActualHeight(){return this.floorBlocks[0].length * this.floorBlocks[0][0].getHeight();}
 
 
 /*

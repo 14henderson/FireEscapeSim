@@ -1,7 +1,10 @@
 package fireescapedemo;
 
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
 
@@ -28,13 +31,13 @@ public class QuadTree{
 
     private void createChildren(){
         //northwest
-        QuadTree northwest = new QuadTree(this.cap,this.x,this.y,this.w/2,this.h/2);
+        QuadTree northwest = new QuadTree(this.cap,this.x + this.w/2,this.y,this.w/2,this.h/2);
         //northeast
-        QuadTree northeast = new  QuadTree(this.cap, this.x - this.w,this.y,this.h/2,this.w/2);
+        QuadTree northeast = new  QuadTree(this.cap, this.x,this.y,this.h/2,this.w/2);
         //southwest
-        QuadTree southwest = new QuadTree(this.cap, this.x, this.y - this.h,this.w/2,this.h/2);
+        QuadTree southwest = new QuadTree(this.cap, this.x, this.y - this.h/2,this.w/2,this.h/2);
         //southeast (represent)
-        QuadTree southeast = new QuadTree(this.cap,this.x  - this.w,this.y - this.h,this.w/2,this.h/2);
+        QuadTree southeast = new QuadTree(this.cap,this.x  + this.w/2,this.y - this.h/2,this.w/2,this.h/2);
         this.children[0] = northeast;
         this.children[1] = northwest;
         this.children[2] = southwest;
@@ -62,7 +65,7 @@ public class QuadTree{
             for(i  = 0; i < len; i++){ if(this.children[i].contains(a)){ this.children[i].insert(a);} }
         }
     }
-    private void checkCollisions(){
+    public void checkCollisions(){
         int i,j, pointLen = this.points.length, childLen = this.children.length;
         Actor point, target;
         //apply collisions localy
@@ -78,13 +81,13 @@ public class QuadTree{
                         ((Circle)point.view).setFill(Color.GREEN);
                         ((Circle)target.view).setFill(Color.GREEN);
                     }else{
-                        ((Circle)point.view).setFill(Color.LIGHTBLUE);
-                        ((Circle)target.view).setFill(Color.LIGHTBLUE);
+                            ((Circle)point.view).setFill(Color.LIGHTBLUE);
+                            ((Circle)target.view).setFill(Color.LIGHTBLUE);
                     }
                 }
             }
         }
-        if(divided){
+        if(this.divided){
             for(i = 0; i < childLen; i++){
                 this.children[i].checkCollisions();
             }
@@ -107,7 +110,21 @@ public class QuadTree{
                 this.insert((Actor)actors.get(i));
             }
         }
-        checkCollisions();
+    }
+
+
+    public void drawLines(Pane floor){
+        Rectangle rec = new Rectangle(this.x,this.y,this.w,this.h);
+        rec.setStroke(Color.TRANSPARENT);
+        rec.setStroke(Color.ORANGE);
+        rec.setOpacity(0.01);
+        floor.getChildren().add(rec);
+        if(this.divided){
+            int i, len = this.children.length;
+            for(i = 0; i < len; i++){
+                this.children[i].drawLines(floor);
+            }
+        }
     }
 
 
