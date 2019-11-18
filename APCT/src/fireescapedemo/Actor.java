@@ -33,6 +33,8 @@ public class Actor extends TileObject implements Serializable {
     public void setNode(Node n){
         this.view = n;
     }
+    @Override
+    public void destroy(){}
 
     public Actor(Node view){
 
@@ -71,7 +73,6 @@ public class Actor extends TileObject implements Serializable {
     public void setVelocityY(double y) {this.velocity = new Point2D(this.velocity.getX(),y);}
     public void setSwap(boolean b){ this.swap = b;}
     public void toggleSwap(){this.swap = !this.swap;}
-
 
     public String printVelocity(){
         return "Velocity Vector: [X: " + this.velocity.getX() + ", Y: " + this.velocity.getY() + "]\n";

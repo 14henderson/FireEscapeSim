@@ -1,6 +1,8 @@
 package fireescapedemo;
 
 import javafx.animation.AnimationTimer;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -9,6 +11,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
@@ -47,6 +50,8 @@ public class FXMLBuildingController implements Initializable {
     private Pane mapPane;
     @FXML
     private Pane stairOptionsPane;
+    @FXML
+    private Pane toolContainer;
     @FXML
     private Label floorLevel;
     @FXML
@@ -214,7 +219,7 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding = manager.getGlobalBuilding();
         if (mainBuilding == null) {
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(5, 5, 50, mapPane);
+            mainBuilding = new Building(20, 20, 50, mapPane);
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
@@ -228,6 +233,8 @@ public class FXMLBuildingController implements Initializable {
         this.disableLineBlocks();
         this.renderDragLine();
         this.stairPaneInitialise();
+
+        toolContainer.getChildren().clear();
 
         Image image;
         try {
@@ -351,7 +358,52 @@ public class FXMLBuildingController implements Initializable {
         } catch (URISyntaxException ex) {}
     }
 
+    public void refreshStairToolContainer(){
+        this.toolContainer.getChildren().clear();
+        String details;
+        int recordCount = 1;
+        for(int id : mainBuilding.stairs.keySet()){
+            details = "Floor:%d      ID:%d";
+            details = String.format(details, mainBuilding.stairs.get(id).parent.floorNum, id);
 
+            Text stairRecord = new Text(details);
+            stairRecord.setX(10);
+            stairRecord.setY(25*recordCount);
+
+            ChoiceBox link = new ChoiceBox();
+            link.setLayoutX(120);
+            link.setLayoutY(25*recordCount-15);
+            link.setPrefWidth(30);
+            link.setPrefHeight(20);
+            link.setId(id+"");
+
+            for(int tmpID : mainBuilding.stairs.keySet()) {
+                if (tmpID != mainBuilding.stairs.get(id).ID) {
+                    link.getItems().add(tmpID);
+                } else {
+                    //link.getParent().
+                }
+            }
+           // link.getSelectionModel().select(mainBuilding.stairs.get(id).joinedID);
+
+
+            /*
+            link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+                @Override
+                public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                    mainBuilding.stairs.get(Integer.valueOf(link.getId())).joinedID = (int)link.getItems().get((Integer) number2);
+                }
+            });
+
+             */
+
+
+
+            recordCount++;
+            this.toolContainer.getChildren().add(stairRecord);
+            this.toolContainer.getChildren().add(link);
+        }
+    }
 
 
     @FXML
@@ -432,6 +484,7 @@ public class FXMLBuildingController implements Initializable {
         this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                refreshStairToolContainer();
                 movingWall.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 if(lineClicked){
                     double[] newCords = {lineCords[0], lineCords[1], event.getX(), event.getY()};
@@ -523,10 +576,13 @@ public class FXMLBuildingController implements Initializable {
         }
         return false;
     }
-
     public static void cancelLineClicked(){
         lineClicked = false;
     }
+
+
+
+
 
     public static int convertToGridXCord(double n){return (int)(n-mainBuilding.getXPanOffset())/mainBuilding.getSize();}
     public static int convertToGridYCord(double n){return (int)(n-mainBuilding.getYPanOffset())/mainBuilding.getSize();}
@@ -545,7 +601,7 @@ public class FXMLBuildingController implements Initializable {
             double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
             double [] cords = {x1,y1,x2,y2};
             cords = normaliseCords(cords);
-            System.out.println(cords[0]+" "+cords[1]+" "+cords[2]+" "+cords[3]);
+           // System.out.println(cords[0]+" "+cords[1]+" "+cords[2]+" "+cords[3]);
             if(cords[0] == cords[2] && cords[1] == cords[3]){
                 lineClicked = false;
             }
@@ -590,6 +646,7 @@ public class FXMLBuildingController implements Initializable {
                         lineClicked = false;
                     }
                     this.movingWall.toFront();
+                    this.mainBuilding.enableBuild();
                 }
             }
 
@@ -629,6 +686,7 @@ public class FXMLBuildingController implements Initializable {
                         lineClicked = false;
                     }
                     this.movingWall.toFront();
+                    this.mainBuilding.enableBuild();
                 }
             }
 
@@ -651,6 +709,7 @@ public class FXMLBuildingController implements Initializable {
             lineClicked = true;
             lineCords[0] = event.getX();
             lineCords[1] = event.getY();
+            mainBuilding.disableBuild();
         }
         refreshLineTiles();
     }

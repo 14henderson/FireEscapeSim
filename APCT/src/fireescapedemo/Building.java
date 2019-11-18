@@ -3,6 +3,7 @@ package fireescapedemo;
 import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -21,9 +22,10 @@ public class Building extends MapObject implements Serializable {
     private int initialEmployeeCount;
     private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
+    public static HashMap<Integer, Staircase> stairs;
 
     public Building(){
-        System.out.println("In constructor ");
+        this.stairs = new HashMap<>();
         this.mainBuilding = this;
         if(floors == null){
             throw new RuntimeException();
@@ -33,9 +35,12 @@ public class Building extends MapObject implements Serializable {
     public Building(int floorHeight, int floorWidth, int tileSize, Pane windowContainerParent){
         this.mainBuilding = this;
         this.windowContainer = windowContainerParent;
+        this.stairs = new HashMap<>();
         if ( floors == null){
              floors = new ArrayList();
-             floors.add(new Floor(floorHeight,floorWidth,tileSize));
+             Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
+             tmpRef.setFloorNum(0);
+             floors.add(tmpRef);
              currentFloor = 0;
              this.initialEmployeeCount = 0;
         }
@@ -132,7 +137,7 @@ public class Building extends MapObject implements Serializable {
     }*/
 
     public final void addFloor() {
-        Floor newFloor = new Floor(20, 20, 50);
+        Floor newFloor = new Floor(20, 20, 50, this.floors.size());
         this.floors.add(newFloor);
     }
 

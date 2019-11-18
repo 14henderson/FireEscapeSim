@@ -13,14 +13,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import fireescapedemo.Tile.BlockType;
 
-/*
-public class Floor {
-    public ArrayList<Employee> employees;
-    public ArrayList<Line> walls;
-    private Pane floor;
-    private Tile[][] floorBlocks;
-    private Rectangle[][] wallBlocks;
- */
 
 public class Floor extends MapObject implements Serializable {
     public ArrayList<Employee> employees;
@@ -36,13 +28,15 @@ public class Floor extends MapObject implements Serializable {
     ArrayList<Exit> exits;
     private ArrayList<int[]> walls;
     private transient ArrayList<Line> wallsNodes;
+    public int floorNum;
 
 
 
-    public Floor(int height, int width, int size){
+    public Floor(int height, int width, int size, int floorIndex){
         this.mapHeight = height;
         this.mapWidth = width;
         this.tileSize = size;
+        this.floorNum = floorIndex;
 
         this.floorBlocks = new Tile[this.mapWidth][this.mapHeight];
         this.employees = new ArrayList<>();
@@ -57,13 +51,14 @@ public class Floor extends MapObject implements Serializable {
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){
                 this.floorBlocks[i][j] = new Tile(i*this.tileSize,j*this.tileSize, i, j, this.tileSize);
+                this.floorBlocks[i][j].setFloorNum(this.floorNum);
         }}
     }
 
 
     public void addEmployee(Employee employee) { this.employees.add(employee); }
     public void addExit(Exit exit)          { this.exits.add(exit); }
-
+    public void setFloorNum(int n){this.floorNum = n;}
 
     public void initialiseWalls(){
         for(Node wall : this.wallsNodes) {
@@ -187,7 +182,7 @@ public class Floor extends MapObject implements Serializable {
 
 
     public final Tile getTestFirstExit(){
-        return this.exits.isEmpty() ? null : this.exits.get(0).position;
+        return this.exits.isEmpty() ? null : this.exits.get(0).parent;
     }
 
     public Tile getTile(int x, int y){
@@ -204,17 +199,17 @@ public class Floor extends MapObject implements Serializable {
     }
     public void removeWall(int[] cords){
         for(int n=this.walls.size()-1; n>0; n--){
-            System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
+            //System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
 
 
             if(this.walls.get(n)[0] == cords[0] && this.walls.get(n)[1] == cords[1]
             && this.walls.get(n)[2] == cords[2] && this.walls.get(n)[3] == cords[3]){
                 this.walls.remove(n);
-                System.out.println("REMOVED WALL");
+               // System.out.println("REMOVED WALL");
             }else if(this.walls.get(n)[0] == cords[2] && this.walls.get(n)[1] == cords[3]
                     && this.walls.get(n)[2] == cords[0] && this.walls.get(n)[3] == cords[1]){
                 this.walls.remove(n);
-                System.out.println("REMOVED WALL");
+             //   System.out.println("REMOVED WALL");
             }
         }
     }

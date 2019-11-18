@@ -10,6 +10,8 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+
 import java.net.URISyntaxException;
 import java.io.Serializable;
 
@@ -25,6 +27,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public double[] actualCords = new double[2];      //X, Y
     public double[] dimensions = new double[2];       //Width, Height
     public int rotation = 0;
+    public int floorNum;                                 //which floor is this located on.
 
     //Node Building Variables
     private transient Rectangle fxRef = null;          //Tile Rectangle object
@@ -64,12 +67,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         Stairs {
             @Override
             public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.1);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
-
                 if(tile.tileObject != null && tile.tileObject.hasNode()){
                     mainBuilding.windowContainer.getChildren().add(tile.tileObject.getNode());
                     System.out.println("Reloading");
@@ -121,9 +118,31 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     } catch (URISyntaxException ex) {}
                     mainBuilding.windowContainer.getChildren().add(rec);
                     Staircase stair = new Staircase(rec, tile);
+
+                    int newID=0;
+                    while (mainBuilding.stairs.containsKey(newID)) {
+                        newID++;
+                    }
+                    stair.setID(newID);
                     stair.setDirection(direction);
                     stair.setRotation(rotation);
                     tile.setTileObject(stair);
+                    mainBuilding.stairs.put(newID, stair);
+
+                    tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
+                    tile.fxRef.setStroke(Color.BLACK);
+                    tile.fxRef.setFill(tile.getColor(tile.type));
+                    tile.fxRef.setOpacity(0.1);
+
+                    Text stairIDText = new Text(newID+"");
+                    stairIDText.setFill(Color.RED);
+                    stairIDText.setX(tile.getActualX()+tile.getSize()/8);
+                    stairIDText.setY(tile.getActualY()+tile.getSize()/4);
+                    mainBuilding.windowContainer.getChildren().addAll(tile.fxRef, stairIDText);
+                    stairIDText.toFront();
+                    stair.setIDFxml(stairIDText);
+
+                    System.out.println("ID: "+stair.ID);
                 }
             }
         },
@@ -167,6 +186,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+                if(tile.tileObject != null){
+                    tile.tileObject.destroy();
+                }
             }
         },
         Employee {
@@ -276,6 +298,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public double getHeight(){return this.dimensions[1];}
     public void setTileObject(TileObject t){this.tileObject = t;}
     public TileObject getTileObject(){return this.tileObject;}
+    public void setFloorNum(int n){this.floorNum = n;}
 
     @Override
     public void initialiseView(){
@@ -284,10 +307,12 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.view);
         } catch(Exception e){}
         if(this.tileObject != null){
-            this.mainBuilding.windowContainer.getChildren().remove(this.tileObject.getNode());
+            this.tileObject.flushNodes();
+            this.tileObject.destroy();
         }
         this.currentActor = null;
         this.type.initialiseView(0, this);
+
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
             if(mainBuilding.canEdit) {
                 this.type = FXMLBuildingController.getActionType();
@@ -328,8 +353,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
         if(this.tileObject != null) {
             this.initialiseView();
-            //this.tileObject.fxNode.setLayoutX(0);//this.tileObject.fxNode.getLayoutX() + this.getActualX());
-            //this.tileObject.fxNode.setLayoutY(0);//this.tileObject.fxNode.getLayoutY() + this.getActualY());
         }
     }
 
@@ -420,6 +443,13 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         public void setNode(Node n) {
             this.fxNode = n;
         }
+
+        @Override
+        public void flushNodes(){
+            this.parent.mainBuilding.windowContainer.getChildren().remove(this.fxNode);
+        }
+        @Override
+        public void destroy(){}
     }
 
 

@@ -21,7 +21,7 @@ public class LineTile{
         this.gridCords[0] = xGrid;
         this.gridCords[1] = yGrid;
         this.mainBuilding = mainBuilding;
-        System.out.println(this.getX()+", "+this.getY()+", "+mainBuilding.getSize());
+    //    System.out.println(this.getX()+", "+this.getY()+", "+mainBuilding.getSize());
     }
     public void bringToFront(){
         this.lineTileCircle.toFront();
