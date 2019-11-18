@@ -34,11 +34,20 @@ public class FXMLSimulationController implements Initializable {
     QuadTree quadTree;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
+    Timeline timeline;
+    Label timer;
+    Label employeesLeft;
+    int second = 0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
+        Button alarm = new Button("FIRE ALARM");
+        Button reset = new Button("RESET");
 
+        timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), e-> addSecond())
+        );
         if(mainBuilding == null){
             System.out.println("Building is null. ERROR");
             mainBuilding = new Building(14,13,50, mapPane);
@@ -52,7 +61,6 @@ public class FXMLSimulationController implements Initializable {
         mainBuilding.initialiseView();
 
         //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-        Button alarm = new Button("FIRE ALARM");
 
 
         alarm.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -69,7 +77,6 @@ public class FXMLSimulationController implements Initializable {
             }
         });
 
-        Button reset = new Button("RESET");
         reset.setLayoutY(30);
         reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -90,9 +97,7 @@ public class FXMLSimulationController implements Initializable {
             }
         });
 
-        timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), e-> addSecond())
-        );
+
         timeline.setCycleCount(Timeline.INDEFINITE);
         timer = new Label("Timer: 0s");
         timer.setLayoutX(50);
@@ -106,10 +111,6 @@ public class FXMLSimulationController implements Initializable {
         assetPane.getChildren().add(employeesLeft);
         initAnimation();
     }
-    Timeline timeline;
-    Label timer;
-    Label employeesLeft;
-    int second = 0;
     void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second) + "s");}
 
 
@@ -129,8 +130,8 @@ public class FXMLSimulationController implements Initializable {
                 bW = Building.windowContainer.getWidth(), bH = Building.windowContainer.getHeight();
         for(Floor floor : mainBuilding.getFloors()){
             quadTree = new QuadTree(4,bX,bY,bW,bH);
+            quadTree.insertAll(floor.employees);
             for(Employee a : floor.employees){
-                quadTree.insert(a);
                 a.update(floor);
             }
         }
