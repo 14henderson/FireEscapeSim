@@ -97,15 +97,17 @@ public class QuadTree{
             for(j = 0; j < pointLen; j++){
                 target = this.points[j];
                 if(point == null || target == null || point == target){continue;}
-                //if(point instanceof Employee && target instanceof Employee){
+                if(point instanceof Employee && target instanceof Employee){
                     if(this.collisionBetween((Employee)point,(Employee)target)){
+                        point.view.setLayoutX(point.view.getLayoutX() - point.getVelocity().getX());
+                        point.view.setLayoutY(point.view.getLayoutY() - point.getVelocity().getY());
                         ((Circle)point.view).setFill(Color.GREEN);
                         ((Circle)target.view).setFill(Color.GREEN);
                     }else{
                         //((Circle)point.view).setFill(Color.LIGHTBLUE);
                         //((Circle)target.view).setFill(Color.LIGHTBLUE);
                     }
-                //}
+                }
             }
         }
         if(this.divided){

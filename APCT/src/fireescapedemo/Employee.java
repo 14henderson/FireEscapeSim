@@ -48,7 +48,6 @@ public class Employee extends Actor implements Serializable{
         Escape {
             @Override
             public void act(Employee employee, Floor floor) {
-                System.out.println("Now escaping");
 
                 //if(employee.getPath() != null){
                     employee.updatePathPoint();
@@ -151,13 +150,10 @@ public class Employee extends Actor implements Serializable{
 
     void updatePathPoint(){
         double linePathValue = findLineAndRotate(curPoint.getValue());
-        System.out.println("Line path value: " + linePathValue);
         if(linePathValue < 1){
-            System.out.println("Test 1: " + this.path.isEmpty());
             if(this.path.isEmpty()){
                 this.exited = true;
             }else{
-                System.out.println("Test 2: " + this.path.isEmpty());
                 this.setCurPoint();
             }
         }
@@ -200,7 +196,7 @@ public class Employee extends Actor implements Serializable{
 
 
 
-        System.out.println("mX: " + mX + ", mY: " + mY);
+        //System.out.println("mX: " + mX + ", mY: " + mY);
 
 
         this.velocity = new Point2D(mX, mY);
