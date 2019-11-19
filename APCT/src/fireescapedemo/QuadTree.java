@@ -27,6 +27,7 @@ public class QuadTree{
         this.divided = false;
         this.points = new Actor[this.cap];
         this.children = new QuadTree[4];
+
     }
 
     //inserting all actors at once
@@ -43,6 +44,7 @@ public class QuadTree{
         if(!this.contains(a)){return;}
         if(!this.divided && this.iter+1 <= this.cap){
             this.points[this.iter] = a;
+            System.out.println("Actor added ");
             iter++;
         }else{
             if(!this.divided){
@@ -72,9 +74,9 @@ public class QuadTree{
     public boolean contains(Actor a){
         double aX = a.view.getLayoutX(), aY =  a.view.getLayoutX();
 
-        return  aX > this.x - this.w &&
+        return  aX > this.x &&
                 aX < this.x + this.w &&
-                aY > this.y - this.h &&
+                aY > this.y &&
                 aY < this.y + this.h;
     }
 

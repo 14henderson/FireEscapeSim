@@ -173,16 +173,28 @@ public class Employee extends Actor implements Serializable{
 
         double mX = endX - startX ;
         double mY = endY - startY;
+        boolean b = false;
         if(mX == mY){
             mX = mX < 0 ? -1 : 1;
             mY = mY < 0 ? -1 : 1;
-        }else{
+            b = true;
+        }
+        else{
             //set x velocity
-            if(mX ==0){ mX = 0; }
+
+            if(mX >=0.95||mX <=-0.95){
+                mX = mX < 0 ? -1 : 1;
+                b = true;
+            }
+            else if(mX ==0){ mX = 0; }
             else{ mX= startX <= endX ? startX / endX : -(endX / startX); }
 
 
-            if(mY ==0 ){ mY = 0; }
+            if(mY >=0.95||mY <=-0.95){
+                mY = mY < 0 ? -1 : 1;
+                b = true;
+            }
+            else if(mY ==0 ){ mY = 0; }
             else{ mY= startY <= endY ? startY / endY : -(endY / startY); }
         }
 

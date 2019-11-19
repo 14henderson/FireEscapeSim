@@ -126,15 +126,16 @@ public class FXMLSimulationController implements Initializable {
         };
         t.start();
     }
-
+    double nX, nY, nW, nH;
     private void onUpdate() {
         for(Floor floor : mainBuilding.getFloors()){
-
+            nW = floor.getActualWidth(); nH =floor.getActualHeight();
+            nX = floor.getActualX(); nY = floor.getActualY();
             for(Employee e : floor.employees){ e.update(floor); }
-            quadTree = new QuadTree(4,floor.getActualX(),floor.getActualY(),floor.getActualWidth(),floor.getActualHeight());
+            quadTree = new QuadTree(4,nX ,nY,nW,nH);
             quadTree.insertAll(floor.employees);
             //quadTree.insertAll(floor.employees);
-            quadTree.drawLines(mapPane);
+            //quadTree.drawLines(mapPane);
             quadTree.checkCollisions();
 
         }
