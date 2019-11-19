@@ -41,17 +41,21 @@ public class QuadTree{
     }
 
     public void insert(Actor a){
-        if(!this.contains(a)){return;}
-        if(!this.divided && this.iter+1 <= this.cap){
-            this.points[this.iter] = a;
-            System.out.println("Actor added ");
-            iter++;
-        }else{
-            if(!this.divided){
-                this.createChildren();
+        if(this.contains(a)) {
+            if (!this.divided && this.iter + 1 <= this.cap) {
+                this.points[this.iter] = a;
+                iter++;
+            } else {
+                if (!this.divided) {
+                    this.createChildren();
+                }
+                int i = 0, len = this.children.length;
+                for (i = 0; i < len; i++) {
+                    if (this.children[i].contains(a)) {
+                        this.children[i].insert(a);
+                    }
+                }
             }
-            int i = 0, len = this.children.length;
-            for(i  = 0; i < len; i++){  this.children[i].insert(a); }
         }
     }
     private void createChildren(){
@@ -72,12 +76,12 @@ public class QuadTree{
     }
 
     public boolean contains(Actor a){
-        double aX = a.view.getLayoutX(), aY =  a.view.getLayoutX();
+        double aX = a.view.getLayoutX(), aY =  a.view.getLayoutY();
 
-        return  aX > this.x &&
-                aX < this.x + this.w &&
-                aY > this.y &&
-                aY < this.y + this.h;
+        return  aX >= this.x&&
+                aX <= this.x + this.w &&
+                aY >= this.y&&
+                aY <= this.y + this.h;
     }
 
 
@@ -98,8 +102,8 @@ public class QuadTree{
                         ((Circle)point.view).setFill(Color.GREEN);
                         ((Circle)target.view).setFill(Color.GREEN);
                     }else{
-                        ((Circle)point.view).setFill(Color.LIGHTBLUE);
-                        ((Circle)target.view).setFill(Color.LIGHTBLUE);
+                        //((Circle)point.view).setFill(Color.LIGHTBLUE);
+                        //((Circle)target.view).setFill(Color.LIGHTBLUE);
                     }
                 //}
             }

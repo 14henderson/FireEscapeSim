@@ -33,7 +33,7 @@ public class FXMLSimulationController implements Initializable {
     Label floorLevel;
     @FXML
     Pane mapPane;
-    QuadTree quadTree;
+    QuadTree northeast,northwest,southeast,southwest;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
     Timeline timeline;
@@ -127,17 +127,31 @@ public class FXMLSimulationController implements Initializable {
         t.start();
     }
     double nX, nY, nW, nH;
+    int cap = 4;
     private void onUpdate() {
         for(Floor floor : mainBuilding.getFloors()){
-            nW = floor.getActualWidth(); nH =floor.getActualHeight();
+            nW = floor.getActualWidth()/2; nH =floor.getActualHeight()/2;
             nX = floor.getActualX(); nY = floor.getActualY();
             for(Employee e : floor.employees){ e.update(floor); }
-            quadTree = new QuadTree(4,nX ,nY,nW,nH);
-            quadTree.insertAll(floor.employees);
+            northwest = new QuadTree(cap,   nX ,     nY,   nW,nH);
+            northeast = new QuadTree(cap,nX+nW,   nY,   nW,nH);
+            southwest = new QuadTree(cap,   nX,   nY+nH,nW,nH);
+            southeast = new QuadTree(cap,nX+nW,nY+nH,nW,nH);
+            northeast.insertAll(floor.employees);
+            northwest.insertAll(floor.employees);
+            southeast.insertAll(floor.employees);
+            southwest.insertAll(floor.employees);
             //quadTree.insertAll(floor.employees);
             //quadTree.drawLines(mapPane);
-            quadTree.checkCollisions();
+            northeast.drawLines(mapPane);
+            northwest.drawLines(mapPane);
+            southeast.drawLines(mapPane);
+            southwest.drawLines(mapPane);
 
+            northeast.checkCollisions();
+            northwest.checkCollisions();
+            southeast.checkCollisions();
+            southwest.checkCollisions();
         }
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
