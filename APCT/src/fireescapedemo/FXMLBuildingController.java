@@ -97,6 +97,59 @@ public class FXMLBuildingController implements Initializable {
         Delete
     }
 
+
+
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        this.manager = new SceneManager();
+        mainBuilding = manager.getGlobalBuilding();
+        if (mainBuilding == null) {
+            System.out.println("Building is null. Making new one");
+            mainBuilding = new Building(20, 20, 50, mapPane);
+        }
+        this.actionType = Tile.BlockType.Default;
+        this.mainBuilding.enableBuild();
+        this.mainBuilding.setWindowContainer(mapPane);
+        System.out.println("This has been loaded");
+        floorLevel.setText("Floor " + floorNum);
+        mainBuilding.updateView();
+        errorText.setText("");
+        this.initLineBlocks();
+        this.renderLineBlocks();
+        this.disableLineBlocks();
+        this.renderDragLine();
+        this.stairPaneInitialise();
+
+        toolContainer.getChildren().clear();
+
+        Image image;
+        try {
+            image = new Image(getClass().getResource("/Assets/stair_direction.fw.png").toURI().toString());
+            this.stairTileContainer.setFill(new ImagePattern(image));
+        } catch (URISyntaxException ex) {}
+
+
+        this.mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(buildingWalls){
+                    if(event.getButton() == MouseButton.PRIMARY) {
+                        setLineClicked(event);
+                    }else{
+                        FXMLBuildingController.cancelLineClicked();
+                    }
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
     @FXML
     private void handleButtonAction(ActionEvent event) {
     }
@@ -211,52 +264,6 @@ public class FXMLBuildingController implements Initializable {
 
 
     public static Tile.BlockType getActionType(){return actionType;}
-
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        this.manager = new SceneManager();
-        mainBuilding = manager.getGlobalBuilding();
-        if (mainBuilding == null) {
-            System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(20, 20, 50, mapPane);
-        }
-        this.actionType = Tile.BlockType.Default;
-        this.mainBuilding.enableBuild();
-        this.mainBuilding.setWindowContainer(mapPane);
-        System.out.println("This has been loaded");
-        floorLevel.setText("Floor " + floorNum);
-        mainBuilding.updateView();
-        errorText.setText("");
-        this.initLineBlocks();
-        this.renderLineBlocks();
-        this.disableLineBlocks();
-        this.renderDragLine();
-        this.stairPaneInitialise();
-
-        toolContainer.getChildren().clear();
-
-        Image image;
-        try {
-            image = new Image(getClass().getResource("/Assets/stair_direction.fw.png").toURI().toString());
-            this.stairTileContainer.setFill(new ImagePattern(image));
-        } catch (URISyntaxException ex) {}
-
-
-        this.mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(buildingWalls){
-                    if(event.getButton() == MouseButton.PRIMARY) {
-                        setLineClicked(event);
-                    }else{
-                        FXMLBuildingController.cancelLineClicked();
-                    }
-                }
-            }
-        });
-    }
-
 
 
         @FXML
@@ -534,6 +541,7 @@ public class FXMLBuildingController implements Initializable {
 
 
     public static final double[] normaliseCords(double cords[]){
+        //System.out.println("Beginning of normalise cords function:\n---------------------------");
         int i;
         double a;
         double[] finalCords = new double[4];
@@ -542,12 +550,23 @@ public class FXMLBuildingController implements Initializable {
                 a = Math.round((cords[i]-mainBuilding.getXPanOffset())/mainBuilding.getSize());
                 finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getXPanOffset();
             }else if (i == 1 || i == 3){
+                //System.out.println("For Y Coordinates only:");
+                //System.out.println("Original: "+cords[i]);
+                //System.out.println("Pan Offset: "+mainBuilding.getYPanOffset());
+                //System.out.println("Building Size: "+mainBuilding.getSize());
                 a = Math.round((cords[i]-mainBuilding.getYPanOffset())/mainBuilding.getSize());
+               // System.out.println("Resultiing grid coord: "+a);
                 finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getYPanOffset();
+                //System.out.println("----------------");
             }else{return null;}
         }
+        //System.out.println(finalCords[0]+" "+finalCords[1]+" "+finalCords[2]+" "+finalCords[3]);
         return finalCords;
     }
+
+
+
+
 
     public boolean saveMap(){
         JFileChooser fileChooser = new JFileChooser();
@@ -625,9 +644,9 @@ public class FXMLBuildingController implements Initializable {
                     lActualCords[3] = cords[1];
 
                     lGridCords[0] = Math.min(gridCord1, gridCord2)+n;
-                    lGridCords[1] = convertToGridXCord(cords[1]);
+                    lGridCords[1] = convertToGridYCord(cords[1]);
                     lGridCords[2] = Math.min(gridCord1, gridCord2)+n+1;
-                    lGridCords[3] = convertToGridXCord(cords[1]);
+                    lGridCords[3] = convertToGridYCord(cords[1]);
 
                     if(this.currentWall == wallType.Wall) {
                         l = new Line(lActualCords[0], lActualCords[1], lActualCords[2], lActualCords[3]);
@@ -690,16 +709,17 @@ public class FXMLBuildingController implements Initializable {
                 }
             }
 
-/*
+            /*
             System.out.println("Printing current lines:");
             for(int n=0; n<this.mainBuilding.getCurrentFloor().getWalls().size(); n++){
                 System.out.println(this.mainBuilding.getCurrentFloor().getWalls().get(n)[0]+" "+
                         this.mainBuilding.getCurrentFloor().getWalls().get(n)[1]+" "+
                         this.mainBuilding.getCurrentFloor().getWalls().get(n)[2]+" "+
                         this.mainBuilding.getCurrentFloor().getWalls().get(n)[3]);
-                System.out.println("=============================");
             }
-*/
+            System.out.println("Current Offset: X:"+mainBuilding.getXPanOffset()+" Y: "+mainBuilding.getYPanOffset());
+            System.out.println("=============================");
+             */
 
             if(cords[0] == cords[2] || cords[1] == cords[3]) {
                 lineCords[0] = cords[0];
