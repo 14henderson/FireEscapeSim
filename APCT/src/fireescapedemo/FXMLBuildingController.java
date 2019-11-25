@@ -31,6 +31,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.ResourceBundle;
 
@@ -92,6 +93,7 @@ public class FXMLBuildingController implements Initializable {
     public Rectangle stairPreview;
     public static int currStairOrientation = 0;
     public static String currStairDirection = "up";
+    public HashMap<String, Integer> stairChoiceBox;
     enum wallType{
         Wall,
         Delete
@@ -102,6 +104,7 @@ public class FXMLBuildingController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         this.manager = new SceneManager();
+        this.stairChoiceBox = new HashMap<>();
         mainBuilding = manager.getGlobalBuilding();
         if (mainBuilding == null) {
             System.out.println("Building is null. Making new one");
@@ -132,6 +135,7 @@ public class FXMLBuildingController implements Initializable {
         this.mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                refreshStairToolContainer();
                 if(buildingWalls){
                     if(event.getButton() == MouseButton.PRIMARY) {
                         setLineClicked(event);
@@ -366,7 +370,7 @@ public class FXMLBuildingController implements Initializable {
     }
 
     public void refreshStairToolContainer(){
-        this.toolContainer.getChildren().clear();
+        toolContainer.getChildren().clear();
         String details;
         int recordCount = 1;
         for(int id : mainBuilding.stairs.keySet()){
@@ -382,27 +386,36 @@ public class FXMLBuildingController implements Initializable {
             link.setLayoutY(25*recordCount-15);
             link.setPrefWidth(30);
             link.setPrefHeight(20);
-            link.setId(id+"");
-
-            for(int tmpID : mainBuilding.stairs.keySet()) {
-                if (tmpID != mainBuilding.stairs.get(id).ID) {
-                    link.getItems().add(tmpID);
-                } else {
-                    //link.getParent().
-                }
+            String choiceBoxID = "Stair_"+id;
+            link.setId(choiceBoxID);
+            this.stairChoiceBox.put(choiceBoxID, id);
+            if(mainBuilding.stairs.keySet().size() == 1){
+                link.setDisable(true);
             }
-           // link.getSelectionModel().select(mainBuilding.stairs.get(id).joinedID);
+
+            //add other stair IDs to linkbox
+            for(int tmpID : mainBuilding.stairs.keySet()) {
+                if (tmpID != mainBuilding.stairs.get(id).ID) {      //can't link to self
+                    link.getItems().add(tmpID);
+                } else {}
+            }
+            if(mainBuilding.stairs.get(id).joinedID != -1){
+                link.getSelectionModel().select(mainBuilding.stairs.get(id).joinedID);
+            }
 
 
-            /*
             link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+                //if the selection of the selectBox changes.
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                    mainBuilding.stairs.get(Integer.valueOf(link.getId())).joinedID = (int)link.getItems().get((Integer) number2);
+                    int selectedOption = (int)link.getItems().get((Integer) number2);   //id of stair to link to
+                    String choiceBoxId = link.getId();
+                    int stairId = stairChoiceBox.get(choiceBoxID);
+                    mainBuilding.stairs.get(stairId).joinedID = selectedOption;
                 }
             });
 
-             */
+
 
 
 
@@ -491,7 +504,7 @@ public class FXMLBuildingController implements Initializable {
         this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                refreshStairToolContainer();
+                //refreshStairToolContainer();
                 movingWall.setStrokeWidth(10*mainBuilding.getSize()/50.0);
                 if(lineClicked){
                     double[] newCords = {lineCords[0], lineCords[1], event.getX(), event.getY()};

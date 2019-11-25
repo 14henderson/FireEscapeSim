@@ -1,6 +1,7 @@
 package fireescapedemo;
 
 import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 
@@ -14,4 +15,6 @@ public abstract class TileObject implements Serializable {
         this.parent.mainBuilding.windowContainer.getChildren().remove(fxNode);
     }
     public boolean hasNode(){return this.fxNode!=null;}
+    public abstract void updateView();
+    public abstract void initialiseView();
 }

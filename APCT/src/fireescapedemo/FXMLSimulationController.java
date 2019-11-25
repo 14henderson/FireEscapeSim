@@ -80,9 +80,9 @@ public class FXMLSimulationController implements Initializable {
                 timer.setTextFill(Color.BLACK);
                 for(Floor floor : mainBuilding.getFloors()){
                     for(Employee employee : floor.employees){
-                        employee.view.setOpacity(0);
-                        employee.view.setLayoutX(employee.oriTile.getGridX());
-                        employee.view.setLayoutY(employee.oriTile.getGridY());
+                        employee.fxNode.setOpacity(0);
+                        employee.fxNode.setLayoutX(employee.oriTile.getGridX());
+                        employee.fxNode.setLayoutY(employee.oriTile.getGridY());
                         employee.setCurrentState(Employee.State.Idle);
                         employee.toggleExited();
                     }
@@ -104,7 +104,7 @@ public class FXMLSimulationController implements Initializable {
         employeesLeft.setLayoutY(100);
         assetPane.getChildren().add(alarm);
         //assetPane.getChildren().add(reset);
-        assetPane.getChildren().add(p.view);
+        assetPane.getChildren().add(p.fxNode);
         assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
         initAnimation();

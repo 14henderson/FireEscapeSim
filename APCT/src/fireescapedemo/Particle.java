@@ -47,24 +47,24 @@ public class Particle extends Actor{
 
     //@Override
     public void update(Floor floor){
-        double opacity = this.view.getOpacity();
+        double opacity = this.fxNode.getOpacity();
         if(opacity > 0){
-            this.view.setOpacity(opacity - this.fade);
+            this.fxNode.setOpacity(opacity - this.fade);
             this.x = this.velocity.getX();
             this.y = this.velocity.getY() - 0.5;
             this.setVelocity(new Point2D(this.x,this.y));
         }else{
             this.expired = true;
         }
-        this.view.setLayoutX(this.velocity.getX());
-        this.view.setLayoutY(this.velocity.getY());
+        this.fxNode.setLayoutX(this.velocity.getX());
+        this.fxNode.setLayoutY(this.velocity.getY());
     }
 
     public void reset(int y){
         Random rand = new Random();
         this.y = y;
-        this.view.setLayoutY(this.y);
-        this.view.setOpacity(1);
+        this.fxNode.setLayoutY(this.y);
+        this.fxNode.setOpacity(1);
         this.velocity = this.randomVel;
         this.fade = ((double)(rand.nextInt(25) + 1)) /100;
         this.expired = false;

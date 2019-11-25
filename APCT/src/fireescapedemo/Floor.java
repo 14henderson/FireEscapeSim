@@ -60,6 +60,32 @@ public class Floor extends MapObject implements Serializable {
     public void addExit(Exit exit)          { this.exits.add(exit); }
     public void setFloorNum(int n){this.floorNum = n;}
 
+
+
+
+
+    @Override
+    public void updateView(){
+        if (this.wallsNodes == null) {this.initialiseView();}       //if wall nodes never initialised.
+        if(this.wallsNodes.size() != this.walls.size()){this.initialiseWalls();}    //re-draw walls if required
+        for(Tile[] tileRow : this.floorBlocks){                     //update tiles
+            for(Tile aTile : tileRow){
+                aTile.updateView();
+        }}
+        this.updateWalls();
+    }
+
+
+    public void updateWalls(){
+        for(int n=0; n<this.walls.size(); n++){                     //reposition walls with cords
+            this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+            this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
+            this.wallsNodes.get(n).toFront();
+        }
+    }
     public void initialiseWalls(){
         for(Node wall : this.wallsNodes) {
             this.mainBuilding.windowContainer.getChildren().remove(wall);
@@ -79,56 +105,32 @@ public class Floor extends MapObject implements Serializable {
     }
 
 
-
-
-
-
-    @Override
-    public void updateView(){
-        if (this.wallsNodes == null) {this.initialiseView();}       //if wall nodes never initialised.
-        if(this.wallsNodes.size() != this.walls.size()){this.initialiseWalls();}    //re-draw walls if required
-        for(Tile[] tileRow : this.floorBlocks){                     //update tiles
-            for(Tile aTile : tileRow){
-                aTile.updateView();
-        }}
-        for(int n=0; n<this.walls.size(); n++){                     //reposition walls with cords
-            this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
-            this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
-            this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
-            this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
-            this.wallsNodes.get(n).toFront();
-        }
-    }
-
-
-
-
-
-
     public void zoom(int zoomValue){
         int newZoomValue = this.tileSize + zoomValue;
-
         this.mainBuilding.setSize(newZoomValue);
         this.tileSize = newZoomValue;
 
         FXMLBuildingController.zoomLineBlocks(this.tileSize, newZoomValue);
-        for(int i = 0; i < this.mapWidth; i++){             //Zoom Tiles
-            for(int j = 0; j< this.mapHeight; j++){
+        for(int i = 0; i < this.mapWidth; i++){
+            for(int j = 0; j< this.mapHeight; j++){         //for every tile
                 this.floorBlocks[i][j].setActualCords(
                         (this.floorBlocks[i][j].getGridX()*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
                         (this.floorBlocks[i][j].getGridY()*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
                 this.floorBlocks[i][j].setDimensions(this.mainBuilding.getSize(), this.mainBuilding.getSize());
                 if(this.floorBlocks[i][j].tileObject != null){
-                    this.floorBlocks[i][j].initialiseView();
-                }else {
                     this.floorBlocks[i][j].updateView();
-        }}}
+                }else {
+                    this.floorBlocks[i][j].initialiseView();
+                }
+            }
+        }
 
         for(int n=0; n<this.walls.size(); n++){
             this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
             this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
             this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
             this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
             this.wallsNodes.get(n).toFront();
         }
     }
@@ -143,12 +145,14 @@ public class Floor extends MapObject implements Serializable {
             for(int j = 0; j< this.mapHeight; j++){
                 this.floorBlocks[i][j].translate(xinc, yinc);
                 this.floorBlocks[i][j].updateView();
-            }}
+            }
+        }
         for(int n=0; n<this.walls.size(); n++){
             this.wallsNodes.get(n).setStartX((this.walls.get(n)[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
             this.wallsNodes.get(n).setStartY((this.walls.get(n)[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
             this.wallsNodes.get(n).setEndX((this.walls.get(n)[2]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
             this.wallsNodes.get(n).setEndY((this.walls.get(n)[3]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+            this.wallsNodes.get(n).setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
             this.wallsNodes.get(n).toFront();
         }
         FXMLBuildingController.panLineBlocks(xinc, yinc);
@@ -174,7 +178,7 @@ public class Floor extends MapObject implements Serializable {
         }}
         initialiseWalls();
         for(Employee e : this.employees){
-            e.view.toFront();
+            e.fxNode.toFront();
         }
     }
 

@@ -115,11 +115,11 @@ public class Employee extends Actor implements Serializable{
                 }
             }
 
-        this.view.setLayoutX(view.getLayoutX() + velocity.getX());
-        this.view.setLayoutY(view.getLayoutY() + velocity.getY());
+        this.fxNode.setLayoutX(fxNode.getLayoutX() + velocity.getX());
+        this.fxNode.setLayoutY(fxNode.getLayoutY() + velocity.getY());
         counter++;
         }else{
-            this.view.setOpacity(0);
+            this.fxNode.setOpacity(0);
         }
     }
 

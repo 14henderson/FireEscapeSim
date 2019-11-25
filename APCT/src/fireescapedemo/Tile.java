@@ -44,105 +44,54 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         Exit {
             @Override
             public void initialiseView(int index,Tile tile) {
+                //Tile Rectangle (NOT Exit fxObject).//
+                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
+                tile.fxRef.setStroke(Color.BLACK);tile.fxRef.setFill(tile.getColor(tile.type));tile.fxRef.setOpacity(0.5);
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
 
-                Rectangle rec = new Rectangle(tile.getActualX(),tile.getActualY(),tile.mainBuilding.getSize(),tile.mainBuilding.getSize()/2);
-                Image image;
-                try {
-                    image = new Image(getClass().getResource("/Assets/estExit.PNG").toURI().toString());
-                    rec.setFill(new ImagePattern(image));
-                    mainBuilding.windowContainer.getChildren().add(rec);
-                } catch (URISyntaxException ex) {
-                    System.out.println(ex);
-                }
-                Exit exit = new Exit(rec,tile);
+                Exit exit = new Exit(tile);
                 tile.setTileObject(exit);
                 mainBuilding.getFloors().get(index).addExit(exit);
             }
         },
+
         Stairs {
             @Override
             public void initialiseView(int index,Tile tile) {
-                if(tile.tileObject != null && tile.tileObject.hasNode()){
-                    mainBuilding.windowContainer.getChildren().add(tile.tileObject.getNode());
-                    System.out.println("Reloading");
-                }else{
-                    Rectangle rec = new Rectangle(tile.getActualX(), tile.getActualY(), tile.mainBuilding.getSize(), tile.mainBuilding.getSize());
-                    Image image;
-                    char orientation = 'N';
-                    int rotation;
-                    String direction;
-                    String filename = "/Assets/stairs_%s_%c.fw.png";
-                    if(tile.tileObject != null){
-                        Staircase tmpRef = (Staircase)tile.tileObject;
-                        rotation = tmpRef.getRotation();
-                        direction = tmpRef.getDirection();
-                    }else {
-                        rotation = FXMLBuildingController.currStairOrientation;
-                        direction = FXMLBuildingController.currStairDirection;
-                    }
-                    switch (rotation) {
-                        case 0:
-                            orientation = 'N';
-                            tile.removeAccess(1);
-                            tile.removeAccess(2);
-                            tile.removeAccess(3);
-                            break;
-                        case 90:
-                            orientation = 'E';
-                            tile.removeAccess(0);
-                            tile.removeAccess(2);
-                            tile.removeAccess(3);
-                            break;
-                        case 180:
-                            orientation = 'S';
-                            tile.removeAccess(0);
-                            tile.removeAccess(1);
-                            tile.removeAccess(3);
-                            break;
-                        case 270:
-                            orientation = 'W';
-                            tile.removeAccess(0);
-                            tile.removeAccess(1);
-                            tile.removeAccess(2);
-                            break;
-                    }
-                    filename = String.format(filename, direction, orientation);
-                    try {
-                        image = new Image(getClass().getResource(filename).toURI().toString());
-                        rec.setFill(new ImagePattern(image));
-                    } catch (URISyntaxException ex) {}
-                    mainBuilding.windowContainer.getChildren().add(rec);
-                    Staircase stair = new Staircase(rec, tile);
+                //Tile Rectangle (NOT Exit fxObject).//
+                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
+                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
+                tile.fxRef.setStroke(Color.BLACK);tile.fxRef.setFill(tile.getColor(tile.type));tile.fxRef.setOpacity(0.1);
+                mainBuilding.windowContainer.getChildren().addAll(tile.fxRef);
 
-                    int newID=0;
-                    while (mainBuilding.stairs.containsKey(newID)) {
-                        newID++;
-                    }
-                    stair.setID(newID);
-                    stair.setDirection(direction);
+                //Get provisional variables for possible later use
+                int rotation = FXMLBuildingController.currStairOrientation;
+                String direction = FXMLBuildingController.currStairDirection;
+                String newObjID = Staircase.generateUniqueID(tile, rotation, direction);
+
+                //If no stairs tile existed before (placing it first time)
+                if(tile.tileObject == null || !tile.tileObject.hasNode() || !(tile.tileObject instanceof Staircase)){
+                    Staircase stair = new Staircase(tile);
                     stair.setRotation(rotation);
+                    stair.setDirection(direction);
+                    int newID=0;    //finding the next available ID to take
+                    while (mainBuilding.stairs.containsKey(newID)) {newID++;}
+                    stair.setID(newID);
+                    mainBuilding.stairs.put(newID, stair);      //add stair and ID to mainBuilding object
+                    stair.initialiseView();
                     tile.setTileObject(stair);
-                    mainBuilding.stairs.put(newID, stair);
 
-                    tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                    tile.fxRef.setStroke(Color.BLACK);
-                    tile.fxRef.setFill(tile.getColor(tile.type));
-                    tile.fxRef.setOpacity(0.1);
+                //else if it IS of type Staircase, but not the same stairs (e.g. placing stairs on existing stairs)
+                }else if(((Staircase) tile.tileObject).getUniqueObjID().compareTo(newObjID) != 0) {//comparing the IDs
+                    Staircase tmpRef = (Staircase) tile.tileObject;
+                    mainBuilding.stairs.remove(tmpRef.ID);
+                    tile.tileObject = null;
+                    this.initialiseView(index, tile);   //should default to re-initialising stairs on tile
 
-                    Text stairIDText = new Text(newID+"");
-                    stairIDText.setFill(Color.RED);
-                    stairIDText.setX(tile.getActualX()+tile.getSize()/8);
-                    stairIDText.setY(tile.getActualY()+tile.getSize()/4);
-                    mainBuilding.windowContainer.getChildren().addAll(tile.fxRef, stairIDText);
-                    stairIDText.toFront();
-                    stair.setIDFxml(stairIDText);
-
-                    System.out.println("ID: "+stair.ID);
+                //assuming a zoom or pan
+                }else{
+                    tile.tileObject.updateView();
                 }
             }
         },
@@ -156,28 +105,21 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
             }
         },
+
         Blocked{
             @Override
             public void initialiseView(int index, Tile tile) {
+                //Tile Rectangle (NOT Exit fxObject).//
+                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
+                tile.fxRef.setStroke(Color.BLACK); tile.fxRef.setFill(tile.getColor(tile.type)); tile.fxRef.setOpacity(0.5);
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
 
-                Rectangle rec = new Rectangle(tile.getActualX(),tile.getActualY(),tile.mainBuilding.getSize(),tile.mainBuilding.getSize());
-                Image image;
-                try {
-                    image = new Image(getClass().getResource("/Assets/no_entrance.fw.png").toURI().toString());
-                    rec.setFill(new ImagePattern(image));
-                    mainBuilding.windowContainer.getChildren().add(rec);
-                } catch (URISyntaxException ex) {
-                    System.out.println(ex);
-                }
-                DefaultAssetHolder blocked = new Tile.DefaultAssetHolder(rec);
+                DefaultAssetHolder blocked = new Tile.DefaultAssetHolder(tile, "/Assets/no_entrance.fw.png");
                 tile.setTileObject(blocked);
             }
         },
+
         Default {
             @Override
             public void initialiseView(int index, Tile tile) {
@@ -191,17 +133,16 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 }
             }
         },
+
         Employee {
             @Override
             public void initialiseView(int index,Tile tile) {
+                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
                 tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
                 tile.fxRef.setStroke(Color.BLACK);
                 tile.fxRef.setFill(tile.getColor(tile.type));
                 tile.fxRef.setOpacity(0.5);
                 mainBuilding.windowContainer.getChildren().add(tile.fxRef);
-
-
-
 
                 Actor a;
                 Circle c;
@@ -304,7 +245,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void initialiseView(){
         try{
             this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
-            this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.view);
+            this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.fxNode);
         } catch(Exception e){}
         if(this.tileObject != null){
             this.tileObject.flushNodes();
@@ -312,7 +253,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         }
         this.currentActor = null;
         this.type.initialiseView(0, this);
-
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
             if(mainBuilding.canEdit) {
                 this.type = FXMLBuildingController.getActionType();
@@ -331,19 +271,17 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         if(this.fxRef == null){
             this.initialiseView();
         }
-        this.fxRef.setFill(this.getColor(this.type));
+        //this.fxRef.setFill(this.getColor(this.type));
         this.fxRef.setX(this.getActualX());
         this.fxRef.setY(this.getActualY());
         this.fxRef.setWidth(this.getWidth());
         this.fxRef.setHeight(this.getWidth());
         this.fxRef.setRotate(this.rotation);
-
-        if(this.getActualX() > 700 || this.getActualY() > 700){
-            this.fxRef.setVisible(false);
-        }else{
-            this.fxRef.setVisible(true);
+        if(this.tileObject != null) {
+            this.tileObject.updateView();
         }
-        this.fxRef.toFront();
+        //this.fxRef.toFront();
+
     }
 
 
@@ -351,9 +289,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.actualCords[0] += xinc;
         this.actualCords[1] += yinc;
 
-        if(this.tileObject != null) {
-            this.initialiseView();
-        }
+       // if(this.tileObject == null) {
+       //     this.initialiseView();
+       // }
     }
 
 
@@ -431,25 +369,52 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
     public static class DefaultAssetHolder extends TileObject{
-        DefaultAssetHolder(Node nodeObj){
-            this.fxNode = nodeObj;
+        String filename;
+        DefaultAssetHolder(Tile t, String fname){
+            this.parent = t;
+            this.filename = fname;
+            this.initialiseView();
         }
         @Override
         public Node getNode(){
             return this.fxNode;
         }
-
         @Override
         public void setNode(Node n) {
             this.fxNode = n;
         }
-
         @Override
         public void flushNodes(){
             this.parent.mainBuilding.windowContainer.getChildren().remove(this.fxNode);
         }
         @Override
         public void destroy(){}
+        @Override
+        public void updateView(){
+            Rectangle tmp = (Rectangle)this.fxNode;
+            tmp.setX(this.parent.getActualX());
+            tmp.setY(this.parent.getActualY());
+            tmp.setWidth(parent.getWidth());
+            tmp.setHeight(parent.getHeight());
+        }
+        @Override
+        public void initialiseView(){
+            Rectangle rec = new Rectangle(this.parent.getActualX(),this.parent.getActualY(),this.parent.mainBuilding.getSize(),this.parent.mainBuilding.getSize());
+            Image image;
+            try {
+                image = new Image(getClass().getResource(this.filename).toURI().toString());
+                rec.setFill(new ImagePattern(image));
+                mainBuilding.windowContainer.getChildren().add(rec);
+            } catch (URISyntaxException ex) {
+                System.out.println(ex);
+            }
+            this.fxNode = rec;
+
+
+
+        }
+
+
     }
 
 

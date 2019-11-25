@@ -7,6 +7,7 @@ package fireescapedemo;
 
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
+import javafx.scene.shape.Circle;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,7 +20,7 @@ import java.io.Serializable;
 
 public class Actor extends TileObject implements Serializable {
     protected transient Point2D velocity;
-    protected transient Node view;
+    //protected transient Node view;
     boolean swap;
     //final int id;
     private static int idCounter = 0;
@@ -27,44 +28,55 @@ public class Actor extends TileObject implements Serializable {
 
     @Override
     public Node getNode(){
-        return this.view;
+        return this.fxNode;
     }
     @Override
     public void setNode(Node n){
-        this.view = n;
+        this.fxNode = n;
     }
     @Override
     public void destroy(){}
+    @Override
+    public void updateView(){
+        Circle tmp = (Circle)this.fxNode;
+        tmp.setLayoutX(this.parent.getActualX()+(this.parent.getWidth()/2));
+        tmp.setLayoutY(this.parent.getActualY()+(this.parent.getHeight()/2));
+        tmp.maxHeight(this.parent.getWidth());
+        tmp.maxWidth(this.parent.getHeight());
+    }
+    @Override
+    public void initialiseView(){}
 
     public Actor(Node view){
-
-        this.view = view;
+        this.fxNode = view;
         //this.oriTile;// = tile;
         this.velocity = new Point2D(0,0);
         this.swap = false;
     }
 
-    public Actor(Node view, Tile t){
-        this.view = view;
-        this.oriTile = t;
+    public Actor(Node view, Tile tile){
+        this.fxNode = view;
+        this.oriTile = tile;
         this.velocity = new Point2D(0,0);
         this.swap = false;
+        this.parent = tile;
     }
 
     public Actor(Node view, Tile tile, Point2D vector){
-        this.view = view;
+        this.fxNode = view;
         this.oriTile = tile;
         this.velocity = vector;
         this.swap = false;
+        this.parent = tile;
     } 
 
     
     public void update(){
-        this.view.setTranslateX(view.getTranslateX() + velocity.getX());
-        this.view.setTranslateY(view.getTranslateY() + velocity.getY());
+        this.fxNode.setTranslateX(fxNode.getTranslateX() + velocity.getX());
+        this.fxNode.setTranslateY(fxNode.getTranslateY() + velocity.getY());
     }
     
-    public Node getView(){return this.view;}
+    public Node getView(){return this.fxNode;}
     public Point2D getVelocity() {return this.velocity;}
     public boolean getSwap(){return this.swap;}
     

@@ -14,8 +14,8 @@ public class Fire extends Actor {
     public Fire(int x, int y, Tile tile) {
         super(new Pane(), tile);
         this.x = x; this.y = y; this.size =20;
-        this.view.setLayoutX(this.x);
-        this.view.setLayoutY(this.y);
+        this.fxNode.setLayoutX(this.x);
+        this.fxNode.setLayoutY(this.y);
         this.particals = new ArrayList<>();
         this.rand = new Random();
         int i;
@@ -42,7 +42,7 @@ public class Fire extends Actor {
     public final ArrayList<Particle> getParticals(){return this.particals;}
     public final int getMAX_PARTICALS(){return this.MAX_PARTICALS;}
 
-    public final boolean addToPane(Particle p) {return ((Pane)(this.view)).getChildren().add(p.view);}
+    public final boolean addToPane(Particle p) {return ((Pane)(this.fxNode)).getChildren().add(p.fxNode);}
     public void addPartical(){
         int pos = this.rand.nextInt(size) ;
         Particle p = new Particle(new Rectangle(pos,this.y + this.size,30,30),this.oriTile);
