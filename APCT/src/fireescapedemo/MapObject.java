@@ -10,6 +10,7 @@ public abstract class MapObject {
         put("GREY", "B0B0B0");
         put("AQUAMARINE", "00FFBF");
         put("RED", "FF0000");
+        put("BROWN", "876505");
     }};
 
 

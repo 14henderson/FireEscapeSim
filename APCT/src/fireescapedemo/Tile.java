@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
@@ -43,27 +44,27 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     enum BlockType{
         Exit {
             @Override
-            public void initialiseView(int index,Tile tile) {
-                //Tile Rectangle (NOT Exit fxObject).//
-                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);tile.fxRef.setFill(tile.getColor(tile.type));tile.fxRef.setOpacity(0.5);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+            public void initialiseView(int index,Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
 
                 Exit exit = new Exit(tile);
                 tile.setTileObject(exit);
                 mainBuilding.getFloors().get(index).addExit(exit);
+                this.finalPreparation(tile);
             }
         },
 
         Stairs {
             @Override
-            public void initialiseView(int index,Tile tile) {
-                //Tile Rectangle (NOT Exit fxObject).//
-                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);tile.fxRef.setFill(tile.getColor(tile.type));tile.fxRef.setOpacity(0.1);
-                mainBuilding.windowContainer.getChildren().addAll(tile.fxRef);
+            public void initialiseView(int index,Tile tile, boolean isPLacing) {
+                this.prepareTile(tile);
+                if(!isPLacing){
+                    tile.tileObject.flushNodes();
+                    tile.tileObject.initialiseView();
+                    this.finalPreparation(tile);
+                    return;
+                }
 
                 //Get provisional variables for possible later use
                 int rotation = FXMLBuildingController.currStairOrientation;
@@ -84,65 +85,59 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 //else if it IS of type Staircase, but not the same stairs (e.g. placing stairs on existing stairs)
                 }else if(((Staircase) tile.tileObject).getUniqueObjID().compareTo(newObjID) != 0) {//comparing the IDs
+                    tile.tileObject.destroy();
                     Staircase tmpRef = (Staircase) tile.tileObject;
                     mainBuilding.stairs.remove(tmpRef.ID);
                     tile.tileObject = null;
-                    this.initialiseView(index, tile);   //should default to re-initialising stairs on tile
+                    this.initialiseView(index, tile, true);   //should default to re-initialising stairs on tile
 
                 //assuming a zoom or pan
                 }else{
                     tile.tileObject.updateView();
                 }
+                this.finalPreparation(tile);
             }
         },
         Path {
             @Override
-            public void initialiseView(int index,Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.RED);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+            public void initialiseView(int index,Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
+                this.finalPreparation(tile);
             }
         },
+
 
         Blocked{
             @Override
-            public void initialiseView(int index, Tile tile) {
-                //Tile Rectangle (NOT Exit fxObject).//
-                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK); tile.fxRef.setFill(tile.getColor(tile.type)); tile.fxRef.setOpacity(0.5);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
-
+            public void initialiseView(int index, Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
                 DefaultAssetHolder blocked = new Tile.DefaultAssetHolder(tile, "/Assets/no_entrance.fw.png");
                 tile.setTileObject(blocked);
+                this.finalPreparation(tile);
             }
         },
 
+
         Default {
             @Override
-            public void initialiseView(int index, Tile tile) {
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+            public void initialiseView(int index, Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
+
                 if(tile.tileObject != null){
                     tile.tileObject.destroy();
                 }
+                this.finalPreparation(tile);
             }
         },
 
         Employee {
             @Override
-            public void initialiseView(int index,Tile tile) {
-                tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
-                tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-                tile.fxRef.setStroke(Color.BLACK);
-                tile.fxRef.setFill(tile.getColor(tile.type));
-                tile.fxRef.setOpacity(0.5);
-                mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+            public void initialiseView(int index,Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
 
                 Actor a;
                 Circle c;
@@ -166,9 +161,45 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             }
         };
         
-        public abstract void initialiseView(int index,Tile tile);
+        public abstract void initialiseView(int index,Tile tile, boolean isPlacing);
+        public void flushTile(Tile tile){
+            if(tile.tileObject != null) {
+                tile.tileObject.flushNodes();
+                tile.tileObject.destroy();
+                tile.tileObject = null;
+            }
+        }
+
+
+        public void prepareTile(Tile tile){
+            tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
+            tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
+            tile.fxRef.setStroke(Color.BLACK);
+            tile.fxRef.setFill(tile.getColor(tile.type));
+            tile.fxRef.setOpacity(0.5);
+            mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+        }
+
+
+
+        public void finalPreparation(Tile tile){
+            tile.fxRef.setOnMouseClicked((MouseEvent event) -> {
+                System.out.println("Tile clicked");
+                if(mainBuilding.canEdit) {
+                    tile.type = FXMLBuildingController.getActionType();
+                    tile.type.initialiseView(0, tile, true);
+                    FXMLBuildingController.refreshLineTiles();
+                }
+            });
+            tile.fxRef.toFront();
+        }
+
 
     }
+
+
+
+
     public BlockType type;
 
     @Override
@@ -247,18 +278,17 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
             this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.fxNode);
         } catch(Exception e){}
-        if(this.tileObject != null){
-            this.tileObject.flushNodes();
-            this.tileObject.destroy();
-        }
+        //if(this.tileObject != null) {
+        //    this.tileObject.flushNodes();
+        //    this.tileObject.destroy();
+        //}
+        this.type.initialiseView(0, this, false);
         this.currentActor = null;
-        this.type.initialiseView(0, this);
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
+            System.out.println("Tile clicked");
             if(mainBuilding.canEdit) {
                 this.type = FXMLBuildingController.getActionType();
-                this.fxRef.setFill(this.getColor(this.type));
-                this.fxRef.setOpacity(0.5);
-                this.initialiseView();
+                this.type.initialiseView(0, this, true);
                 FXMLBuildingController.refreshLineTiles();
             }
         });
@@ -301,9 +331,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public Color getColor(BlockType type){
         Color tileColor;
         switch (this.type){
-            case Employee: tileColor = Color.web(getColor("RED"));break;
-            case Exit: tileColor = Color.web(getColor("GREY"));break;
-            case Stairs: tileColor = Color.web(getColor("AQUAMARINE"));break;
+            case Employee: tileColor = Color.web(getColor("BROWN"));break;
+            case Exit: tileColor = Color.web(getColor("BROWN"));break;
+            case Stairs: tileColor = Color.web(getColor("BROWN"));break;
             default: tileColor = Color.web(getColor("WHITESMOKE"));break;
         }
         return tileColor;

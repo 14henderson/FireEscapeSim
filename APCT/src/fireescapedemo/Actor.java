@@ -41,8 +41,7 @@ public class Actor extends TileObject implements Serializable {
         Circle tmp = (Circle)this.fxNode;
         tmp.setLayoutX(this.parent.getActualX()+(this.parent.getWidth()/2));
         tmp.setLayoutY(this.parent.getActualY()+(this.parent.getHeight()/2));
-        tmp.maxHeight(this.parent.getWidth());
-        tmp.maxWidth(this.parent.getHeight());
+        tmp.setRadius(this.parent.getWidth()/2);
     }
     @Override
     public void initialiseView(){}

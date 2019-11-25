@@ -409,8 +409,8 @@ public class FXMLBuildingController implements Initializable {
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
                     int selectedOption = (int)link.getItems().get((Integer) number2);   //id of stair to link to
-                    String choiceBoxId = link.getId();
-                    int stairId = stairChoiceBox.get(choiceBoxID);
+                    String eventChoiceBoxId = link.getId();
+                    int stairId = stairChoiceBox.get(eventChoiceBoxId);
                     mainBuilding.stairs.get(stairId).joinedID = selectedOption;
                 }
             });
@@ -487,13 +487,13 @@ public class FXMLBuildingController implements Initializable {
         }
     }
 
-
+/*
     public void initCharacters(){
         characters = new ArrayList();
         characters.add(new Employee(play, mainBuilding.getCurrentFloor().getTile(0, 0)));
         characters.get(0).setVelocityX(1);
     }
-
+*/
 
 
     public void renderDragLine(){
