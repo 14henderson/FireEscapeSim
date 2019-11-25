@@ -3,6 +3,7 @@ package fireescapedemo;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 public class Employee extends Actor implements Serializable{
     private double counter = 0, range = 0;
     private transient ArrayList<Pair<Point2D,Tile>> path;
-    private boolean findingPath, exited;
+    private boolean findingPath, exited, avgMove;
     Pair<Point2D,Tile> curPoint,postPoint;
     public Tile proTile;
     public SystemTools tools;
@@ -28,7 +29,7 @@ public class Employee extends Actor implements Serializable{
         FindRoute{
             @Override
             public void act(Employee employee, Floor floor){
-                employee.tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock());
+                employee.tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock(),floor.getWallsNodes());
                 System.out.println("Route found");
                 boolean stateSwitch = employee.tools.pathFinder.exitFound();
                 if(stateSwitch){
@@ -79,7 +80,9 @@ public class Employee extends Actor implements Serializable{
         this.currentState = State.Idle;
         this.findingPath = false;
         this.exited = false;
+        this.avgMove = false;
         this.oriTile = tile;
+
     }
 
     public Employee(Node view, Tile tile, Point2D vector){
@@ -87,6 +90,7 @@ public class Employee extends Actor implements Serializable{
         this.currentState = State.Idle;
         this.findingPath = false;
         this.exited = false;
+        this.avgMove = false;
         this.oriTile = tile;
     }
 
@@ -123,7 +127,7 @@ public class Employee extends Actor implements Serializable{
         this.view.setLayoutX(view.getLayoutX() + velocity.getX());
         this.view.setLayoutY(view.getLayoutY() + velocity.getY());
         }else{
-            this.view.setOpacity(0.5);
+            this.view.setOpacity(0);
         }
     }
 
@@ -145,12 +149,14 @@ public class Employee extends Actor implements Serializable{
     public void setCurrentState(State state){this.currentState = state;}
     public void setPath(ArrayList<Pair<Point2D, Tile>> newPath){this.path = newPath;}
     public void setrange(double vel){this.range = vel;}
-    public void toggleExited(){this.exited = !exited;}
+    public void toggleExited(){this.exited = !this.exited;}
+    public void setAvgMove(boolean b){this.avgMove = b;}
     public boolean hasExited(){return this.exited;}
 
     void updatePathPoint(){
         double linePathValue = findLineAndRotate(curPoint.getValue());
-        if(linePathValue < 1){
+        //System.out.println("Linepathvale: " + linePathValue);
+        if(linePathValue <= 15){
             if(this.path.isEmpty()){
                 this.exited = true;
             }else{
@@ -160,46 +166,56 @@ public class Employee extends Actor implements Serializable{
 
 
     }
-
+    public double getSize(){
+        return ((Circle)(this.view)).getRadius();
+    }
 
     double findLineAndRotate(Tile end){
         //line of sight to end node
+
         double startX = this.view.getLayoutX(), endX = end.getActualX() + (end.getWidth()/2) ,
                 startY=  this.view.getLayoutY(), endY =  end.getActualY() + (end.getHeight()/2);
 
         double mX = endX - startX ;
         double mY = endY - startY;
-        boolean b = false;
-        if(mX == mY){
-            mX = mX < 0 ? -1 : 1;
-            mY = mY < 0 ? -1 : 1;
-            b = true;
-        }
-        else{
-            //set x velocity
 
-            if(mX >=0.95||mX <=-0.95){
+        if(!this.avgMove) {
+            boolean b = false;
+            if (mX == mY) {
                 mX = mX < 0 ? -1 : 1;
-                b = true;
-            }
-            else if(mX ==0){ mX = 0; }
-            else{ mX= startX <= endX ? startX / endX : -(endX / startX); }
-
-
-            if(mY >=0.95||mY <=-0.95){
                 mY = mY < 0 ? -1 : 1;
                 b = true;
+            } else {
+                //set x velocity
+
+                if (mX >= 0.95 || mX <= -0.95) {
+                    mX = mX < 0 ? -1 : 1;
+                    b = true;
+                } else if (mX == 0) {
+                    mX = 0;
+                } else {
+                    mX = startX <= endX ? startX / endX : -(endX / startX);
+                }
+
+
+                if (mY >= 0.95 || mY <= -0.95) {
+                    mY = mY < 0 ? -1 : 1;
+                    b = true;
+                } else if (mY == 0) {
+                    mY = 0;
+                } else {
+                    mY = startY <= endY ? startY / endY : -(endY / startY);
+                }
             }
-            else if(mY ==0 ){ mY = 0; }
-            else{ mY= startY <= endY ? startY / endY : -(endY / startY); }
+
+
+           // System.out.println("mX: " + mX + ", mY: " + mY);
+
+
+            this.velocity = new Point2D(mX, mY);
         }
-
-
-
-        //System.out.println("mX: " + mX + ", mY: " + mY);
-
-
-        this.velocity = new Point2D(mX, mY);
-        return Math.sqrt(Math.pow(endX - startX,2) + Math.pow(endY - startY,2));
+        mX = endX - startX ;
+        mY = endY - startY;
+        return Math.sqrt(Math.pow(mX,2) + Math.pow(mY,2));
     }
 }

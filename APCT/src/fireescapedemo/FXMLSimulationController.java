@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,11 +18,13 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class FXMLSimulationController implements Initializable {
@@ -127,15 +130,18 @@ public class FXMLSimulationController implements Initializable {
         t.start();
     }
     double nX, nY, nW, nH;
-    int cap = 5;
+    int cap = 50;
     boolean drawLines = false;
     private void onUpdate() {
         for(Floor floor : mainBuilding.getFloors()) {
+            for (Employee e : floor.employees) {
+                e.update(floor);
+            }
+            collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
             nW = floor.getActualWidth() / 2;
             nH = floor.getActualHeight() / 2;
             nX = floor.getActualX();
             nY = floor.getActualY();
-
             northwest = new QuadTree(cap, nX, nY, nW, nH);
             northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
             southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
@@ -146,19 +152,18 @@ public class FXMLSimulationController implements Initializable {
             southwest.insertAll(floor.employees);
             //quadTree.insertAll(floor.employees);
             //quadTree.drawLines(mapPane);
-            if(drawLines){
+            if (drawLines) {
                 northeast.drawLines(mapPane);
                 northwest.drawLines(mapPane);
                 southeast.drawLines(mapPane);
                 southwest.drawLines(mapPane);
             }
-            for (Employee e : floor.employees) {
-                e.update(floor);
-            }
+            QuadTree.col = false;
             northeast.checkCollisions();
             northwest.checkCollisions();
             southeast.checkCollisions();
             southwest.checkCollisions();
+
         }
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
@@ -166,6 +171,63 @@ public class FXMLSimulationController implements Initializable {
             timeline.stop();
             timer.setTextFill(Color.RED);
         }
+    }
+
+    private void collisionBetweenWallandEmployee(ArrayList<Employee> employees,ArrayList<Line> walls, double size){
+        int i,j, empLen = employees.size(), wallLen = walls.size();
+        double newX, newY;
+        double distance, displacement,px,py,tx,ty;
+        Point2D newV;
+        Employee emp;
+        Line wall;
+        boolean[] b;
+        for(i = 0; i < empLen; i++){
+            emp = employees.get(i);
+            for(j = 0; j < wallLen; j++){
+                wall = walls.get(j);
+                b = intersection((Circle)(emp.view),wall);
+                if(b[0]){
+                    if(!b[1]){newX = emp.velocity.getX(); newY = 0;}
+                    else{newX = 0; newY = emp.velocity.getY();}
+                    px = point.view.getLayoutX();py = point.view.getLayoutY();
+                    tx = target.view.getLayoutX();ty = point.view.getLayoutY();
+                    size = ((Circle)((Employee)(point)).view).getRadius() ;
+                    distance =  Math.sqrt(Math.pow(px - tx,2) + Math.pow(py - ty,2));
+                    displacement = 0.5d * (distance- size - size);
+                    newV = new Point2D((newX*size), (newY*size));
+                    if(!b[1]){}
+                    newX = emp.view.getLayoutX() - newV.getX(); newY = emp.view.getLayoutY() - newV.getY();
+                    emp.view.setLayoutX(newX);
+                    emp.view.setLayoutY(newY);
+                    break;
+                }
+            }
+        }
+
+    }
+
+    private boolean[] intersection(Circle employee, Line wall){
+        //System.out.println("wall coords xS: " + wall.getStartX() + ", yS: " + wall.getStartY()
+       // + " - xE: " + wall.getEndX() +  ", yE: " + wall.getEndY());
+
+        if(wall.getStartX() == wall.getEndX()){
+            double minY = wall.getStartY() > wall.getEndY()? wall.getEndY() : wall.getStartY();
+            double maxY = wall.getStartY() < wall.getEndY()? wall.getEndY() : wall.getStartY();
+            boolean [] b = {employee.getLayoutX() - employee.getRadius() < wall.getStartX() &&
+                    employee.getLayoutX() + employee.getRadius() > wall.getStartX() &&
+                    employee.getLayoutY() - employee.getRadius() > minY &&
+                    employee.getLayoutY() + employee.getRadius() < maxY, false};
+            return b;
+        }
+
+        double minX = wall.getStartX() > wall.getEndX()? wall.getEndX() : wall.getStartX();
+        double maxX = wall.getStartX() < wall.getEndX()? wall.getEndX() : wall.getStartX();
+
+        boolean[] b =  {employee.getLayoutY() - employee.getRadius() < wall.getStartY() &&
+                employee.getLayoutY() + employee.getRadius() > wall.getStartY() &&
+                employee.getLayoutX() - employee.getRadius() > minX &&
+                employee.getLayoutX() + employee.getRadius() < maxX,true};
+        return b;
     }
 
     @FXML

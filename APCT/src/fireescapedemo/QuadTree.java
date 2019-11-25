@@ -1,5 +1,6 @@
 package fireescapedemo;
 
+import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -15,6 +16,8 @@ public class QuadTree{
     private boolean divided;
     private final Actor[] points;
     private final QuadTree[] children;
+    private static ArrayList<Line> walls;
+    public static boolean col = false;
 
 
     public QuadTree(int cap, double x, double y, double w, double h){
@@ -27,7 +30,18 @@ public class QuadTree{
         this.divided = false;
         this.points = new Actor[this.cap];
         this.children = new QuadTree[4];
-
+    }
+    public QuadTree(ArrayList<Line> walls, int cap, double x, double y, double w, double h){
+        this.cap = cap;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.iter = 0;
+        this.divided = false;
+        this.points = new Actor[this.cap];
+        this.children = new QuadTree[4];
+        QuadTree.walls = walls;
     }
 
     //inserting all actors at once
@@ -88,37 +102,61 @@ public class QuadTree{
 
     public void checkCollisions(){
         int i,j, pointLen = this.points.length, childLen = this.children.length;
+        double avX = 0, avY = 0;
         Actor point, target;
+        double size,newX, newY,distance, displacement,px,py,tx,ty;
+        Point2D newV;
         //apply collisions localy
-        for(i = 0; i < pointLen; i++){
-
+        for(i = 0; i < this.iter; i++){
             point = this.points[i];
+            avX += point.velocity.getX();
+            avY += point.velocity.getY();
 
-            for(j = 0; j < pointLen; j++){
+            for(j = 0; j < this.iter; j++){
                 target = this.points[j];
-                if(point == null || target == null || point == target){continue;}
+                if(point == target){continue;}
                 if(point instanceof Employee && target instanceof Employee){
                     if(this.collisionBetween((Employee)point,(Employee)target)){
-                        point.view.setLayoutX(point.view.getLayoutX() - point.getVelocity().getX());
-                        point.view.setLayoutY(point.view.getLayoutY() - point.getVelocity().getY());
+                        QuadTree.col = true;
+                        px = point.view.getLayoutX();py = point.view.getLayoutY();
+                        tx = target.view.getLayoutX();ty = point.view.getLayoutY();
+                        size = ((Circle)((Employee)(point)).view).getRadius() ;
+                        distance =  Math.sqrt(Math.pow(px - tx,2) + Math.pow(py - ty,2));
+                        displacement = 0.5d * (distance- size - size);
+
+                        point.view.setLayoutX(px - (displacement * (px - tx) / distance));
+                        point.view.setLayoutY(py - (displacement * (py - ty) / distance));
+
+                        target.view.setLayoutX(tx + (displacement * (px - tx) / distance));
+                        target.view.setLayoutY(ty + (displacement * (py - ty) / distance));
+
                         ((Circle)point.view).setFill(Color.GREEN);
                         ((Circle)target.view).setFill(Color.GREEN);
                     }else{
-                        //((Circle)point.view).setFill(Color.LIGHTBLUE);
-                        //((Circle)target.view).setFill(Color.LIGHTBLUE);
+                        ((Circle)point.view).setFill(Color.LIGHTBLUE);
+                        ((Circle)target.view).setFill(Color.LIGHTBLUE);
                     }
                 }
             }
         }
+        newV = new Point2D(avX/this.iter, avY/iter);
+        //System.out.println("x: " + newV.getX() + ", y: " + newV.getY());
+       // System.out.println("col: " + col);
+        /*
+        if(col == true)
+            for(i = 0; i < this.iter; i++){ this.points[i].setVelocity(newV); ((Employee)this.points[i]).setAvgMove(true);}
+        */
         if(this.divided){
             for(i = 0; i < childLen; i++){
                 this.children[i].checkCollisions();
             }
         }
+        boolean work_properly = true;
 
     }
 
     private boolean collisionBetween(Employee a, Employee b){
+        if(a.hasExited() || b.hasExited()) return false;
         double dis = Math.sqrt(Math.pow(a.view.getLayoutX() - b.view.getLayoutX(),2) +
                 Math.pow(a.view.getLayoutY() - b.view.getLayoutY(),2));
         return dis < ((Circle)(a.view)).getRadius() + ((Circle)(b.view)).getRadius();

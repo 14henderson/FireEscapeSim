@@ -8,7 +8,6 @@ package fireescapedemo;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.io.Serializable;
@@ -65,12 +64,13 @@ public class Actor extends TileObject implements Serializable {
     public Node getView(){return this.view;}
     public Point2D getVelocity() {return this.velocity;}
     public boolean getSwap(){return this.swap;}
-    
+
     public void setVelocity(Point2D newVelocity){this.velocity = newVelocity;}
     public void setVelocityX(double x) {this.velocity = new Point2D(x,this.velocity.getY());}
     public void setVelocityY(double y) {this.velocity = new Point2D(this.velocity.getX(),y);}
     public void setSwap(boolean b){ this.swap = b;}
     public void toggleSwap(){this.swap = !this.swap;}
+
 
 
     public String printVelocity(){
