@@ -18,6 +18,7 @@ public class FireEscapeDemo extends Application {
 
         manager.addScene("FXMLBuilding.fxml", "building");
         manager.addScene("FXMLHome.fxml", "home");
+        manager.addScene("FXMLHomeCreateDiag.fxml", "homeCreateDiag");
         manager.addScene("FXMLSimulation.fxml", "simulation");
 
         manager.showScene("home");

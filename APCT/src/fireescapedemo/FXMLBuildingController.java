@@ -105,8 +105,17 @@ public class FXMLBuildingController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         this.manager = new SceneManager();
         this.stairChoiceBox = new HashMap<>();
-        mainBuilding = manager.getGlobalBuilding();
-        if (mainBuilding == null) {
+
+        if(this.manager.getLoadType() == 0){
+            System.out.println("Creating new with specifications");
+            int width = manager.getGlobalBuildingSettings().getWidth();
+            int height = manager.getGlobalBuildingSettings().getHeight();
+            int size = manager.getGlobalBuildingSettings().getSize();
+            mainBuilding = new Building(width, height, size, mapPane);
+        }else if(this.manager.getLoadType() == 1){
+            System.out.println("Loading from Global Building");
+            mainBuilding = manager.getGlobalBuilding();
+        }else{
             System.out.println("Building is null. Making new one");
             mainBuilding = new Building(20, 20, 50, mapPane);
         }
@@ -115,7 +124,7 @@ public class FXMLBuildingController implements Initializable {
         this.mainBuilding.setWindowContainer(mapPane);
         System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
-        mainBuilding.updateView();
+        mainBuilding.initialiseView();
         errorText.setText("");
         this.initLineBlocks();
         this.renderLineBlocks();

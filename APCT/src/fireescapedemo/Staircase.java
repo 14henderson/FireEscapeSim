@@ -103,9 +103,9 @@ public class Staircase extends TileObject implements Serializable {
     @Override
     public void initialiseView(){
         Rectangle rec = new Rectangle(this.parent.getActualX(), this.parent.getActualY(), this.parent.mainBuilding.getSize(), this.parent.mainBuilding.getSize());
+        rec.getStrokeDashArray().addAll(10d, 10d);
         String filename = "/Assets/stairs_%s_%c.fw.png";
         char orientation = 'N';
-
         switch (rotation) {
             case 0:
                 orientation = 'N';

@@ -61,8 +61,8 @@
             </Button>
         </Pane>
 
-        <Pane fx:id="stairOptionsPane" layoutX="498.0" layoutY="125.0" prefHeight="135.0" prefWidth="160.0">
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="135.0" layoutX="8.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
+        <Pane fx:id="stairOptionsPane" layoutX="498.0" layoutY="125.0" prefHeight="120.0" prefWidth="160.0">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="114.0" layoutX="8.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
             <Label layoutX="46.0" layoutY="3.0" text="Stair Options">
                 <font>
                     <Font name="System Bold" size="13.0" />
@@ -70,7 +70,6 @@
             </Label>
             <Button layoutX="130.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateRight" prefHeight="25.0" prefWidth="27.0" text="⭮" />
             <Button layoutX="13.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateLeft" text="⭯" />
-            <Button layoutX="17.0" layoutY="106.0" mnemonicParsing="false" text="Connect to other stairs" />
          <Rectangle fx:id="stairTileContainer" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="85.0" layoutX="43.0" layoutY="19.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
         </Pane>
 

@@ -42,7 +42,7 @@ public class FXMLHomeController implements Initializable{
                 fis.close();
                 System.out.println("Loading from homecont"+loadedBuilding.toString());
                 loadedBuilding.setCurrentFloor(0);
-
+                manager.setLoadType(1);
                 manager.setGlobalBuilding(loadedBuilding);
                 manager.showScene("simulation");
             } catch (IOException | ClassNotFoundException ex) {
@@ -75,7 +75,7 @@ public class FXMLHomeController implements Initializable{
                 fis.close();
                 System.out.println("Loading from homecont"+loadedBuilding.toString());
                 loadedBuilding.setCurrentFloor(0);
-
+                manager.setLoadType(1);
                 manager.setGlobalBuilding(loadedBuilding);
                 manager.showScene("building");
             } catch (IOException | ClassNotFoundException ex) {
@@ -89,6 +89,6 @@ public class FXMLHomeController implements Initializable{
 
 
     public void buildNew(ActionEvent actionEvent) throws IOException {
-            this.manager.showScene("building");
+            this.manager.showScene("homeCreateDiag");
         }
     }

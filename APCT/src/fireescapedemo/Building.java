@@ -32,7 +32,7 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
-    public Building(int floorHeight, int floorWidth, int tileSize, Pane windowContainerParent){
+    public Building(int floorWidth, int floorHeight, int tileSize, Pane windowContainerParent){
         this.mainBuilding = this;
         this.windowContainer = windowContainerParent;
         this.stairs = new HashMap<>();
@@ -46,12 +46,32 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
+    public Building(int floorWidth, int floorHeight, int tileSize){
+        this.mainBuilding = this;
+        //this.windowContainer = windowContainerParent;
+        this.stairs = new HashMap<>();
+        if ( floors == null){
+            floors = new ArrayList();
+            Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
+            tmpRef.setFloorNum(0);
+            floors.add(tmpRef);
+            currentFloor = 0;
+            this.initialEmployeeCount = 0;
+        }
+    }
+
     @Override
-    public void updateView(){this.floors.get(this.currentFloor).updateView();}
+    public void updateView(){
+        if(this.mainBuilding == null){
+            this.mainBuilding = this;
+        }
+        this.floors.get(this.currentFloor).updateView();
+    }
 
     @Override
     public void initialiseView(){
         this.mainBuilding = this;
+        this.stairs = new HashMap<>();
         this.floors.get(this.currentFloor).initialiseView();
     }
 

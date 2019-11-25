@@ -175,8 +175,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
             tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
             tile.fxRef.setStroke(Color.BLACK);
-            tile.fxRef.setFill(tile.getColor(tile.type));
-            tile.fxRef.setOpacity(0.5);
+            tile.fxRef.setFill(Color.rgb(0,0,0,0));
+            tile.fxRef.setOpacity(1);
             mainBuilding.windowContainer.getChildren().add(tile.fxRef);
         }
 

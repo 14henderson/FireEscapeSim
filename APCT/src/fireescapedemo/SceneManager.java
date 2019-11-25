@@ -13,6 +13,8 @@ public class SceneManager {
     static private Stage rootStage;
     static private boolean buildingSet;
     static public Building globalBuilding;
+    static public int loadType;     //0=create new      1=load from existing
+    static private FXMLHomeCreateDiagController.BuildingSettings mapSettings;
 
     public SceneManager(Stage mainStage){
         this.rootStage = mainStage;
@@ -21,6 +23,15 @@ public class SceneManager {
         this.rootStage.setUserData(b);
         this.buildingSet = true;
     }
+    public FXMLHomeCreateDiagController.BuildingSettings getGlobalBuildingSettings(){
+        return this.mapSettings;
+    }
+    public void setGlobalBuildingSettings(FXMLHomeCreateDiagController.BuildingSettings settings){
+        this.mapSettings = settings;
+    }
+    public void setLoadType(int n){this.loadType = n;}
+    public int getLoadType(){return this.loadType;}
+
     public Building getGlobalBuilding(){
         if(!this.buildingSet) {
             return null;
