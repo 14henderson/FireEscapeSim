@@ -145,7 +145,9 @@ public class Building extends MapObject implements Serializable {
         return  floors.get( currentFloor);
     }
     public Floor decreaseFloor() {
-        if(hasPrevFloor()){currentFloor -= 1;}
+        if(hasPrevFloor()){
+            currentFloor -= 1;
+        }
         return  floors.get( currentFloor);
     }
 
@@ -157,7 +159,7 @@ public class Building extends MapObject implements Serializable {
     }*/
 
     public final void addFloor() {
-        Floor newFloor = new Floor(20, 20, 50, this.floors.size());
+        Floor newFloor = new Floor(this.getHeight(), this.getWidth(), 50, this.floors.size());
         this.floors.add(newFloor);
     }
 

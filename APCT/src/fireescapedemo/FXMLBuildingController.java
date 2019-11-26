@@ -198,7 +198,7 @@ public class FXMLBuildingController implements Initializable {
             }
         }
     }
-    public static void zoomLineBlocks(int oldZoom, int newZoom){
+    public static void zoomLineBlocks(){
         for(int i = 0; i < lineTiles.length; i ++) {
             for (int j = 0; j < lineTiles[i].length; j++) {
                 lineTiles[i][j].zoom();
@@ -339,6 +339,11 @@ public class FXMLBuildingController implements Initializable {
         this.disableLineBlocks();
         this.stairOptionsPane.setVisible(false);
     }
+
+
+
+
+
     public void stairPaneInitialise(){
         this.stairOptionsPane.setVisible(false);
         this.stairPreview = new Rectangle(60, 35, 50, 50);
@@ -349,8 +354,6 @@ public class FXMLBuildingController implements Initializable {
         currStairOrientation = 0;
         currStairDirection = "up";
     }
-
-
     @FXML
     public void stairsUpButton(){
         this.actionType = Tile.BlockType.Stairs;
@@ -377,7 +380,6 @@ public class FXMLBuildingController implements Initializable {
             stairTileContainer.toFront();
         } catch (URISyntaxException ex) {}
     }
-
     public void refreshStairToolContainer(){
         toolContainer.getChildren().clear();
         String details;
@@ -385,11 +387,9 @@ public class FXMLBuildingController implements Initializable {
         for(int id : mainBuilding.stairs.keySet()){
             details = "Floor:%d      ID:%d";
             details = String.format(details, mainBuilding.stairs.get(id).parent.floorNum, id);
-
             Text stairRecord = new Text(details);
             stairRecord.setX(10);
             stairRecord.setY(25*recordCount);
-
             ChoiceBox link = new ChoiceBox();
             link.setLayoutX(120);
             link.setLayoutY(25*recordCount-15);
@@ -401,7 +401,6 @@ public class FXMLBuildingController implements Initializable {
             if(mainBuilding.stairs.keySet().size() == 1){
                 link.setDisable(true);
             }
-
             //add other stair IDs to linkbox
             for(int tmpID : mainBuilding.stairs.keySet()) {
                 if (tmpID != mainBuilding.stairs.get(id).ID) {      //can't link to self
@@ -411,8 +410,6 @@ public class FXMLBuildingController implements Initializable {
             if(mainBuilding.stairs.get(id).joinedID != -1){
                 link.getSelectionModel().select(mainBuilding.stairs.get(id).joinedID);
             }
-
-
             link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
                 //if the selection of the selectBox changes.
                 @Override
@@ -423,16 +420,16 @@ public class FXMLBuildingController implements Initializable {
                     mainBuilding.stairs.get(stairId).joinedID = selectedOption;
                 }
             });
-
-
-
-
-
             recordCount++;
             this.toolContainer.getChildren().add(stairRecord);
             this.toolContainer.getChildren().add(link);
         }
     }
+
+
+
+
+
 
 
     @FXML
@@ -441,21 +438,21 @@ public class FXMLBuildingController implements Initializable {
         if(currStairOrientation == -90){currStairOrientation = 270;}
         this.stairTileContainer.setRotate(this.stairTileContainer.getRotate()-90);
     }
-
     @FXML
     public void rotateRight(){
         currStairOrientation+=90;
         if(currStairOrientation == 360){currStairOrientation = 0;}
         this.stairTileContainer.setRotate(this.stairTileContainer.getRotate()+90);
     }
-
-
     @FXML
     public void employeeTileButton(){
         this.actionType = Tile.BlockType.Employee;
         this.disableLineBlocks();
         this.stairOptionsPane.setVisible(false);
     }
+
+
+
 
 
 
@@ -470,13 +467,11 @@ public class FXMLBuildingController implements Initializable {
             this.manager.showScene("home");
         }
     }
-
     public void cancelToHome() throws IOException {
         this.manager.setGlobalBuilding(null);
         this.uninitialise();
         this.manager.showScene("home");
     }
-
     public void saveToSim() throws IOException{
         if(saveMap()){
             manager.setGlobalBuilding(this.mainBuilding);
@@ -484,7 +479,6 @@ public class FXMLBuildingController implements Initializable {
             manager.showScene("simulation");
         }
     }
-
     public void initTestLabel(){
         Label l;
         for(int i = 0; i < 550; i+=50) {
@@ -496,13 +490,9 @@ public class FXMLBuildingController implements Initializable {
         }
     }
 
-/*
-    public void initCharacters(){
-        characters = new ArrayList();
-        characters.add(new Employee(play, mainBuilding.getCurrentFloor().getTile(0, 0)));
-        characters.get(0).setVelocityX(1);
-    }
-*/
+
+
+
 
 
     public void renderDragLine(){

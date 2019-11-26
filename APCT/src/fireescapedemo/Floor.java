@@ -110,7 +110,7 @@ public class Floor extends MapObject implements Serializable {
         this.mainBuilding.setSize(newZoomValue);
         this.tileSize = newZoomValue;
 
-        FXMLBuildingController.zoomLineBlocks(this.tileSize, newZoomValue);
+        FXMLBuildingController.zoomLineBlocks();
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){         //for every tile
                 this.floorBlocks[i][j].setActualCords(

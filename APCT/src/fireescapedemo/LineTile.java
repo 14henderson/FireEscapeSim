@@ -27,32 +27,16 @@ public class LineTile{
         this.lineTileCircle.toFront();
     }
     public void render(){
-
-
+        try{
+            this.mainBuilding.windowContainer.getChildren().remove(this.lineTileCircle);
+        } catch(Exception e){}
         this.lineTileCircle = new Circle(this.size);
-        this.lineTileCircle.setFill(Color.RED);
+        this.refreshLocations();
+
         this.lineTileCircle.setLayoutX(this.getX());
         this.lineTileCircle.setLayoutY(this.getY());
 
-
-        //System.out.println("Circle rendered!");
-        /*
-        this.lineTileCircle.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if(Tile.isBuildEnabled() ){
-                    if(mouseEvent.getButton() == MouseButton.PRIMARY) {
-                        FXMLBuildingController.setLineClicked(mouseEvent);
-                    }else{
-                        FXMLBuildingController.cancelLineClicked();
-                    }
-                }
-            }
-        });
-
-         */
         this.lineTileCircle.setOpacity(1);
-        this.lineTileCircle.setFill(Color.RED);
         this.lineTileCircle.setStroke(Color.BLACK);
         this.lineTileCircle.setStrokeWidth(4);
         this.mainBuilding.windowContainer.getChildren().add(this.lineTileCircle);
@@ -77,11 +61,15 @@ public class LineTile{
 
     public Circle getLineTileRect(){return this.lineTileCircle;}
 
-
+    public void refreshLocations(){
+        this.setX((this.gridCords[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
+        this.setY((this.gridCords[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+    }
 
     public void zoom(){
-        this.lineTileCircle.setLayoutX((this.gridCords[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset());
-        this.lineTileCircle.setLayoutY((this.gridCords[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
+        this.refreshLocations();
+        this.lineTileCircle.setLayoutX(this.getX());
+        this.lineTileCircle.setLayoutY(this.getY());
         this.lineTileCircle.toFront();
     }
     public void pan(int xinc, int yinc){
