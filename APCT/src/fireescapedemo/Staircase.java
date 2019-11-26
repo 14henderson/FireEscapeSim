@@ -73,7 +73,7 @@ public class Staircase extends TileObject implements Serializable {
     }
     @Override
     public void destroy(){
-        this.parent.mainBuilding.stairs.remove(this.ID);
+        this.parent.mainBuilding.getStairs().remove(this.ID);
 //        this.parent.mainBuilding.stairs.get(this.joinedID).joinedID = -1;
     }
     public static String generateUniqueID(Tile t, int rotation, String direction){

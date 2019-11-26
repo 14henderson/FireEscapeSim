@@ -122,7 +122,6 @@ public class FXMLBuildingController implements Initializable {
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
         this.mainBuilding.setWindowContainer(mapPane);
-        System.out.println("This has been loaded");
         floorLevel.setText("Floor " + floorNum);
         mainBuilding.initialiseView();
         errorText.setText("");
@@ -131,8 +130,7 @@ public class FXMLBuildingController implements Initializable {
         this.disableLineBlocks();
         this.renderDragLine();
         this.stairPaneInitialise();
-
-        toolContainer.getChildren().clear();
+        this.refreshStairToolContainer();
 
         Image image;
         try {
@@ -150,10 +148,7 @@ public class FXMLBuildingController implements Initializable {
                         setLineClicked(event);
                     }else{
                         FXMLBuildingController.cancelLineClicked();
-                    }
-                }
-            }
-        });
+        }}}});
     }
 
 
@@ -381,12 +376,14 @@ public class FXMLBuildingController implements Initializable {
         } catch (URISyntaxException ex) {}
     }
     public void refreshStairToolContainer(){
+        System.out.println("In tool container!");
+        System.out.println("Stairs: "+mainBuilding.getStairs().size());
         toolContainer.getChildren().clear();
         String details;
         int recordCount = 1;
-        for(int id : mainBuilding.stairs.keySet()){
+        for(int id : mainBuilding.getStairs().keySet()){
             details = "Floor:%d      ID:%d";
-            details = String.format(details, mainBuilding.stairs.get(id).parent.floorNum, id);
+            details = String.format(details, mainBuilding.getStairs().get(id).parent.floorNum, id);
             Text stairRecord = new Text(details);
             stairRecord.setX(10);
             stairRecord.setY(25*recordCount);
@@ -398,17 +395,17 @@ public class FXMLBuildingController implements Initializable {
             String choiceBoxID = "Stair_"+id;
             link.setId(choiceBoxID);
             this.stairChoiceBox.put(choiceBoxID, id);
-            if(mainBuilding.stairs.keySet().size() == 1){
+            if(mainBuilding.getStairs().keySet().size() == 1){
                 link.setDisable(true);
             }
             //add other stair IDs to linkbox
-            for(int tmpID : mainBuilding.stairs.keySet()) {
-                if (tmpID != mainBuilding.stairs.get(id).ID) {      //can't link to self
+            for(int tmpID : mainBuilding.getStairs().keySet()) {
+                if (tmpID != mainBuilding.getStairs().get(id).ID) {      //can't link to self
                     link.getItems().add(tmpID);
                 } else {}
             }
-            if(mainBuilding.stairs.get(id).joinedID != -1){
-                link.getSelectionModel().select(mainBuilding.stairs.get(id).joinedID);
+            if(mainBuilding.getStairs().get(id).joinedID != -1){
+                link.getSelectionModel().select(mainBuilding.getStairs().get(id).joinedID);
             }
             link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
                 //if the selection of the selectBox changes.
@@ -417,7 +414,7 @@ public class FXMLBuildingController implements Initializable {
                     int selectedOption = (int)link.getItems().get((Integer) number2);   //id of stair to link to
                     String eventChoiceBoxId = link.getId();
                     int stairId = stairChoiceBox.get(eventChoiceBoxId);
-                    mainBuilding.stairs.get(stairId).joinedID = selectedOption;
+                    mainBuilding.getStairs().get(stairId).joinedID = selectedOption;
                 }
             });
             recordCount++;
@@ -594,10 +591,11 @@ public class FXMLBuildingController implements Initializable {
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(filename);
                 ObjectOutputStream out = new ObjectOutputStream(fos);
                 System.out.println("Walls from Save function: "+mainBuilding.getCurrentFloor().getWalls().size());
+                System.out.println("Current Building Stairs Length IN SAVE"+this.mainBuilding.getStairs().size());
                 out.writeObject(mainBuilding);
                 out.close();
                 fos.close();
-                System.out.println("Current Building Object"+this.mainBuilding.toString());
+
                 return true;
             }catch(IOException ex){
                 errorText.setText("Error: Error saving your map. Please submit a ticket on our forum.");

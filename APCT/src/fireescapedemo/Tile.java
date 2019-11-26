@@ -77,9 +77,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     stair.setRotation(rotation);
                     stair.setDirection(direction);
                     int newID=0;    //finding the next available ID to take
-                    while (mainBuilding.stairs.containsKey(newID)) {newID++;}
+                    while (mainBuilding.getStairs().containsKey(newID)) {newID++;}
                     stair.setID(newID);
-                    mainBuilding.stairs.put(newID, stair);      //add stair and ID to mainBuilding object
+                    mainBuilding.getStairs().put(newID, stair);      //add stair and ID to mainBuilding object
                     stair.initialiseView();
                     tile.setTileObject(stair);
 
@@ -87,7 +87,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 }else if(((Staircase) tile.tileObject).getUniqueObjID().compareTo(newObjID) != 0) {//comparing the IDs
                     tile.tileObject.destroy();
                     Staircase tmpRef = (Staircase) tile.tileObject;
-                    mainBuilding.stairs.remove(tmpRef.ID);
+                    mainBuilding.getStairs().remove(tmpRef.ID);
                     tile.tileObject = null;
                     this.initialiseView(index, tile, true);   //should default to re-initialising stairs on tile
 
@@ -398,7 +398,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
 
-    public static class DefaultAssetHolder extends TileObject{
+    public static class DefaultAssetHolder extends TileObject implements Serializable{
         String filename;
         DefaultAssetHolder(Tile t, String fname){
             this.parent = t;

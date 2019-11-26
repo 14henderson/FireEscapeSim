@@ -18,14 +18,16 @@ import javafx.scene.shape.Rectangle;
 
 public class Building extends MapObject implements Serializable {
     private ArrayList<Floor> floors;
+    private static HashMap<Integer, Staircase> stairs;
     private int currentFloor;
     private int initialEmployeeCount;
-    private static final long serialVersionUID = 12345;
+    //private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
-    public static HashMap<Integer, Staircase> stairs;
+
 
     public Building(){
         this.stairs = new HashMap<>();
+        System.out.println("New Stairs being creates");
         this.mainBuilding = this;
         if(floors == null){
             throw new RuntimeException();
@@ -36,6 +38,7 @@ public class Building extends MapObject implements Serializable {
         this.mainBuilding = this;
         this.windowContainer = windowContainerParent;
         this.stairs = new HashMap<>();
+        System.out.println("New Stairs being creates");
         if ( floors == null){
              floors = new ArrayList();
              Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
@@ -50,6 +53,7 @@ public class Building extends MapObject implements Serializable {
         this.mainBuilding = this;
         //this.windowContainer = windowContainerParent;
         this.stairs = new HashMap<>();
+        System.out.println("New Stairs being creates");
         if ( floors == null){
             floors = new ArrayList();
             Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
@@ -70,8 +74,11 @@ public class Building extends MapObject implements Serializable {
 
     @Override
     public void initialiseView(){
+        if(this.stairs == null){
+            System.out.println("No stairs found");
+            this.stairs = new HashMap<>();
+        }
         this.mainBuilding = this;
-        this.stairs = new HashMap<>();
         this.floors.get(this.currentFloor).initialiseView();
     }
 
@@ -123,6 +130,7 @@ public class Building extends MapObject implements Serializable {
     public int getWidth(){return this.getCurrentFloor().getMapWidth();}
     public int getSize(){return this.getCurrentFloor().getTileSize();}
     public void setSize(int newSize){this.getCurrentFloor().setTileSize(newSize);}
+    public HashMap<Integer, Staircase> getStairs(){return this.stairs;}
     public final ArrayList<Floor> getFloors(){return this.floors;}
     public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
     public final int getCurrentFloorIndex() {return this.currentFloor;}

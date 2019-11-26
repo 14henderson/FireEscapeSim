@@ -175,6 +175,9 @@ public class Floor extends MapObject implements Serializable {
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
                 aTile.initialiseView();
+                if(mainBuilding.getStairs() == null && aTile.tileObject instanceof Staircase){  //repopulating stairs hashmap if null
+                    this.mainBuilding.getStairs().put(((Staircase) aTile.tileObject).ID, (Staircase)aTile.tileObject);
+                }
         }}
         initialiseWalls();
         for(Employee e : this.employees){
