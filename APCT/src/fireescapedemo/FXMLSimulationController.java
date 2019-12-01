@@ -10,16 +10,21 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Point2D;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class FXMLSimulationController implements Initializable {
@@ -31,15 +36,23 @@ public class FXMLSimulationController implements Initializable {
     Label floorLevel;
     @FXML
     Pane mapPane;
-
+    QuadTree northeast,northwest,southeast,southwest;
     public Building mainBuilding;// = new Building();
-    Fire p;
     SceneManager manager;
+    Timeline timeline;
+    Label timer;
+    Label employeesLeft;
+    int second = 0;
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
+        Button alarm = new Button("FIRE ALARM");
+        Button reset = new Button("RESET");
 
+        timeline = new Timeline(
+                new KeyFrame(Duration.seconds(1), e-> addSecond())
+        );
         if(mainBuilding == null){
             System.out.println("Building is null. ERROR");
             mainBuilding = new Building(14,13,50, mapPane);
@@ -49,12 +62,10 @@ public class FXMLSimulationController implements Initializable {
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
 
-        p = new Fire(50,200, new Tile(0,0, 0, 0, 0));
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
         mainBuilding.initialiseView();
 
         //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-        Button alarm = new Button("FIRE ALARM");
 
 
         alarm.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -71,7 +82,6 @@ public class FXMLSimulationController implements Initializable {
             }
         });
 
-        Button reset = new Button("RESET");
         reset.setLayoutY(30);
         reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -92,9 +102,7 @@ public class FXMLSimulationController implements Initializable {
             }
         });
 
-        timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), e-> addSecond())
-        );
+
         timeline.setCycleCount(Timeline.INDEFINITE);
         timer = new Label("Timer: 0s");
         timer.setLayoutX(50);
@@ -104,15 +112,11 @@ public class FXMLSimulationController implements Initializable {
         employeesLeft.setLayoutY(100);
         assetPane.getChildren().add(alarm);
         //assetPane.getChildren().add(reset);
-        assetPane.getChildren().add(p.fxNode);
+
         assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
         initAnimation();
     }
-    Timeline timeline;
-    Label timer;
-    Label employeesLeft;
-    int second = 0;
     void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second) + "s");}
 
 
@@ -126,20 +130,106 @@ public class FXMLSimulationController implements Initializable {
         };
         t.start();
     }
-
+    double nX, nY, nW, nH;
+    int cap = 50;
+    boolean drawLines = false;
     private void onUpdate() {
-        for(Floor floor : mainBuilding.getFloors()){
-            for(Employee a : floor.employees){
-                a.update(floor);
+        for(Floor floor : mainBuilding.getFloors()) {
+            for (Employee e : floor.employees) {
+                e.update(floor);
             }
+            collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
+            nW = floor.getActualWidth() / 2;
+            nH = floor.getActualHeight() / 2;
+            nX = floor.getActualX();
+            nY = floor.getActualY();
+            northwest = new QuadTree(cap, nX, nY, nW, nH);
+            northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
+            southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
+            southeast = new QuadTree(cap, nX + nW, nY + nH, nW, nH);
+            northeast.insertAll(floor.employees);
+            northwest.insertAll(floor.employees);
+            southeast.insertAll(floor.employees);
+            southwest.insertAll(floor.employees);
+            //quadTree.insertAll(floor.employees);
+            //quadTree.drawLines(mapPane);
+            if (drawLines) {
+                northeast.drawLines(mapPane);
+                northwest.drawLines(mapPane);
+                southeast.drawLines(mapPane);
+                southwest.drawLines(mapPane);
+            }
+            QuadTree.col = false;
+            northeast.checkCollisions();
+            northwest.checkCollisions();
+            southeast.checkCollisions();
+            southwest.checkCollisions();
+
         }
-        p.update(mainBuilding.getCurrentFloor());
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         if(mainBuilding.getInitialEmployeeCount() <= 0){
             timeline.stop();
             timer.setTextFill(Color.RED);
         }
+    }
+
+    private void collisionBetweenWallandEmployee(ArrayList<Employee> employees,ArrayList<Line> walls, double size){
+        int i,j, empLen = employees.size(), wallLen = walls.size();
+        double newX, newY;
+        double distance, displacement,px,py,tx,ty;
+        Point2D newV;
+        Employee emp;
+        Line wall;
+        boolean[] b;
+        for(i = 0; i < empLen; i++){
+            emp = employees.get(i);
+            for(j = 0; j < wallLen; j++){
+                wall = walls.get(j);
+                b = intersection((Circle)(emp.fxNode),wall);
+                if(b[0]){
+                    /*
+                    if(!b[1]){newX = emp.velocity.getX(); newY = 0;}
+                    else{newX = 0; newY = emp.velocity.getY();}
+                    px = point.view.getLayoutX();py = point.view.getLayoutY();
+                    tx = target.view.getLayoutX();ty = point.view.getLayoutY();
+                    size = ((Circle)((Employee)(point)).view).getRadius() ;
+                    distance =  Math.sqrt(Math.pow(px - tx,2) + Math.pow(py - ty,2));
+                    displacement = 0.5d * (distance- size - size);
+                    newV = new Point2D((newX*size), (newY*size));
+                    if(!b[1]){}
+                    newX = emp.view.getLayoutX() - newV.getX(); newY = emp.view.getLayoutY() - newV.getY();
+                    emp.view.setLayoutX(newX);
+                    emp.view.setLayoutY(newY);
+                    break;*/
+                }
+            }
+        }
+
+    }
+
+    private boolean[] intersection(Circle employee, Line wall){
+        //System.out.println("wall coords xS: " + wall.getStartX() + ", yS: " + wall.getStartY()
+       // + " - xE: " + wall.getEndX() +  ", yE: " + wall.getEndY());
+
+        if(wall.getStartX() == wall.getEndX()){
+            double minY = wall.getStartY() > wall.getEndY()? wall.getEndY() : wall.getStartY();
+            double maxY = wall.getStartY() < wall.getEndY()? wall.getEndY() : wall.getStartY();
+            boolean [] b = {employee.getLayoutX() - employee.getRadius() < wall.getStartX() &&
+                    employee.getLayoutX() + employee.getRadius() > wall.getStartX() &&
+                    employee.getLayoutY() - employee.getRadius() > minY &&
+                    employee.getLayoutY() + employee.getRadius() < maxY, false};
+            return b;
+        }
+
+        double minX = wall.getStartX() > wall.getEndX()? wall.getEndX() : wall.getStartX();
+        double maxX = wall.getStartX() < wall.getEndX()? wall.getEndX() : wall.getStartX();
+
+        boolean[] b =  {employee.getLayoutY() - employee.getRadius() < wall.getStartY() &&
+                employee.getLayoutY() + employee.getRadius() > wall.getStartY() &&
+                employee.getLayoutX() - employee.getRadius() > minX &&
+                employee.getLayoutX() + employee.getRadius() < maxX,true};
+        return b;
     }
 
     @FXML

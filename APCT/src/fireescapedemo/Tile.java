@@ -2,6 +2,7 @@ package fireescapedemo;
 
 import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -143,8 +144,12 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 Circle c;
                 c = new Circle(tile.mainBuilding.getSize()/2);
                 c.setFill(Color.PINK);
+
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
                 c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
+
+                /*
+>>>>>>> ticket
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -152,7 +157,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println("Complete");
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
-                }
+                }*/
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);
@@ -343,18 +348,24 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void setActor(Actor a){this.currentActor = a;}
 
     public void setParent(Tile t) {this.parent = t;}
+    public void setColour(Color c){this.fxRef.setFill(c);}
     public void setGCost(double i) {this.gCost = i;}
     public void setHCost(double i) {this.hCost = i;}
     public void setType(BlockType t){this.type = t;}
 
 
     public final int getID(){return this.tileID;}
-    public final Rectangle getFxRef(){return this.fxRef;}
+    public final Rectangle getFxRef(){return (Rectangle)this.fxRef;}
     public final Tile getParent(){return this.parent;}
     public final double getFCost(){return this.fCost;}
     public final double getGCost(){return this.gCost;}
     public final double getHCost(){return this.hCost;}
+
     public final double getSize(){return this.fxRef.getHeight();}
+
+
+
+
 
     /**
      * Check if actor has access to a certain direction

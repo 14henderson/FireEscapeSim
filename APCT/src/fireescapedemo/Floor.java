@@ -192,14 +192,18 @@ public class Floor extends MapObject implements Serializable {
         return this.exits.isEmpty() ? null : this.exits.get(0).parent;
     }
 
-    public Tile getTile(int x, int y){
-        if(x<this.floorBlocks.length && y<this.floorBlocks[0].length
-        && x>= 0 && y >= 0) {
-            return this.floorBlocks[x][y];
-        }else{
-            return new Tile();
-        }
-    }
+    public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
+    public void addWall(int[] cords){this.walls.add(cords);}
+    public ArrayList<int[]> getWalls(){return this.walls;}
+    public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
+    public final ArrayList<Line> getWallsNodes(){return this.wallsNodes;}
+    public final double getActualX(){return this.floorBlocks[0][0].getActualX();}
+    public final double getActualY(){return this.floorBlocks[0][0].getActualY();}
+    public final double getActualWidth(){return this.floorBlocks.length * this.floorBlocks[0][0].getWidth();}
+    public final double getActualHeight(){return this.floorBlocks[0].length * this.floorBlocks[0][0].getHeight();}
+
+
+
     public void addWall(int[] cords, Line l){
         this.walls.add(cords);
         this.wallsNodes.add(l);
@@ -221,8 +225,6 @@ public class Floor extends MapObject implements Serializable {
         }
     }
 
-    public ArrayList<int[]> getWalls(){return this.walls;}
-    public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}
     public int getMapHeight(){return this.mapHeight;}
     public int getMapWidth(){return this.mapWidth;}
     public int getTileSize(){return this.tileSize;}
