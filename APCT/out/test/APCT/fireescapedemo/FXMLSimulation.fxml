@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.Font?>
 
-<?import javafx.stage.Stage?>
-
-<AnchorPane fx:id="mainPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1"
-            xmlns="http://javafx.com/javafx/9.0.1"
-            fx:controller="fireescapedemo.FXMLSimulationController">
+<AnchorPane fx:id="mainPane" prefHeight="550.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLSimulationController">
     <children>
-        <Pane fx:id="assetPane" layoutX="689.0" prefHeight="741.0" prefWidth="200.0">
-            <children>
-                <Button layoutX="123.0" layoutY="500.0" mnemonicParsing="false" onAction="#nextRoom" text="-&gt;" />
-                <Button layoutX="47.0" layoutY="500.0" mnemonicParsing="false" onAction="#prevRoom" text="&lt;-" />
-                <Label fx:id="floorLevel" layoutX="86.0" layoutY="450.0" text="Label" />
-            </children>
-        </Pane>
-    </children>
-    <Pane fx:id="mapPane" layoutX="0" layoutY="0" prefHeight="727.0" prefWidth="652.0" />
-</AnchorPane>
 
+        <Pane fx:id="mapPane" prefHeight="573.0" prefWidth="897.0" />
+
+        <Pane fx:id="simControlPane" layoutX="670.0" layoutY="14.0" prefHeight="88.0" prefWidth="213.0">
+               <children>
+                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="72.0" stroke="BLACK" strokeType="INSIDE" width="198.0" />
+                    <Button fx:id="StartSimButton" layoutX="8.0" layoutY="39.0" mnemonicParsing="false" onAction="#StartSim" prefHeight="25.0" prefWidth="55.0" text="Start" />
+                    <Button fx:id="PauseSimButton" layoutX="73.0" layoutY="39.0" mnemonicParsing="false" onAction="#PauseSim" prefHeight="25.0" prefWidth="55.0" text="Pause" />
+                    <Button fx:id="StopSimButton" layoutX="138.0" layoutY="39.0" mnemonicParsing="false" onAction="#StopSim" prefHeight="25.0" prefWidth="55.0" text="Stop" />
+                    <Label layoutX="34.0" layoutY="8.0" text="Simulation Controls">
+                        <font>
+                            <Font size="15.0" />
+                        </font>
+                    </Label>
+               </children>
+              </Pane>
+
+      <Pane fx:id="assetPane" layoutX="10.0" layoutY="584.0" prefHeight="167.0" prefWidth="890.0">
+         <children>
+            <Rectangle fx:id="colourPane" fill="#c7dcff" height="180.0" layoutX="-24.0" layoutY="2.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="937.0" />
+            <Label layoutX="37.0" layoutY="14.0" text="Simulation">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <Label fx:id="floorLevel" layoutX="37.0" layoutY="59.0" text="69" />
+         </children>
+      </Pane>
+
+
+    </children>
+</AnchorPane>

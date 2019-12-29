@@ -21,6 +21,7 @@ public class Building extends MapObject implements Serializable {
     private static HashMap<Integer, Staircase> stairs;
     private int currentFloor;
     private int initialEmployeeCount;
+    private boolean runningSim = false;
     //private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
 
@@ -146,7 +147,8 @@ public class Building extends MapObject implements Serializable {
     public double getYPanOffset(){
         return this.getCurrentFloor().getPanYOffset();
     }
-
+    public void enableSim(){this.runningSim = true;}
+    public boolean getSimState(){return this.runningSim;}
 
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}

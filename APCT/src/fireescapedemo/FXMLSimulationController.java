@@ -7,6 +7,7 @@ import javafx.animation.Timeline;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,9 +34,17 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     Pane assetPane;
     @FXML
+    Pane simControlPane;
+    @FXML
     Label floorLevel;
     @FXML
     Pane mapPane;
+    @FXML
+    Button StartSimButton;
+    @FXML
+    Button PauseSimButton;
+    @FXML
+    Button StopSimButton;
     QuadTree northeast,northwest,southeast,southwest;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
@@ -47,8 +56,8 @@ public class FXMLSimulationController implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
-        Button alarm = new Button("FIRE ALARM");
-        Button reset = new Button("RESET");
+      //  Button alarm = new Button("FIRE ALARM");
+     //   Button reset = new Button("RESET");
 
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e-> addSecond())
@@ -61,6 +70,7 @@ public class FXMLSimulationController implements Initializable {
 
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
+        mainBuilding.enableSim();
 
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
         mainBuilding.initialiseView();
@@ -68,39 +78,7 @@ public class FXMLSimulationController implements Initializable {
         //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
 
 
-        alarm.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                System.out.println("in alarm handler");
-                for(Floor floor : mainBuilding.getFloors()){
-                    for(Employee employee : floor.employees){
-                        employee.setCurrentState(Employee.State.FindRoute);
-                    }
-                }
-                timeline.play();
-                alarm.setDisable(true);
-            }
-        });
 
-        reset.setLayoutY(30);
-        reset.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                second = 0;
-                timer.setTextFill(Color.BLACK);
-                for(Floor floor : mainBuilding.getFloors()){
-                    for(Employee employee : floor.employees){
-                        employee.fxNode.setOpacity(0);
-                        employee.fxNode.setLayoutX(employee.oriTile.getGridX());
-                        employee.fxNode.setLayoutY(employee.oriTile.getGridY());
-                        employee.setCurrentState(Employee.State.Idle);
-                        employee.toggleExited();
-                    }
-                }
-                mainBuilding.calculateInitialEmployeeCount();
-                employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
-            }
-        });
 
 
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -110,12 +88,14 @@ public class FXMLSimulationController implements Initializable {
         employeesLeft = new Label("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         employeesLeft.setLayoutX(50);
         employeesLeft.setLayoutY(100);
-        assetPane.getChildren().add(alarm);
+        //assetPane.getChildren().add(alarm);
         //assetPane.getChildren().add(reset);
 
         assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
         initAnimation();
+
+        simControlPane.toFront();
     }
     void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second) + "s");}
 
@@ -263,5 +243,33 @@ public class FXMLSimulationController implements Initializable {
     }
 
 
+    public void StartSim(ActionEvent actionEvent) {
+        System.out.println("in alarm handler");
+        for(Floor floor : mainBuilding.getFloors()){
+            for(Employee employee : floor.employees){
+                employee.setCurrentState(Employee.State.FindRoute);
+            }
+        }
+        timeline.play();
+        this.StartSimButton.setDisable(true);
+    }
 
+    public void PauseSim(ActionEvent actionEvent) {
+    }
+
+    public void StopSim(ActionEvent actionEvent) {
+        second = 0;
+        timer.setTextFill(Color.BLACK);
+        for(Floor floor : mainBuilding.getFloors()){
+            for(Employee employee : floor.employees){
+                employee.fxNode.setOpacity(0);
+                employee.fxNode.setLayoutX(employee.oriTile.getGridX());
+                employee.fxNode.setLayoutY(employee.oriTile.getGridY());
+                employee.setCurrentState(Employee.State.Idle);
+                employee.toggleExited();
+            }
+        }
+        mainBuilding.calculateInitialEmployeeCount();
+        employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+    }
 }

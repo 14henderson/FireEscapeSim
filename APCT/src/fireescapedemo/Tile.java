@@ -149,7 +149,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
 
                 /*
->>>>>>> ticket
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -179,14 +178,16 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         public void prepareTile(Tile tile){
             tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
             tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-            tile.fxRef.setStroke(Color.BLACK);
+            if(tile.mainBuilding.getSimState()){
+                tile.fxRef.setStroke(Color.TRANSPARENT);
+            }else{
+                tile.fxRef.setStroke(Color.BLACK);
+            }
+
             tile.fxRef.setFill(Color.rgb(0,0,0,0));
             tile.fxRef.setOpacity(1);
             mainBuilding.windowContainer.getChildren().add(tile.fxRef);
         }
-
-
-
         public void finalPreparation(Tile tile){
             tile.fxRef.setOnMouseClicked((MouseEvent event) -> {
                 System.out.println("Tile clicked");

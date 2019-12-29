@@ -471,8 +471,11 @@ public class FXMLBuildingController implements Initializable {
     }
     public void saveToSim() throws IOException{
         if(saveMap()){
+            System.out.println("Saving Map");
             manager.setGlobalBuilding(this.mainBuilding);
+            System.out.println("Uninitializing");
             this.uninitialise();
+            System.out.println("Showing Scene");
             manager.showScene("simulation");
         }
     }
