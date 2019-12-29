@@ -209,8 +209,10 @@ public class Floor extends MapObject implements Serializable {
         this.wallsNodes.add(l);
     }
     public void removeWall(int[] cords){
-        for(int n=this.walls.size()-1; n>0; n--){
-            //System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
+        System.out.println("In removeWall in Floor. Walls Num: "+this.walls.size());
+
+        for(int n=this.walls.size()-1; n>=0; n--){
+            System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
 
 
             if(this.walls.get(n)[0] == cords[0] && this.walls.get(n)[1] == cords[1]
