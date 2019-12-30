@@ -24,6 +24,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
@@ -271,5 +272,18 @@ public class FXMLSimulationController implements Initializable {
         }
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+        this.StartSimButton.setDisable(false);
+        mainBuilding.initialiseView();
+    }
+
+    public void returnHome(ActionEvent actionEvent) throws IOException {
+        //this.manager.setGlobalBuilding(null);
+        //this.uninitialise();
+        this.manager.showScene("home");
+    }
+
+    public void uninitialise(){
+        this.mapPane.getChildren().clear();
+        this.mainBuilding = null;
     }
 }
