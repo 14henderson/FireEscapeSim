@@ -70,7 +70,7 @@ public class FXMLSimulationController implements Initializable {
         }
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
-        mainBuilding.enableSim();
+        //mainBuilding.enableSim();
 
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
         mainBuilding.initialiseView();

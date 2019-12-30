@@ -28,6 +28,7 @@ public class SystemTools {
         private ArrayList<Line> walls;
         private Tile[][] map;
         private Tile startNode, endNode;
+        private Tile actorTile;
         boolean foundExit;
         private double endX, endY;
         private double range;
@@ -59,6 +60,7 @@ public class SystemTools {
                 Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
                         goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
                 this.unopenedNodes.add(start);
+                this.actorTile = start;
                 System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
                 while (this.unopenedNodes.size() != 0) {
 
@@ -100,7 +102,7 @@ public class SystemTools {
                     boolean test = true;
                     if (test) {
                         Random rand = new Random();
-                        this.range = Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
+                        this.range = 1;//Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
                         double vel = 0;
                         int skip = 0, skipMax = 1;
                         //this.nonPolygonalFunnelAlgorithm(currentNode);
@@ -133,12 +135,121 @@ public class SystemTools {
                     }
                     Collections.reverse(this.velocitys);
                     System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
+
+                    this.velocitys = this.refinePath(this.velocitys);
+                    //modification for testing purposes
+                    /*
+                    for(int n=this.velocitys.size()-1; n>=0; n--){
+                        Pair<Point2D, Tile> p = this.velocitys.get(n);
+                        System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
+                        if(n%2 == 0){
+                            this.velocitys.remove(n);
+                        }
+                    }
+                    */
+
+
+
                     return true;
                 }
             }
             return false;
         }
 
+        private boolean checkRoute(Tile start, Tile end){
+            int gridWidth = Math.abs(start.getGridX()-end.getGridX())+1;
+            int gridHeight = Math.abs(start.getGridY()-end.getGridY())+1;
+
+            System.out.println("Starting Tile X: "+start.getGridX());
+            System.out.println("Final Tile X: "+end.getGridX());
+            System.out.println("Grid Width & Height: "+gridWidth+", "+gridHeight);
+
+
+            double actualWidth = end.getActualX()-start.getActualX();
+            double actualHeight = end.getActualY()-start.getActualY();
+            int checkCount = (gridHeight*gridWidth)-1;
+
+            System.out.println("actual width and height: "+actualWidth+", "+actualHeight);
+            System.out.println("check count: "+checkCount);
+
+            double gradient = actualHeight/actualWidth;
+            double euclideanDistance = Math.sqrt(Math.pow(actualHeight, 2)+Math.pow(actualWidth, 2));
+            double checkGap = euclideanDistance/checkCount;
+
+            boolean endFlag = false;
+
+            double xcha;
+            double ycha;
+            double currentGap = checkGap;
+
+            double[] currentCheckingCoordinate = new double[2];
+            int[] gridCheckingCoordinate = new int[2];
+            ArrayList<Tile> tilesInPath = new ArrayList<>();
+            Tile prevTileInPath = null;
+            while(currentGap<=euclideanDistance) {
+                xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1));
+                ycha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, -2) + 1));
+
+                currentCheckingCoordinate[0] = start.getActualX()+xcha+(start.getWidth()/2);
+                currentCheckingCoordinate[1] = start.getActualY()+ycha+(start.getHeight()/2);
+
+                System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+
+                gridCheckingCoordinate[0] = (int)(currentCheckingCoordinate[0]/start.getWidth());
+                gridCheckingCoordinate[1] = (int)(currentCheckingCoordinate[1]/start.getHeight());
+
+                System.out.println("Currently grid checking: "+gridCheckingCoordinate[0]+", "+gridCheckingCoordinate[1]);
+
+                if(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]] != prevTileInPath) {
+                    tilesInPath.add(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]]);
+                    prevTileInPath = this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]];
+                }
+
+                currentGap += checkGap;
+                System.out.println("----------------------");
+            }
+
+            System.out.println("Worked out which tiles are in path. Now checking them...");
+            System.out.println("Amount of tiles in path: "+tilesInPath.size());
+            for(int n=0; n<tilesInPath.size()-1; n++){
+                System.out.println("Checking tile num: "+n);
+                if(tilesInPath.get(n).checkAccess(tilesInPath.get(n+1)) == false){
+                    System.out.println("CANNOT ACCESS THIS PATH.");
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+
+
+
+        private ArrayList<Pair<Point2D, Tile>> refinePath(ArrayList<Pair<Point2D, Tile>> p){
+            ArrayList<Pair<Point2D, Tile>> waypoints = new ArrayList<>();
+            Tile currentWaypoint = this.actorTile;
+            int currentWaypointIndex = -1;
+            waypoints.add(new Pair(1, this.actorTile));
+
+            boolean reachedEnd = false;
+            while(!reachedEnd) {
+                for (int n = p.size() - 1; n > currentWaypointIndex; n--) {
+                    System.out.println("Current waypoint: "+currentWaypointIndex);
+                    System.out.println("Currently checking against: "+n);
+                    ///if(p.get(n).getValue() == c)
+                    if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
+                        currentWaypoint = p.get(n).getValue();
+                        currentWaypointIndex = n;
+                        waypoints.add(new Pair(p.get(currentWaypointIndex).getKey(), currentWaypoint));
+                        if(currentWaypointIndex == p.size()-1) {
+                            reachedEnd = true;
+                        }
+                        break;
+                    }
+                }
+            }
+            return waypoints;
+        }
 
 
         private int calculateDistance(Tile a, Tile b){

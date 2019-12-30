@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a0aac5f9-0cca-43cc-a496-57643b3ed283" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulation.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulation.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Tile.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
