@@ -12,7 +12,7 @@
 
         <Pane fx:id="mapPane" prefHeight="573.0" prefWidth="897.0" />
 
-        <Pane fx:id="simControlPane" layoutX="670.0" layoutY="14.0" prefHeight="88.0" prefWidth="213.0">
+        <Pane fx:id="simControlPane" layoutX="670.0" layoutY="14.0" prefHeight="73.0" prefWidth="200.0">
                <children>
                     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="72.0" stroke="BLACK" strokeType="INSIDE" width="198.0" />
                     <Button fx:id="StartSimButton" layoutX="8.0" layoutY="39.0" mnemonicParsing="false" onAction="#StartSim" prefHeight="25.0" prefWidth="55.0" text="Start" />
@@ -23,6 +23,11 @@
                             <Font size="15.0" />
                         </font>
                     </Label>
+            <Label fx:id="timerLabel" layoutX="78.0" layoutY="73.0" text="0s" textFill="RED">
+               <font>
+                  <Font size="46.0" />
+               </font>
+            </Label>
                </children>
               </Pane>
 
@@ -35,7 +40,7 @@
                </font>
             </Label>
             <Label fx:id="floorLevel" layoutX="37.0" layoutY="59.0" text="69" />
-            <Button fx:id="returnToHome" onAction="#returnHome" layoutX="746.0" layoutY="128.0" mnemonicParsing="false" text="Return to Main Menu" />
+            <Button fx:id="returnToHome" layoutX="746.0" layoutY="128.0" mnemonicParsing="false" onAction="#returnHome" text="Return to Main Menu" />
          </children>
       </Pane>
 

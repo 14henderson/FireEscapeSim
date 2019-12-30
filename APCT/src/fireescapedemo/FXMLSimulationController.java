@@ -39,6 +39,8 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     Label floorLevel;
     @FXML
+    Label timerLabel;
+    @FXML
     Pane mapPane;
     @FXML
     Button StartSimButton;
@@ -50,16 +52,15 @@ public class FXMLSimulationController implements Initializable {
     public Building mainBuilding;// = new Building();
     SceneManager manager;
     Timeline timeline;
-    Label timer;
+   // Label timer;
     Label employeesLeft;
     int second = 0;
+
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
-      //  Button alarm = new Button("FIRE ALARM");
-     //   Button reset = new Button("RESET");
-
         timeline = new Timeline(
                 new KeyFrame(Duration.seconds(1), e-> addSecond())
         );
@@ -67,8 +68,6 @@ public class FXMLSimulationController implements Initializable {
             System.out.println("Building is null. ERROR");
             mainBuilding = new Building(14,13,50, mapPane);
         }
-
-
         mainBuilding.setWindowContainer(mapPane);
         mainBuilding.disableBuild();
         mainBuilding.enableSim();
@@ -76,29 +75,16 @@ public class FXMLSimulationController implements Initializable {
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
         mainBuilding.initialiseView();
 
-        //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-
-
-
-
-
         timeline.setCycleCount(Timeline.INDEFINITE);
-        timer = new Label("Timer: 0s");
-        timer.setLayoutX(50);
-        timer.setLayoutY(50);
         employeesLeft = new Label("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         employeesLeft.setLayoutX(50);
         employeesLeft.setLayoutY(100);
-        //assetPane.getChildren().add(alarm);
-        //assetPane.getChildren().add(reset);
-
-        assetPane.getChildren().add(timer);
         assetPane.getChildren().add(employeesLeft);
         initAnimation();
-
         simControlPane.toFront();
     }
-    void addSecond(){second++; timer.setText("Timer: " + Integer.toString(second) + "s");}
+
+    void addSecond(){second++; timerLabel.setText(Integer.toString(second) + "s");}
 
 
 
@@ -151,7 +137,7 @@ public class FXMLSimulationController implements Initializable {
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         if(mainBuilding.getInitialEmployeeCount() <= 0){
             timeline.stop();
-            timer.setTextFill(Color.RED);
+           // timer.setTextFill(Color.RED);
         }
     }
 
@@ -260,7 +246,7 @@ public class FXMLSimulationController implements Initializable {
 
     public void StopSim(ActionEvent actionEvent) {
         second = 0;
-        timer.setTextFill(Color.BLACK);
+       // timer.setTextFill(Color.BLACK);
         for(Floor floor : mainBuilding.getFloors()){
             for(Employee employee : floor.employees){
                 employee.fxNode.setOpacity(0);
