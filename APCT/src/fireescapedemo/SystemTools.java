@@ -147,6 +147,8 @@ public class SystemTools {
                     for(int n=this.velocitys.size()-1; n>=0; n--){
                         Pair<Point2D, Tile> p = this.velocitys.get(n);
                         System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
+                        Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
+                        p.getValue().mainBuilding.windowContainer.getChildren().add(c);
                     //    if(n%2 == 0){
                       //      this.velocitys.remove(n);
                         //}
@@ -212,13 +214,8 @@ public class SystemTools {
                     prevTileInPath = this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]];
                 }
 
-                Circle c = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5);
-                start.mainBuilding.windowContainer.getChildren().add(c);
-
-
-
-
-
+            //    Circle c = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5);
+              //  start.mainBuilding.windowContainer.getChildren().add(c);
                 xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1))*Math.signum(actualWidth);
                 ycha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, -2) + 1))*Math.signum(actualHeight);
 
@@ -277,9 +274,6 @@ public class SystemTools {
                 for (int n = p.size() - 1; n > currentWaypointIndex; n--) {
                     System.out.println("Current waypoint coords: "+currentWaypoint.getGridX()+", "+currentWaypoint.getGridY());
                     System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
-
-                    Circle c = new Circle(p.get(n).getValue().getActualX()+25, p.get(n).getValue().getActualY()+25, 10, Color.RED);
-                    p.get(0).getValue().mainBuilding.windowContainer.getChildren().add(c);
 
                     ///if(p.get(n).getValue() == c)
                     if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
