@@ -143,10 +143,9 @@ public class SystemTools {
 
 
                     //modification for testing purposes
-
                     for(int n=this.velocitys.size()-1; n>=0; n--){
                         Pair<Point2D, Tile> p = this.velocitys.get(n);
-                        System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
+                       // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
                         Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
                         p.getValue().mainBuilding.windowContainer.getChildren().add(c);
                     //    if(n%2 == 0){
@@ -164,21 +163,21 @@ public class SystemTools {
         }
 
         private boolean checkRoute(Tile start, Tile end){
-            System.out.println("----CHECKING ROUTE---");
+         //   System.out.println("----CHECKING ROUTE---");
             int gridWidth = Math.abs(start.getGridX()-end.getGridX())+1;
             int gridHeight = Math.abs(start.getGridY()-end.getGridY())+1;
 
-            System.out.println("Starting Tile X: "+start.getGridX());
-            System.out.println("Final Tile X: "+end.getGridX());
-            System.out.println("Grid Width & Height: "+gridWidth+", "+gridHeight);
+        //    System.out.println("Starting Tile X: "+start.getGridX());
+        //    System.out.println("Final Tile X: "+end.getGridX());
+         //   System.out.println("Grid Width & Height: "+gridWidth+", "+gridHeight);
 
 
             double actualWidth = end.getActualX()-start.getActualX();
             double actualHeight = end.getActualY()-start.getActualY();
             int checkCount = (gridHeight*gridWidth)-1;
 
-            System.out.println("actual width and height: "+actualWidth+", "+actualHeight);
-            System.out.println("check count: "+checkCount);
+          //  System.out.println("actual width and height: "+actualWidth+", "+actualHeight);
+        //    System.out.println("check count: "+checkCount);
 
 
             double gradient = actualHeight/actualWidth;
@@ -198,7 +197,7 @@ public class SystemTools {
 
             currentCheckingCoordinate[0] = start.getActualX()+(start.getWidth()/2);
             currentCheckingCoordinate[1] = start.getActualY()+(start.getHeight()/2);
-            System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+         //   System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
 
 
             //while(currentGap<=euclideanDistance) {
@@ -207,7 +206,7 @@ public class SystemTools {
                 gridCheckingCoordinate[0] = (int)(currentCheckingCoordinate[0]/start.getWidth());
                 gridCheckingCoordinate[1] = (int)(currentCheckingCoordinate[1]/start.getHeight());
 
-                System.out.println("Currently grid checking: "+gridCheckingCoordinate[0]+", "+gridCheckingCoordinate[1]);
+             //   System.out.println("Currently grid checking: "+gridCheckingCoordinate[0]+", "+gridCheckingCoordinate[1]);
 
                 if(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]] != prevTileInPath) {
                     tilesInPath.add(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]]);
@@ -221,10 +220,10 @@ public class SystemTools {
 
                 currentCheckingCoordinate[0] = start.getActualX()+xcha+(start.getWidth()/2);
                 currentCheckingCoordinate[1] = start.getActualY()+ycha+(start.getHeight()/2);
-                System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+              //  System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
 
                 if(currentCheckingCoordinate[0] % 50 == 0 && currentCheckingCoordinate[1] % 50 == 0){
-                    System.out.println("PIVOT POINT");
+                   // System.out.println("PIVOT POINT");
                     gridCheckingCoordinate[0] = (int)(currentCheckingCoordinate[0]/start.getWidth());
                     gridCheckingCoordinate[1] = (int)(currentCheckingCoordinate[1]/start.getHeight());
                     if(this.map[gridCheckingCoordinate[0]-1][gridCheckingCoordinate[1]-1].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]-1])
@@ -232,25 +231,25 @@ public class SystemTools {
                         && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]-1])
                         && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]-1][gridCheckingCoordinate[1]])) {
                         currentGap += checkGap;
-                        System.out.println("PIVOT DEEMED ACCEPTABLE");
-                        System.out.println("----------------------");
+                   //     System.out.println("PIVOT DEEMED ACCEPTABLE");
+                   //     System.out.println("----------------------");
                         continue;
                     }else{
-                        System.out.println("CANNOT ACCESS THIS PATH");
+                  //      System.out.println("CANNOT ACCESS THIS PATH");
                         return false;
                     }
                 }
 
                 currentGap += checkGap;
-                System.out.println("----------------------");
+           //     System.out.println("----------------------");
             }
 
-            System.out.println("Worked out which tiles are in path. Now checking them...");
-            System.out.println("Amount of tiles in path: "+tilesInPath.size());
+           // System.out.println("Worked out which tiles are in path. Now checking them...");
+            //System.out.println("Amount of tiles in path: "+tilesInPath.size());
             for(int n=0; n<tilesInPath.size()-1; n++){
-                System.out.println("Checking tile num: "+n);
+              //  System.out.println("Checking tile num: "+n);
                 if(tilesInPath.get(n).checkAccess(tilesInPath.get(n+1)) == false){
-                    System.out.println("CANNOT ACCESS THIS PATH.");
+               //     System.out.println("CANNOT ACCESS THIS PATH.");
                     return false;
                 }
             }
@@ -267,13 +266,13 @@ public class SystemTools {
             int currentWaypointIndex = -1;
             waypoints.add(new Pair(new Point2D(0, 0), this.actorTile));
             p.add(new Pair(new Point2D(0, 0), this.goalTile));
-            System.out.println("Goal cords: "+this.goalTile.getGridX()+", "+this.goalTile.getGridY());
+           // System.out.println("Goal cords: "+this.goalTile.getGridX()+", "+this.goalTile.getGridY());
 
             boolean reachedEnd = false;
             while(!reachedEnd) {
                 for (int n = p.size() - 1; n > currentWaypointIndex; n--) {
-                    System.out.println("Current waypoint coords: "+currentWaypoint.getGridX()+", "+currentWaypoint.getGridY());
-                    System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
+              //      System.out.println("Current waypoint coords: "+currentWaypoint.getGridX()+", "+currentWaypoint.getGridY());
+               //     System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
 
                     ///if(p.get(n).getValue() == c)
                     if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
@@ -287,6 +286,7 @@ public class SystemTools {
                     }
                 }
             }
+            System.out.println("Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
             return waypoints;
         }
 
