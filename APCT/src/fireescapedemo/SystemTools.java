@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
@@ -29,6 +30,7 @@ public class SystemTools {
         private Tile[][] map;
         private Tile startNode, endNode;
         private Tile actorTile;
+        private Tile goalTile;
         boolean foundExit;
         private double endX, endY;
         private double range;
@@ -61,6 +63,7 @@ public class SystemTools {
                         goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
                 this.unopenedNodes.add(start);
                 this.actorTile = start;
+                this.goalTile = goal;
                 System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
                 while (this.unopenedNodes.size() != 0) {
 
@@ -137,16 +140,18 @@ public class SystemTools {
                     System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
 
                     this.velocitys = this.refinePath(this.velocitys);
+
+
                     //modification for testing purposes
-                    /*
+
                     for(int n=this.velocitys.size()-1; n>=0; n--){
                         Pair<Point2D, Tile> p = this.velocitys.get(n);
                         System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
-                        if(n%2 == 0){
-                            this.velocitys.remove(n);
-                        }
+                    //    if(n%2 == 0){
+                      //      this.velocitys.remove(n);
+                        //}
                     }
-                    */
+
 
 
 
@@ -157,6 +162,7 @@ public class SystemTools {
         }
 
         private boolean checkRoute(Tile start, Tile end){
+            System.out.println("----CHECKING ROUTE---");
             int gridWidth = Math.abs(start.getGridX()-end.getGridX())+1;
             int gridHeight = Math.abs(start.getGridY()-end.getGridY())+1;
 
@@ -172,6 +178,7 @@ public class SystemTools {
             System.out.println("actual width and height: "+actualWidth+", "+actualHeight);
             System.out.println("check count: "+checkCount);
 
+
             double gradient = actualHeight/actualWidth;
             double euclideanDistance = Math.sqrt(Math.pow(actualHeight, 2)+Math.pow(actualWidth, 2));
             double checkGap = euclideanDistance/checkCount;
@@ -186,14 +193,14 @@ public class SystemTools {
             int[] gridCheckingCoordinate = new int[2];
             ArrayList<Tile> tilesInPath = new ArrayList<>();
             Tile prevTileInPath = null;
-            while(currentGap<=euclideanDistance) {
-                xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1));
-                ycha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, -2) + 1));
 
-                currentCheckingCoordinate[0] = start.getActualX()+xcha+(start.getWidth()/2);
-                currentCheckingCoordinate[1] = start.getActualY()+ycha+(start.getHeight()/2);
+            currentCheckingCoordinate[0] = start.getActualX()+(start.getWidth()/2);
+            currentCheckingCoordinate[1] = start.getActualY()+(start.getHeight()/2);
+            System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
 
-                System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+
+            //while(currentGap<=euclideanDistance) {
+            for(int n=0; n<=checkCount; n++){
 
                 gridCheckingCoordinate[0] = (int)(currentCheckingCoordinate[0]/start.getWidth());
                 gridCheckingCoordinate[1] = (int)(currentCheckingCoordinate[1]/start.getHeight());
@@ -203,6 +210,38 @@ public class SystemTools {
                 if(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]] != prevTileInPath) {
                     tilesInPath.add(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]]);
                     prevTileInPath = this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]];
+                }
+
+                Circle c = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5);
+                start.mainBuilding.windowContainer.getChildren().add(c);
+
+
+
+
+
+                xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1))*Math.signum(actualWidth);
+                ycha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, -2) + 1))*Math.signum(actualHeight);
+
+                currentCheckingCoordinate[0] = start.getActualX()+xcha+(start.getWidth()/2);
+                currentCheckingCoordinate[1] = start.getActualY()+ycha+(start.getHeight()/2);
+                System.out.println("Currently checking: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+
+                if(currentCheckingCoordinate[0] % 50 == 0 && currentCheckingCoordinate[1] % 50 == 0){
+                    System.out.println("PIVOT POINT");
+                    gridCheckingCoordinate[0] = (int)(currentCheckingCoordinate[0]/start.getWidth());
+                    gridCheckingCoordinate[1] = (int)(currentCheckingCoordinate[1]/start.getHeight());
+                    if(this.map[gridCheckingCoordinate[0]-1][gridCheckingCoordinate[1]-1].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]-1])
+                        && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]-1][gridCheckingCoordinate[1]])
+                        && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]-1])
+                        && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]-1][gridCheckingCoordinate[1]])) {
+                        currentGap += checkGap;
+                        System.out.println("PIVOT DEEMED ACCEPTABLE");
+                        System.out.println("----------------------");
+                        continue;
+                    }else{
+                        System.out.println("CANNOT ACCESS THIS PATH");
+                        return false;
+                    }
                 }
 
                 currentGap += checkGap;
@@ -229,13 +268,19 @@ public class SystemTools {
             ArrayList<Pair<Point2D, Tile>> waypoints = new ArrayList<>();
             Tile currentWaypoint = this.actorTile;
             int currentWaypointIndex = -1;
-            waypoints.add(new Pair(1, this.actorTile));
+            waypoints.add(new Pair(new Point2D(0, 0), this.actorTile));
+            p.add(new Pair(new Point2D(0, 0), this.goalTile));
+            System.out.println("Goal cords: "+this.goalTile.getGridX()+", "+this.goalTile.getGridY());
 
             boolean reachedEnd = false;
             while(!reachedEnd) {
                 for (int n = p.size() - 1; n > currentWaypointIndex; n--) {
-                    System.out.println("Current waypoint: "+currentWaypointIndex);
-                    System.out.println("Currently checking against: "+n);
+                    System.out.println("Current waypoint coords: "+currentWaypoint.getGridX()+", "+currentWaypoint.getGridY());
+                    System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
+
+                    Circle c = new Circle(p.get(n).getValue().getActualX()+25, p.get(n).getValue().getActualY()+25, 10, Color.RED);
+                    p.get(0).getValue().mainBuilding.windowContainer.getChildren().add(c);
+
                     ///if(p.get(n).getValue() == c)
                     if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
                         currentWaypoint = p.get(n).getValue();

@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 
 import java.net.URISyntaxException;
 import java.io.Serializable;
-
+import java.util.Arrays;
 
 
 public class Tile extends MapObject implements Serializable, Comparable<fireescapedemo.Tile> {
@@ -400,21 +400,46 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     public boolean getAccess(int dir){ return this.walls[dir];}
     public boolean checkAccess(Tile t){
-        System.out.println("~~~~~~~~~~~~~~~~");
-        System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
-        System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
-        System.out.println("~~~~~~~~~~~~~~~~");
+       // System.out.println("~~~~~~~~~~~~~~~~");
+       // System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
+       // System.out.println("This Tile: "+ Arrays.toString(this.walls));
+       // System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
+       // System.out.println("~~~~~~~~~~~~~~~~");
 
 
 
         if(t == this){return true;}
+        if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == 1){
+            return
+                    (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[2])
+                            || (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[1]);
+        }
+
+        if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == 1){
+            return
+                    (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[3])
+                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[2]);
+        }
+
+        if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == -1){
+            return
+                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[1])
+                            || (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[0]);
+        }
+
+        if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == -1){
+            return
+                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[3])
+                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[0]);
+        }
+
         if(t.getGridX()-this.getGridX() == 1){return this.walls[1];}
         if(t.getGridX()-this.getGridX() == -1){return this.walls[3];}
         if(t.getGridY()-this.getGridY() == 1){return this.walls[2];}
         if(t.getGridY()-this.getGridY() == -1){return this.walls[0];}
 
         else{
-            return false;
+            return true;
         }
     }
 
