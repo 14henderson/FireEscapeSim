@@ -59,7 +59,9 @@ public class Floor extends MapObject implements Serializable {
     public void addEmployee(Employee employee) { this.employees.add(employee); }
     public void addExit(Exit exit)          { this.exits.add(exit); }
     public void setFloorNum(int n){this.floorNum = n;}
-
+    public ArrayList<Employee> getEmployees(){
+        return this.employees;
+    }
 
 
 

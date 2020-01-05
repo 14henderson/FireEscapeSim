@@ -105,6 +105,7 @@ public class FXMLSimulationController implements Initializable {
             for (Employee e : floor.employees) {
                 e.update(floor);
             }
+            this.EmployeeCollision();
             collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
             nW = floor.getActualWidth() / 2;
             nH = floor.getActualHeight() / 2;
@@ -138,6 +139,50 @@ public class FXMLSimulationController implements Initializable {
         if(mainBuilding.getInitialEmployeeCount() <= 0){
             timeline.stop();
            // timer.setTextFill(Color.RED);
+        }
+    }
+
+    private void EmployeeCollision(){
+        for(Employee e : this.mainBuilding.getCurrentFloor().getEmployees()){
+            double actualx = e.getNode().getLayoutX();
+            double actualy = e.getNode().getLayoutY();
+            int gridX = Building.normaliseXCoord(actualx, this.mainBuilding);
+            int gridY = Building.normaliseYCoord(actualy, this.mainBuilding);
+            Tile currTile = mainBuilding.getCurrentFloor().getTile(gridX, gridY);
+
+            //handle N Collisions
+            double nBorder = actualy-(e.getSize());
+            if(currTile.getAccess(0) == false){
+                if(nBorder <= currTile.getActualY() && actualy >= currTile.getActualY()){
+                    System.out.println("COLLISION ON N BORDER");
+                }
+            }
+
+            //handle E Collisions
+            double eBorder = actualx+(e.getSize());
+            if(currTile.getAccess(1) == false){
+                if(eBorder >= (currTile.getActualX()+currTile.getWidth()) && actualx <= (currTile.getActualX()+currTile.getWidth())){
+                    System.out.println("COLLISION ON E BORDER");
+                }
+            }
+
+            //handle S Collisions
+            double sBorder = actualy+(e.getSize());
+            if(currTile.getAccess(2) == false){
+                if(sBorder >= (currTile.getActualY()+currTile.getHeight()) && actualy <= (currTile.getActualY()+currTile.getHeight())){
+                    System.out.println("COLLISION ON S BORDER");
+                }
+            }
+
+            //handle W Collisions
+            double wBorder = actualx-(e.getSize());
+            if(currTile.getAccess(3) == false){
+                if(wBorder <= currTile.getActualX() && actualx >= currTile.getActualY()){
+                    System.out.println("COLLISION ON W BORDER");
+                }
+            }
+
+
         }
     }
 

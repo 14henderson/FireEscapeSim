@@ -173,7 +173,15 @@ public class Building extends MapObject implements Serializable {
         this.floors.add(newFloor);
     }
 
+    public static int normaliseXCoord(double x, Building b){
+        double tmp = ((x-b.getXPanOffset())/b.getCurrentFloor().getTileSize());
+        return (int)tmp;
+    }
 
+    public static int normaliseYCoord(double y, Building b){
+        double tmp = ((y-b.getYPanOffset())/b.getCurrentFloor().getTileSize());
+        return (int)tmp;
+    }
 
 
 }
