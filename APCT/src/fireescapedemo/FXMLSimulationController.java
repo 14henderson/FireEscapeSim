@@ -55,6 +55,7 @@ public class FXMLSimulationController implements Initializable {
    // Label timer;
     Label employeesLeft;
     int second = 0;
+    boolean paused = false;
 
 
     @Override
@@ -101,43 +102,45 @@ public class FXMLSimulationController implements Initializable {
     int cap = 50;
     boolean drawLines = false;
     private void onUpdate() {
-        for(Floor floor : mainBuilding.getFloors()) {
-            for (Employee e : floor.employees) {
-                e.update(floor);
-            }
-            collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
-            nW = floor.getActualWidth() / 2;
-            nH = floor.getActualHeight() / 2;
-            nX = floor.getActualX();
-            nY = floor.getActualY();
-            northwest = new QuadTree(cap, nX, nY, nW, nH);
-            northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
-            southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
-            southeast = new QuadTree(cap, nX + nW, nY + nH, nW, nH);
-            northeast.insertAll(floor.employees);
-            northwest.insertAll(floor.employees);
-            southeast.insertAll(floor.employees);
-            southwest.insertAll(floor.employees);
-            //quadTree.insertAll(floor.employees);
-            //quadTree.drawLines(mapPane);
-            if (drawLines) {
-                northeast.drawLines(mapPane);
-                northwest.drawLines(mapPane);
-                southeast.drawLines(mapPane);
-                southwest.drawLines(mapPane);
-            }
-            QuadTree.col = false;
-            northeast.checkCollisions();
-            northwest.checkCollisions();
-            southeast.checkCollisions();
-            southwest.checkCollisions();
+        if (!paused) {
+            for (Floor floor : mainBuilding.getFloors()) {
+                for (Employee e : floor.employees) {
+                    e.update(floor);
+                }
+                collisionBetweenWallandEmployee(floor.employees, floor.getWallsNodes(), floor.employees.get(0).getSize());
+                nW = floor.getActualWidth() / 2;
+                nH = floor.getActualHeight() / 2;
+                nX = floor.getActualX();
+                nY = floor.getActualY();
+                northwest = new QuadTree(cap, nX, nY, nW, nH);
+                northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
+                southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
+                southeast = new QuadTree(cap, nX + nW, nY + nH, nW, nH);
+                northeast.insertAll(floor.employees);
+                northwest.insertAll(floor.employees);
+                southeast.insertAll(floor.employees);
+                southwest.insertAll(floor.employees);
+                //quadTree.insertAll(floor.employees);
+                //quadTree.drawLines(mapPane);
+                if (drawLines) {
+                    northeast.drawLines(mapPane);
+                    northwest.drawLines(mapPane);
+                    southeast.drawLines(mapPane);
+                    southwest.drawLines(mapPane);
+                }
+                QuadTree.col = false;
+                northeast.checkCollisions();
+                northwest.checkCollisions();
+                southeast.checkCollisions();
+                southwest.checkCollisions();
 
-        }
-        mainBuilding.calculateInitialEmployeeCount();
-        employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
-        if(mainBuilding.getInitialEmployeeCount() <= 0){
-            timeline.stop();
-           // timer.setTextFill(Color.RED);
+            }
+            mainBuilding.calculateInitialEmployeeCount();
+            employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+            if (mainBuilding.getInitialEmployeeCount() <= 0) {
+                timeline.stop();
+                // timer.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -242,9 +245,11 @@ public class FXMLSimulationController implements Initializable {
     }
 
     public void PauseSim(ActionEvent actionEvent) {
+        this.paused = !this.paused;
     }
 
     public void StopSim(ActionEvent actionEvent) {
+        this.paused = false;
         second = 0;
        // timer.setTextFill(Color.BLACK);
         for(Floor floor : mainBuilding.getFloors()){
