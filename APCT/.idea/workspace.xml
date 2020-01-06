@@ -3,7 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="a0aac5f9-0cca-43cc-a496-57643b3ed283" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLBuildingController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -24,7 +25,8 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Project" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.0" />
     <property name="restartRequiresConfirmation" value="false" />
@@ -72,6 +74,7 @@
       <option name="presentableId" value="Default" />
       <updated>1575238674984</updated>
       <workItem from="1575238678656" duration="2168000" />
+      <workItem from="1578247260272" duration="15063000" />
     </task>
     <servers />
   </component>

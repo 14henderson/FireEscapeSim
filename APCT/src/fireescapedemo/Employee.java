@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -86,7 +87,7 @@ public class Employee extends Actor implements Serializable{
     }
 
     public Employee(Node view, Tile tile, Point2D vector){
-        super(view,tile,vector);
+        super(view,tile,new Point2D(0,1));
         this.currentState = State.Idle;
         this.findingPath = false;
         this.exited = false;
@@ -111,6 +112,8 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
+                    this.fxNode.setLayoutX(this.fxNode.getLayoutX() + this.velocity.getX());
+                    this.fxNode.setLayoutY(this.fxNode.getLayoutY() + this.velocity.getY());
 
                     this.currentState.act(this,floor);
                     break;
@@ -126,8 +129,7 @@ public class Employee extends Actor implements Serializable{
             }
 
 
-        this.fxNode.setLayoutX(fxNode.getLayoutX() + velocity.getX());
-        this.fxNode.setLayoutY(fxNode.getLayoutY() + velocity.getY());
+
         counter++;
 
         }else{
@@ -158,7 +160,7 @@ public class Employee extends Actor implements Serializable{
     public boolean hasExited(){return this.exited;}
 
     void updatePathPoint(){
-        double linePathValue = findLineAndRotate(curPoint.getValue());
+        double linePathValue = findLineAndRotate(curPoint);
         //System.out.println("Linepathvale: " + linePathValue);
         if(linePathValue <= 15){
             if(this.path.isEmpty()){
@@ -174,52 +176,35 @@ public class Employee extends Actor implements Serializable{
         return ((Circle)(this.fxNode)).getRadius();
     }
 
-    double findLineAndRotate(Tile end){
-        //line of sight to end node
-
-        double startX = this.fxNode.getLayoutX(), endX = end.getActualX() + (end.getWidth()/2) ,
-                startY=  this.fxNode.getLayoutY(), endY =  end.getActualY() + (end.getHeight()/2);
-
-        double mX = endX - startX ;
-        double mY = endY - startY;
-
-        if(!this.avgMove) {
-            boolean b = false;
-            if (mX == mY) {
-                mX = mX < 0 ? -1 : 1;
-                mY = mY < 0 ? -1 : 1;
-                b = true;
-            } else {
-                //set x velocity
-
-                if (mX >= 0.95 || mX <= -0.95) {
-                    mX = mX < 0 ? -1 : 1;
-                    b = true;
-                } else if (mX == 0) {
-                    mX = 0;
-                } else {
-                    mX = startX <= endX ? startX / endX : -(endX / startX);
-                }
+    private void setRotation(double rot, boolean rev, Point2D vel){
+        rot = rev ? rot : -rot;
+        this.fxNode.setRotate(this.fxNode.getRotate() + rot);
+        double x = rev ? -Math.cos(Math.toRadians(this.fxNode.getRotate())) : Math.cos(Math.toRadians(this.fxNode.getRotate()));
+        double y = rev ? -Math.sin(Math.toRadians(this.fxNode.getRotate())) : Math.sin(Math.toRadians(this.fxNode.getRotate()));
+        this.setVelocity(new Point2D(x , y ));
+    }
 
 
-                if (mY >= 0.95 || mY <= -0.95) {
-                    mY = mY < 0 ? -1 : 1;
-                    b = true;
-                } else if (mY == 0) {
-                    mY = 0;
-                } else {
-                    mY = startY <= endY ? startY / endY : -(endY / startY);
-                }
-            }
 
+    private double pow2(double d){return d*d;}
 
-           // System.out.println("mX: " + mX + ", mY: " + mY);
+    double findLineAndRotate(Pair<Point2D,Tile> pair){
+        Point2D vel = pair.getKey();
+        Tile target = pair.getValue();
 
+        double startX = this.fxNode.getLayoutX(), endX = target.getActualX() + (target.getWidth()/2) ,
+                startY=  this.fxNode.getLayoutY(), endY =  target.getActualY() + (target.getHeight()/2);
+        double numarator = startX * endX + startY + endY;
+        double u = Math.sqrt(pow2(startX)+pow2(endX));
+        double v = Math.sqrt(pow2(startY)+pow2(endY));
+        double angle = Math.cos(numarator/u*v);
 
-            this.velocity = new Point2D(mX, mY);
-        }
-        mX = endX - startX ;
-        mY = endY - startY;
-        return Math.sqrt(Math.pow(mX,2) + Math.pow(mY,2));
+        double bX = startX + pow2(this.velocity.getX());
+        double bY = startY + pow2(this.velocity.getY());
+        double twoArea = ((bX - startX)*(endY-startY))-((endX-startX)*(bY-startY));
+        boolean reverse = twoArea < 0 ? false : true;
+        setRotation(angle, reverse, vel);
+
+        return Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY,2));
     }
 }

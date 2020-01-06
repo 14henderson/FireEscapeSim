@@ -102,7 +102,7 @@ public class SystemTools {
                         Random rand = new Random();
                         this.range = Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
                         double vel = 0;
-                        int skip = 0, skipMax = 1;
+                        int skip = 0, skipMax = 3;
                         //this.nonPolygonalFunnelAlgorithm(currentNode);
 
                         do {
@@ -122,8 +122,8 @@ public class SystemTools {
                                 }
                                 System.out.println("Count " + counter);
                                 System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                                //currentNode.setType(Tile.BlockType.Path);
+                                currentNode.getFxRef().setFill(Color.LIGHTBLUE);
+                                currentNode.setType(Tile.BlockType.Path);
                                 counter++;
                                 skip = 0;
                             }
