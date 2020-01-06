@@ -142,7 +142,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Actor a;
                 Circle c;
-                c = new Circle(tile.mainBuilding.getSize()/2);
+                c = new Circle(tile.mainBuilding.getSize()/4);
                 c.setFill(Color.PINK);
 
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
