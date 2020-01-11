@@ -294,7 +294,6 @@ public class FXMLSimulationController implements Initializable {
         }
 */
         timeline.play();
-        paused = false;
         started= true;
         PauseSimButton.setText("Pause");
         PauseSimButton.setDisable(false);

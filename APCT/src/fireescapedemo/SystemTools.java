@@ -172,7 +172,7 @@ public class SystemTools {
             int checkCount = (gridHeight*gridWidth)-1;
 
           //  System.out.println("actual width and height: "+actualWidth+", "+actualHeight);
-        //    System.out.println("check count: "+checkCount);
+            System.out.println("check count: "+checkCount);
 
 
             double gradient = actualHeight/actualWidth;
@@ -281,7 +281,7 @@ public class SystemTools {
                     }
                 }
             }
-            System.out.println("Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
+            System.out.println(waypoints.size()+" Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
             return waypoints;
         }
 
