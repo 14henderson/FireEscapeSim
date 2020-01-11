@@ -149,6 +149,7 @@ public class Building extends MapObject implements Serializable {
     }
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
+    public double getActorSize(){return 40;}
 
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}

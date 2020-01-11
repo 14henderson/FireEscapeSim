@@ -400,11 +400,11 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     public boolean getAccess(int dir){ return this.walls[dir];}
     public boolean checkAccess(Tile t){
-       // System.out.println("~~~~~~~~~~~~~~~~");
-       // System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
-       // System.out.println("This Tile: "+ Arrays.toString(this.walls));
-       // System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
-       // System.out.println("~~~~~~~~~~~~~~~~");
+        System.out.println("~~~~~~~~~~~~~~~~");
+        System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
+        System.out.println("This Tile: "+ Arrays.toString(this.walls));
+        System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
+        System.out.println("~~~~~~~~~~~~~~~~");
 
 
 
@@ -439,7 +439,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         if(t.getGridY()-this.getGridY() == -1){return this.walls[0];}
 
         else{
-            return true;
+            return false;
         }
     }
 
