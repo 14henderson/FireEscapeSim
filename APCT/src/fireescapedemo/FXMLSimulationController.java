@@ -47,7 +47,7 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     Button PauseSimButton;
     @FXML
-    Button StopSimButton;
+    Button ResetSimButton;
     QuadTree northeast,northwest,southeast,southwest;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
@@ -59,6 +59,7 @@ public class FXMLSimulationController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        ResetSimButton.setText("Reset");
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
         timeline = new Timeline(
@@ -100,50 +101,55 @@ public class FXMLSimulationController implements Initializable {
     double nX, nY, nW, nH;
     int cap = 50;
     boolean drawLines = false;
+    boolean paused = false;
     private void onUpdate() {
         int floorNum = 0;
-        for(Floor floor : mainBuilding.getFloors()) {
-            for (Employee e : floor.employees) {
-                e.update(floor);
-            }
-            //collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
-            nW = floor.getActualWidth() / 2;
-            nH = floor.getActualHeight() / 2;
-            nX = floor.getActualX();
-            nY = floor.getActualY();
-            northwest = new QuadTree(cap, nX, nY, nW, nH);
-            northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
-            southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
-            southeast = new QuadTree(cap, nX + nW, nY + nH, nW, nH);
-            if(floor.employees.size() > 0){
-                northeast.insertAll(floor.employees);
-                northwest.insertAll(floor.employees);
-                southeast.insertAll(floor.employees);
-                southwest.insertAll(floor.employees);
-                QuadTree.col = false;
-                northeast.checkCollisions();
-                northwest.checkCollisions();
-                southeast.checkCollisions();
-                southwest.checkCollisions();
-            }else{
-                System.out.println("Floor error " + floorNum);
-            }
-            //quadTree.insertAll(floor.employees);
-            //quadTree.drawLines(mapPane);
-            if (drawLines) {
-                northeast.drawLines(mapPane);
-                northwest.drawLines(mapPane);
-                southeast.drawLines(mapPane);
-                southwest.drawLines(mapPane);
-            }
-            floorNum++;
+        if(!paused){
+            for(Floor floor : mainBuilding.getFloors()) {
+                for (Employee e : floor.employees) {
+                    e.update(floor);
+                }
+                //collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
 
-        }
-        mainBuilding.calculateInitialEmployeeCount();
-        employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
-        if(mainBuilding.getInitialEmployeeCount() <= 0){
-            timeline.stop();
-           // timer.setTextFill(Color.RED);
+                if(floor.employees.size() > 0){
+                    /*
+                    nW = floor.getActualWidth() / 2;
+                    nH = floor.getActualHeight() / 2;
+                    nX = floor.getActualX();
+                    nY = floor.getActualY();
+                    northwest = new QuadTree(cap, nX, nY, nW, nH);
+                    northeast = new QuadTree(cap, nX + nW, nY, nW, nH);
+                    southwest = new QuadTree(cap, nX, nY + nH, nW, nH);
+                    southeast = new QuadTree(cap, nX + nW, nY + nH, nW, nH);
+                    northeast.insertAll(floor.employees);
+                    northwest.insertAll(floor.employees);
+                    southeast.insertAll(floor.employees);
+                    southwest.insertAll(floor.employees);
+                    QuadTree.col = false;
+                    northeast.checkCollisions();
+                    northwest.checkCollisions();
+                    southeast.checkCollisions();
+                    southwest.checkCollisions();*/
+                }else{
+                    System.out.println("Floor error " + floorNum);
+                }
+                //quadTree.insertAll(floor.employees);
+                //quadTree.drawLines(mapPane);
+                if (drawLines) {
+                    northeast.drawLines(mapPane);
+                    northwest.drawLines(mapPane);
+                    southeast.drawLines(mapPane);
+                    southwest.drawLines(mapPane);
+                }
+                floorNum++;
+
+            }
+            mainBuilding.calculateInitialEmployeeCount();
+            employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+            if(mainBuilding.getInitialEmployeeCount() <= 0){
+                timeline.stop();
+               // timer.setTextFill(Color.RED);
+            }
         }
     }
 
@@ -238,6 +244,7 @@ public class FXMLSimulationController implements Initializable {
 
     public void StartSim(ActionEvent actionEvent) {
         System.out.println("in alarm handler");
+        timerLabel.setText(0 + "s");
         for(Floor floor : mainBuilding.getFloors()){
             for(Employee employee : floor.employees){
                 employee.setCurrentState(Employee.State.FindRoute);
@@ -248,9 +255,18 @@ public class FXMLSimulationController implements Initializable {
     }
 
     public void PauseSim(ActionEvent actionEvent) {
+        if(paused){
+            timeline.play();
+            paused = false;
+            PauseSimButton.setText("Pause");
+        }else{
+            timeline.stop();
+            paused = true;
+            PauseSimButton.setText("Play");
+        }
     }
 
-    public void StopSim(ActionEvent actionEvent) {
+    public void ResetSim(ActionEvent actionEvent) {
         second = 0;
        // timer.setTextFill(Color.BLACK);
         for(Floor floor : mainBuilding.getFloors()){
@@ -265,6 +281,7 @@ public class FXMLSimulationController implements Initializable {
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         this.StartSimButton.setDisable(false);
+        timeline.stop();
         mainBuilding.initialiseView();
     }
 

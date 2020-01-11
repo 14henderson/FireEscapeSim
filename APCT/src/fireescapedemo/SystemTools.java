@@ -62,8 +62,8 @@ public class SystemTools {
                 System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
                 while (this.unopenedNodes.size() != 0) {
 
-                    System.out.println("Size: " + this.openedNodes.size());
-                    System.out.println("");
+                    //System.out.println("Size: " + this.openedNodes.size());
+                    //System.out.println("");
                     currentNode = this.unopenedNodes.poll();
                     this.openedNodes.add(currentNode);
                     if (currentNode == goal) {
@@ -120,10 +120,10 @@ public class SystemTools {
                                     vel = prevX > proX ? range : -range;
                                     this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
                                 }
-                                System.out.println("Count " + counter);
-                                System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
+                                //System.out.println("Count " + counter);
+                                //System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
                                 //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                                currentNode.setType(Tile.BlockType.Path);
+                                //currentNode.setType(Tile.BlockType.Path);
                                 counter++;
                                 skip = 0;
                             }
@@ -132,7 +132,7 @@ public class SystemTools {
                         } while (currentNode != start);
                     }
                     Collections.reverse(this.velocitys);
-                    System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
+                    //System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
                     return true;
                 }
             }
@@ -204,7 +204,7 @@ public class SystemTools {
             Tile currentTile, exitTile = null;
             Tile.BlockType target = Tile.BlockType.Exit;
             while (!exitCondition) {
-                System.out.println("lockoutCounter: " + lockoutCounter);
+                //System.out.println("lockoutCounter: " + lockoutCounter);
                 if (lockoutCounter < lockoutLocal) {
                     currentTile = unopenList.poll();
                     lockoutCounter++;
@@ -225,7 +225,7 @@ public class SystemTools {
 
                     }
                     //System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
-                    System.out.println("List size: " + unopenList.size());
+                    //System.out.println("List size: " + unopenList.size());
                     neighbors.clear();
                     //if exit not found
                 } else {
@@ -233,7 +233,7 @@ public class SystemTools {
                         lockoutCounter = 0;
                         unopenList.clear();
                         openList.clear();
-                        unopenList.add(this.startNode);
+                        unopenList.add(startNode);
                         target = Tile.BlockType.Stairs;
                     }else{
                         this.endNode = null;

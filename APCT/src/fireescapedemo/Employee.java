@@ -19,7 +19,6 @@ public class Employee extends Actor implements Serializable{
     private boolean findingPath, exited, avgMove;
     Pair<Point2D,Tile> curPoint,postPoint;
     public Tile proTile;
-    public SystemTools tools;
 
     enum State{
         Idle {
@@ -31,21 +30,26 @@ public class Employee extends Actor implements Serializable{
         FindRoute{
             @Override
             public void act(Employee employee, Floor floor){
-                employee.tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock(),floor.getWallsNodes());
+                System.out.println("\n\nContains exit: " + floor.containsExit());
+                System.out.println("x: " + employee.oriTile.getActualX() + ", y: " + employee.oriTile.getActualY());
+                SystemTools tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock(),floor.getWallsNodes());
                 System.out.println("Route found");
-                boolean stateSwitch = employee.tools.pathFinder.exitFound();
+                boolean stateSwitch = tools.pathFinder.exitFound();
                 if(stateSwitch){
-                    employee.tools.pathFinder.findPath(false);
-                    employee.setPath(employee.tools.pathFinder.getVelocities());
+                    tools.pathFinder.findPath(false);
+                    employee.setPath(tools.pathFinder.getVelocities());
                 }
                 State state = stateSwitch? State.Escape : State.Idle;
+
                 System.out.println("Now set to " + state.toString());
-                employee.proTile = employee.oriTile;
-                employee.setCurrentState(state);
-                employee.findingPath = false;
-                employee.setrange(employee.tools.pathFinder.getRange());
-                employee.curPoint = employee.getPath().get(0);
-                employee.setCurPoint();
+                if(state.equals(State.Escape)){
+                    employee.proTile = employee.oriTile;
+                    employee.setCurrentState(state);
+                    employee.findingPath = false;
+                    employee.setrange(tools.pathFinder.getRange());
+                    employee.curPoint = employee.getPath().get(0);
+                    employee.setCurPoint();
+                }
             }
         },
         Escape {

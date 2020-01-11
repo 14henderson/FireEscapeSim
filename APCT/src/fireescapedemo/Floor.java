@@ -137,7 +137,7 @@ public class Floor extends MapObject implements Serializable {
 
     public int getPanXOffset(){return this.panXOffset;}
     public int getPanYOffset(){return this.panYOffset;}
-
+    public boolean containsExit(){return !this.exits.isEmpty();}
     public void pan(int xinc, int yinc){
         this.panXOffset += xinc;
         this.panYOffset += yinc;
