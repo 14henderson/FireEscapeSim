@@ -297,23 +297,44 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     public void zoomIn(){
         if(this.mainBuilding.getSize()+2 > this.minZoom && this.mainBuilding.getSize()+2 < this.maxZoom) {
+            this.lineCords[0] = (this.lineCords[0]-this.mainBuilding.getXPanOffset())/this.mainBuilding.getSize();
+            this.lineCords[1] = (this.lineCords[1]-this.mainBuilding.getYPanOffset())/this.mainBuilding.getSize();
             mainBuilding.zoom(2);
+            this.lineCords[0] = (this.lineCords[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset();
+            this.lineCords[1] = (this.lineCords[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset();
+
         }
     }
     @FXML
     public void zoomOut(){
         if(this.mainBuilding.getSize()-2 > this.minZoom && this.mainBuilding.getSize()-2 < this.maxZoom) {
+            this.lineCords[0] = (this.lineCords[0]-this.mainBuilding.getXPanOffset())/this.mainBuilding.getSize();
+            this.lineCords[1] = (this.lineCords[1]-this.mainBuilding.getYPanOffset())/this.mainBuilding.getSize();
             mainBuilding.zoom(-2);
+            this.lineCords[0] = (this.lineCords[0]*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset();
+            this.lineCords[1] = (this.lineCords[1]*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset();
         }
     }
     @FXML
-    public void panUp(){mainBuilding.pan(0, 30);}
+    public void panUp(){
+        mainBuilding.pan(0, 30);
+        this.lineCords[1] += 30;
+    }
     @FXML
-    public void panDown(){mainBuilding.pan(0, -30);}
+    public void panDown() {
+        mainBuilding.pan(0, -30);
+        this.lineCords[1] -= 30;
+    }
     @FXML
-    public void panRight(){mainBuilding.pan(-30, 0);}
+    public void panRight(){
+        mainBuilding.pan(-30, 0);
+        this.lineCords[0] -= 30;
+    }
     @FXML
-    public void panLeft(){mainBuilding.pan(30, 0);}
+    public void panLeft(){
+        mainBuilding.pan(30, 0);
+        this.lineCords[0] += 30;
+    }
 
 
     @FXML
@@ -428,7 +449,6 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-
     @FXML
     public void rotateLeft(){
         currStairOrientation-=90;
@@ -452,11 +472,6 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-
-    /**
-     * Opens the save file dialog to save the serializable building object to be opened in the simulation.
-     * @throws IOException
-     */
     public void saveToHome() throws IOException {
         if(saveMap()){
             this.manager.setGlobalBuilding(null);
@@ -553,7 +568,6 @@ public class FXMLBuildingController implements Initializable {
 
 
     public static final double[] normaliseCords(double cords[]){
-        //System.out.println("Beginning of normalise cords function:\n---------------------------");
         int i;
         double a;
         double[] finalCords = new double[4];
@@ -562,17 +576,10 @@ public class FXMLBuildingController implements Initializable {
                 a = Math.round((cords[i]-mainBuilding.getXPanOffset())/mainBuilding.getSize());
                 finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getXPanOffset();
             }else if (i == 1 || i == 3){
-                //System.out.println("For Y Coordinates only:");
-                //System.out.println("Original: "+cords[i]);
-                //System.out.println("Pan Offset: "+mainBuilding.getYPanOffset());
-                //System.out.println("Building Size: "+mainBuilding.getSize());
                 a = Math.round((cords[i]-mainBuilding.getYPanOffset())/mainBuilding.getSize());
-               // System.out.println("Resultiing grid coord: "+a);
-                finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getYPanOffset();
-                //System.out.println("----------------");
+                   finalCords[i] = (a*mainBuilding.getSize())+mainBuilding.getYPanOffset();
             }else{return null;}
         }
-        //System.out.println(finalCords[0]+" "+finalCords[1]+" "+finalCords[2]+" "+finalCords[3]);
         return finalCords;
     }
 

@@ -17,7 +17,7 @@
                     <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="72.0" stroke="BLACK" strokeType="INSIDE" width="198.0" />
                     <Button fx:id="StartSimButton" layoutX="8.0" layoutY="39.0" mnemonicParsing="false" onAction="#StartSim" prefHeight="25.0" prefWidth="55.0" text="Start" />
                     <Button fx:id="PauseSimButton" layoutX="73.0" layoutY="39.0" mnemonicParsing="false" onAction="#PauseSim" prefHeight="25.0" prefWidth="55.0" text="Pause" />
-                    <Button fx:id="StopSimButton" layoutX="138.0" layoutY="39.0" mnemonicParsing="false" onAction="#StopSim" prefHeight="25.0" prefWidth="55.0" text="Stop" />
+                    <Button fx:id="ResetSimButton" layoutX="138.0" layoutY="39.0" mnemonicParsing="false" onAction="#ResetSim" prefHeight="25.0" prefWidth="55.0" text="Stop" />
                     <Label layoutX="34.0" layoutY="8.0" text="Simulation Controls">
                         <font>
                             <Font size="15.0" />

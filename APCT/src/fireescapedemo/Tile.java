@@ -148,7 +148,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
                 c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
 
-                /*
+
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -156,7 +156,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println("Complete");
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
-                }*/
+                }
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);
@@ -448,7 +448,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     @Override
     public String toString(){
-        return ("X:"+this.fxRef.getLayoutX()+" Y:"+this.fxRef.getLayoutY()+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
+        return ("X:"+this.actualCords[0]+" Y:"+this.actualCords[1]+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
     }
 
 
@@ -486,6 +486,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         @Override
         public void initialiseView(){
             Rectangle rec = new Rectangle(this.parent.getActualX(),this.parent.getActualY(),this.parent.mainBuilding.getSize(),this.parent.mainBuilding.getSize());
+            rec.setLayoutX(rec.getX());
+            rec.setLayoutY(rec.getY());
+            System.out.println(rec);
             Image image;
             try {
                 image = new Image(getClass().getResource(this.filename).toURI().toString());
