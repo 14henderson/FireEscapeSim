@@ -100,7 +100,7 @@ public class FXMLSimulationController implements Initializable {
         t.start();
     }
     double nX, nY, nW, nH;
-    int cap = 50;
+    int cap = 1000000;
     boolean drawLines = false;
     boolean paused = false;
     boolean started = false;

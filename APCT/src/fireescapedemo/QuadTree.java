@@ -120,7 +120,7 @@ public class QuadTree{
                     t = (Employee)target;
                     if(!p.hasExited() && !t.hasExited()){
                         px = p.fxNode.getLayoutX();py = p.fxNode.getLayoutY();
-                        tx = t.fxNode.getLayoutX();ty = p.fxNode.getLayoutY();
+                        tx = t.fxNode.getLayoutX();ty = t.fxNode.getLayoutY();
                         rad1 = ((Circle)p.fxNode).getRadius();rad2 = ((Circle)t.fxNode).getRadius();
                         if(px==tx && py==ty){continue;}
                         if(Math.pow(px-tx,2)+Math.pow(py-ty,2) <= Math.pow(rad1+rad2,2)){
@@ -129,16 +129,16 @@ public class QuadTree{
                             displacement = (distance- rad1 - rad2)/2;
                             double dx = px == tx ? 1 : px-tx;
                             double dy = py == ty ? 1: py-ty;
-                            moveX = px + displacement * (px-tx)/distance;
-                            moveY = py + displacement * (py-ty)/distance;
+                            moveX = px - displacement * (px-tx)/distance;
+                            moveY = py - displacement * (py-ty)/distance;
 
                             System.out.println("px: " + px + ", py: " + py + "/tx: " + tx + ", ty: " + ty);
                             p.fxNode.setLayoutX(moveX);
                             p.fxNode.setLayoutY(moveY);
                             p.findLineAndRotate();
 
-                            moveX = tx - displacement * (px-tx)/distance;
-                            moveY = ty - displacement * (py-ty)/distance;
+                            moveX = tx + displacement * (px-tx)/distance;
+                            moveY = ty + displacement * (py-ty)/distance;
 
                             t.fxNode.setLayoutX(moveX);
                             t.fxNode.setLayoutY(moveY);
