@@ -148,7 +148,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
                 c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
 
-                /*
+
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -156,7 +156,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println("Complete");
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
-                }*/
+                }
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);

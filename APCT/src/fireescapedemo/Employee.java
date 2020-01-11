@@ -1,14 +1,15 @@
 package fireescapedemo;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
 
-import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -53,6 +54,12 @@ public class Employee extends Actor implements Serializable{
 
                 //if(employee.getPath() != null){
                     employee.updatePathPoint();
+                    Tile t = employee.curPoint.getValue();
+                    Circle view = (Circle)employee.fxNode;
+                    Circle c = new Circle(t.getActualX() + (t.getWidth()/2), t.getActualY() + (t.getHeight()/2),2, Color.PINK);
+                    Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.PINK);
+                    Building.windowContainer.getChildren().add(c);
+                    Building.windowContainer.getChildren().add(cc);
                 //}
             }
         },
@@ -71,6 +78,8 @@ public class Employee extends Actor implements Serializable{
         this.postPoint = this.curPoint;
         System.out.println("Test 3: " + this.path.isEmpty());
         this.curPoint = this.path.remove(0);
+        System.out.println("new point X:" + this.curPoint.getValue().getActualX() + ", y: " + this.curPoint.getValue().getActualY());
+        //this.velocity = this.curPoint.getKey();
     }
 
     private State currentState;
@@ -87,7 +96,7 @@ public class Employee extends Actor implements Serializable{
     }
 
     public Employee(Node view, Tile tile, Point2D vector){
-        super(view,tile,new Point2D(0,1));
+        super(view,tile,new Point2D(0,0));
         this.currentState = State.Idle;
         this.findingPath = false;
         this.exited = false;
@@ -112,10 +121,10 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
-                    this.fxNode.setLayoutX(this.fxNode.getLayoutX() + this.velocity.getX());
-                    this.fxNode.setLayoutY(this.fxNode.getLayoutY() + this.velocity.getY());
 
                     this.currentState.act(this,floor);
+                    this.fxNode.setLayoutX(this.fxNode.getLayoutX() + this.velocity.getX());
+                    this.fxNode.setLayoutY(this.fxNode.getLayoutY() + this.velocity.getY());
                     break;
                 }
                 case Extinguish:{
@@ -161,8 +170,9 @@ public class Employee extends Actor implements Serializable{
 
     void updatePathPoint(){
         double linePathValue = findLineAndRotate(curPoint);
-        //System.out.println("Linepathvale: " + linePathValue);
+       // System.out.println("Linepathvale: " + linePathValue);
         if(linePathValue <= 15){
+            System.out.println("NOICE");
             if(this.path.isEmpty()){
                 this.exited = true;
             }else{
@@ -176,12 +186,8 @@ public class Employee extends Actor implements Serializable{
         return ((Circle)(this.fxNode)).getRadius();
     }
 
-    private void setRotation(double rot, boolean rev, Point2D vel){
-        rot = rev ? rot : -rot;
-        this.fxNode.setRotate(this.fxNode.getRotate() + rot);
-        double x = rev ? -Math.cos(Math.toRadians(this.fxNode.getRotate())) : Math.cos(Math.toRadians(this.fxNode.getRotate()));
-        double y = rev ? -Math.sin(Math.toRadians(this.fxNode.getRotate())) : Math.sin(Math.toRadians(this.fxNode.getRotate()));
-        this.setVelocity(new Point2D(x , y ));
+    private void setRotation(double rot){
+        this.fxNode.setRotate(rot);
     }
 
 
@@ -191,20 +197,34 @@ public class Employee extends Actor implements Serializable{
     double findLineAndRotate(Pair<Point2D,Tile> pair){
         Point2D vel = pair.getKey();
         Tile target = pair.getValue();
-
+        /*
         double startX = this.fxNode.getLayoutX(), endX = target.getActualX() + (target.getWidth()/2) ,
                 startY=  this.fxNode.getLayoutY(), endY =  target.getActualY() + (target.getHeight()/2);
-        double numarator = startX * endX + startY + endY;
+        System.out.println("Start x : " + startX + " - Start y: " + startY + "\n End x: " + endX + " - End y: " + endY);
+        /*double numarator = startX * endX + startY + endY;
         double u = Math.sqrt(pow2(startX)+pow2(endX));
         double v = Math.sqrt(pow2(startY)+pow2(endY));
         double angle = Math.cos(numarator/u*v);
+
+        //test
+        double angle = Math.atan2(startY - endY, startX - endX) - Math.PI / 2;
 
         double bX = startX + pow2(this.velocity.getX());
         double bY = startY + pow2(this.velocity.getY());
         double twoArea = ((bX - startX)*(endY-startY))-((endX-startX)*(bY-startY));
         boolean reverse = twoArea < 0 ? false : true;
-        setRotation(angle, reverse, vel);
 
+        setRotation(angle);
+
+*/
+        double startX = this.fxNode.getLayoutX(), startY = this.fxNode.getLayoutY(),
+        endX = (target.getActualX() + (target.getWidth()/2)), endY = (target.getActualY() + (target.getHeight()/2));
+        double dx = endX - startX;
+        double dy = endY - startY;
+        double angle = Math.atan2(dy, dx) - Math.PI / 2;
+        Point2D direction = new Point2D(dx,dy);
+        setRotation(angle);
+        this.velocity = direction.normalize();
         return Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY,2));
     }
 }

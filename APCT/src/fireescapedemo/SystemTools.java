@@ -115,14 +115,14 @@ public class SystemTools {
                                 System.out.println("x: " + proX + ", y: " + proY);
                                 if (prevX == proX) {
                                     vel = prevY > proY ? range : -range;
-                                    this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
+                                    this.velocitys.add(new Pair(new Point2D(vel, 0), currentNode));
                                 } else {
                                     vel = prevX > proX ? range : -range;
                                     this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
                                 }
                                 System.out.println("Count " + counter);
                                 System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                currentNode.getFxRef().setFill(Color.LIGHTBLUE);
+                                //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
                                 currentNode.setType(Tile.BlockType.Path);
                                 counter++;
                                 skip = 0;
@@ -194,16 +194,18 @@ public class SystemTools {
 
         public Tile findClosestExit(Tile startNode) {
             //  for iteration       the amount of blocks in grid                         total amount of blocks to check before lockout
-            int lockoutCounter = 0, lockoutLocal = this.map.length * this.map[0].length, lockoutMax = 182;
+
+            int lockoutCounter = 0, lockoutLocal = this.map.length * this.map[0].length;
             boolean exitCondition = false, success = false;
             ArrayList<Tile> neighbors = new ArrayList<>();
             Queue<Tile> unopenList = new LinkedList<>();
             Queue<Tile> openList = new LinkedList<>();
             unopenList.add(startNode);
             Tile currentTile, exitTile = null;
+            Tile.BlockType target = Tile.BlockType.Exit;
             while (!exitCondition) {
                 System.out.println("lockoutCounter: " + lockoutCounter);
-                if (lockoutCounter < lockoutLocal && lockoutCounter < lockoutMax) {
+                if (lockoutCounter < lockoutLocal) {
                     currentTile = unopenList.poll();
                     lockoutCounter++;
                     openList.add(currentTile);
@@ -211,7 +213,7 @@ public class SystemTools {
                     neighbors = getNeighbors(currentTile.getGridX(), currentTile.getGridY(), currentTile, false);
                     for (Tile neighbor : neighbors) {
                         if (!openList.contains(neighbor) && !unopenList.contains(neighbor)) {
-                            if (neighbor.type.equals(Tile.BlockType.Exit)) {
+                            if (neighbor.type.equals(target)) {
                                 exitTile = neighbor;
                                 exitCondition = true;
                                 success = true;
@@ -222,13 +224,22 @@ public class SystemTools {
                         }
 
                     }
-                    System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
+                    //System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
+                    System.out.println("List size: " + unopenList.size());
                     neighbors.clear();
                     //if exit not found
                 } else {
-                    this.endNode = null;
-                    exitCondition = true;
-                    success = false;
+                    if(target.equals(Tile.BlockType.Exit)){
+                        lockoutCounter = 0;
+                        unopenList.clear();
+                        openList.clear();
+                        unopenList.add(this.startNode);
+                        target = Tile.BlockType.Stairs;
+                    }else{
+                        this.endNode = null;
+                        exitCondition = true;
+                        success = false;
+                    }
                 }
             }
             System.out.println("Finished, success: " + success);
