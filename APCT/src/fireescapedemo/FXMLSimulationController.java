@@ -60,6 +60,7 @@ public class FXMLSimulationController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         ResetSimButton.setText("Reset");
+        PauseSimButton.setDisable(true);
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
         timeline = new Timeline(
@@ -242,7 +243,7 @@ public class FXMLSimulationController implements Initializable {
     }
 
 
-    public void StartSim(ActionEvent actionEvent) {
+    public void StartSim(ActionEvent actionEvent) {;
         System.out.println("in alarm handler");
         timerLabel.setText(0 + "s");
         for(Floor floor : mainBuilding.getFloors()){
@@ -251,6 +252,9 @@ public class FXMLSimulationController implements Initializable {
             }
         }
         timeline.play();
+        paused = false;
+        PauseSimButton.setText("Pause");
+        PauseSimButton.setDisable(false);
         this.StartSimButton.setDisable(true);
     }
 
@@ -281,6 +285,9 @@ public class FXMLSimulationController implements Initializable {
         mainBuilding.calculateInitialEmployeeCount();
         employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
         this.StartSimButton.setDisable(false);
+        paused = false;
+        PauseSimButton.setDisable(true);
+        PauseSimButton.setText("Pause");
         timeline.stop();
         mainBuilding.initialiseView();
     }
