@@ -60,9 +60,7 @@ public class Employee extends Actor implements Serializable{
                     employee.updatePathPoint();
                     Tile t = employee.curPoint.getValue();
                     Circle view = (Circle)employee.fxNode;
-                    Circle c = new Circle(t.getActualX() + (t.getWidth()/2), t.getActualY() + (t.getHeight()/2),2, Color.PINK);
-                    Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.PINK);
-                    Building.windowContainer.getChildren().add(c);
+                    Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
                     Building.windowContainer.getChildren().add(cc);
                 //}
             }
@@ -173,7 +171,7 @@ public class Employee extends Actor implements Serializable{
     public boolean hasExited(){return this.exited;}
 
     void updatePathPoint(){
-        double linePathValue = findLineAndRotate(curPoint);
+        double linePathValue = findLineAndRotate();
        // System.out.println("Linepathvale: " + linePathValue);
         if(linePathValue <= 15){
             System.out.println("NOICE");
@@ -198,9 +196,9 @@ public class Employee extends Actor implements Serializable{
 
     private double pow2(double d){return d*d;}
 
-    double findLineAndRotate(Pair<Point2D,Tile> pair){
-        Point2D vel = pair.getKey();
-        Tile target = pair.getValue();
+    public double findLineAndRotate(){
+        Point2D vel = curPoint.getKey();
+        Tile target = curPoint.getValue();
         /*
         double startX = this.fxNode.getLayoutX(), endX = target.getActualX() + (target.getWidth()/2) ,
                 startY=  this.fxNode.getLayoutY(), endY =  target.getActualY() + (target.getHeight()/2);

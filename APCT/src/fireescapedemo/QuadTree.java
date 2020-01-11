@@ -1,6 +1,8 @@
 package fireescapedemo;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.geometry.Point2D;
+import javafx.scene.chart.NumberAxis;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -8,6 +10,8 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+
+import static java.lang.Double.NaN;
 
 public class QuadTree{
     private final int cap;
@@ -17,7 +21,6 @@ public class QuadTree{
     private final Actor[] points;
     private final QuadTree[] children;
     private static ArrayList<Line> walls;
-    public static boolean col = false;
 
 
     public QuadTree(int cap, double x, double y, double w, double h){
@@ -26,7 +29,7 @@ public class QuadTree{
         this.y = y;
         this.w = w;
         this.h = h;
-        this.iter = 0;
+        this.iter = 1;
         this.divided = false;
         this.points = new Actor[this.cap];
         this.children = new QuadTree[4];
@@ -37,7 +40,7 @@ public class QuadTree{
         this.y = y;
         this.w = w;
         this.h = h;
-        this.iter = 0;
+        this.iter = 1;
         this.divided = false;
         this.points = new Actor[this.cap];
         this.children = new QuadTree[4];
@@ -102,50 +105,56 @@ public class QuadTree{
 
     public void checkCollisions(){
         int i,j, pointLen = this.points.length, childLen = this.children.length;
-        double avX = 0, avY = 0;
         Actor point, target;
-        double size,newX, newY,distance, displacement,px,py,tx,ty;
-        Point2D newV;
+        Employee p,t;
+        double size,distance, displacement,px,py,tx,ty,rad1,rad2, moveX, moveY;
         //apply collisions localy
         for(i = 0; i < this.iter; i++){
             point = this.points[i];
-            avX += point.velocity.getX();
-            avY += point.velocity.getY();
 
             for(j = 0; j < this.iter; j++){
                 target = this.points[j];
-                if(point == target){continue;}
+                if(i == j){continue;}
                 if(point instanceof Employee && target instanceof Employee){
-                    if(this.collisionBetween((Employee)point,(Employee)target)){
-                        QuadTree.col = true;
-                        px = point.fxNode.getLayoutX();py = point.fxNode.getLayoutY();
-                        tx = target.fxNode.getLayoutX();ty = point.fxNode.getLayoutY();
-                        size = ((Circle)((Employee)(point)).fxNode).getRadius() ;
-                        distance =  Math.sqrt(Math.pow(px - tx,2) + Math.pow(py - ty,2));
-                        displacement = 0.5d * (distance- size - size);
+                    p = (Employee)point;
+                    t = (Employee)target;
+                    if(!p.hasExited() && !t.hasExited()){
+                        px = p.fxNode.getLayoutX();py = p.fxNode.getLayoutY();
+                        tx = t.fxNode.getLayoutX();ty = p.fxNode.getLayoutY();
+                        rad1 = ((Circle)p.fxNode).getRadius();rad2 = ((Circle)t.fxNode).getRadius();
+                        if(px==tx && py==ty){continue;}
+                        if(Math.pow(px-tx,2)+Math.pow(py-ty,2) <= Math.pow(rad1+rad2,2)){
+                            distance =  Math.sqrt(Math.pow(px - tx,2) + Math.pow(py - ty,2));
+                            System.out.println(distance);
+                            displacement = (distance- rad1 - rad2)/2;
+                            double dx = px == tx ? 1 : px-tx;
+                            double dy = py == ty ? 1: py-ty;
+                            moveX = px + displacement * (px-tx)/distance;
+                            moveY = py + displacement * (py-ty)/distance;
 
-                        point.fxNode.setLayoutX(px - (displacement * (px - tx) / distance));
-                        point.fxNode.setLayoutY(py - (displacement * (py - ty) / distance));
+                            System.out.println("px: " + px + ", py: " + py + "/tx: " + tx + ", ty: " + ty);
+                            p.fxNode.setLayoutX(moveX);
+                            p.fxNode.setLayoutY(moveY);
+                            p.findLineAndRotate();
 
-                        target.fxNode.setLayoutX(tx + (displacement * (px - tx) / distance));
-                        target.fxNode.setLayoutY(ty + (displacement * (py - ty) / distance));
+                            moveX = tx - displacement * (px-tx)/distance;
+                            moveY = ty - displacement * (py-ty)/distance;
 
-                        ((Circle)point.fxNode).setFill(Color.GREEN);
-                        ((Circle)target.fxNode).setFill(Color.GREEN);
-                    }else{
-                        ((Circle)point.fxNode).setFill(Color.LIGHTBLUE);
-                        ((Circle)target.fxNode).setFill(Color.LIGHTBLUE);
+                            t.fxNode.setLayoutX(moveX);
+                            t.fxNode.setLayoutY(moveY);
+
+                            System.out.println("new px: " + p.fxNode.getLayoutX() + ", py: " + p.fxNode.getLayoutY() + "/tx: " + t.fxNode.getLayoutX() + ", ty: " + t.fxNode.getLayoutY() + "\n");
+                            t.findLineAndRotate();
+                            //((Circle)point.fxNode).setFill(Color.GREEN);
+                            //((Circle)target.fxNode).setFill(Color.GREEN);
+                        }else{
+                            //((Circle)point.fxNode).setFill(Color.LIGHTBLUE);
+                           // ((Circle)target.fxNode).setFill(Color.LIGHTBLUE);
+                        }
                     }
                 }
             }
         }
-        newV = new Point2D(avX/this.iter, avY/iter);
-        //System.out.println("x: " + newV.getX() + ", y: " + newV.getY());
-       // System.out.println("col: " + col);
-        /*
-        if(col == true)
-            for(i = 0; i < this.iter; i++){ this.points[i].setVelocity(newV); ((Employee)this.points[i]).setAvgMove(true);}
-        */
         if(this.divided){
             for(i = 0; i < childLen; i++){
                 this.children[i].checkCollisions();
@@ -155,12 +164,7 @@ public class QuadTree{
 
     }
 
-    private boolean collisionBetween(Employee a, Employee b){
-        if(a.hasExited() || b.hasExited()) return false;
-        double dis = Math.sqrt(Math.pow(a.fxNode.getLayoutX() - b.fxNode.getLayoutX(),2) +
-                Math.pow(a.fxNode.getLayoutY() - b.fxNode.getLayoutY(),2));
-        return dis < ((Circle)(a.fxNode)).getRadius() + ((Circle)(b.fxNode)).getRadius();
-    }
+
 
 
 

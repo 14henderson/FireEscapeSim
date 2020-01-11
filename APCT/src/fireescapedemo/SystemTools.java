@@ -102,7 +102,7 @@ public class SystemTools {
                         Random rand = new Random();
                         this.range = Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
                         double vel = 0;
-                        int skip = 0, skipMax = 3;
+                        int skip = 0, skipMax = 50;
                         //this.nonPolygonalFunnelAlgorithm(currentNode);
 
                         do {
