@@ -61,7 +61,7 @@ public class Employee extends Actor implements Serializable{
                     Tile t = employee.curPoint.getValue();
                     Circle view = (Circle)employee.fxNode;
                     Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
-                    Building.windowContainer.getChildren().add(cc);
+                    //Building.windowContainer.getChildren().add(cc);
                 //}
             }
         },
@@ -173,7 +173,7 @@ public class Employee extends Actor implements Serializable{
     void updatePathPoint(){
         double linePathValue = findLineAndRotate();
        // System.out.println("Linepathvale: " + linePathValue);
-        if(linePathValue <= 15){
+        if(linePathValue <= ((Circle)this.fxNode).getRadius()/2){
             System.out.println("NOICE");
             if(this.path.isEmpty()){
                 this.exited = true;
