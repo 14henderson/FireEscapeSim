@@ -149,6 +149,7 @@ public class Building extends MapObject implements Serializable {
     }
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
+    public double getActorSize(){return 40;}
 
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}
@@ -173,7 +174,15 @@ public class Building extends MapObject implements Serializable {
         this.floors.add(newFloor);
     }
 
+    public static int normaliseXCoord(double x, Building b){
+        double tmp = ((x-b.getXPanOffset())/b.getCurrentFloor().getTileSize());
+        return (int)tmp;
+    }
 
+    public static int normaliseYCoord(double y, Building b){
+        double tmp = ((y-b.getYPanOffset())/b.getCurrentFloor().getTileSize());
+        return (int)tmp;
+    }
 
 
 }

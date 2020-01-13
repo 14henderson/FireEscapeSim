@@ -4,6 +4,7 @@ import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.util.Pair;
@@ -28,6 +29,8 @@ public class SystemTools {
         private ArrayList<Line> walls;
         private Tile[][] map;
         private Tile startNode, endNode;
+        private Tile actorTile;
+        private Tile goalTile;
         boolean foundExit;
         private double endX, endY;
         private double range;
@@ -59,11 +62,13 @@ public class SystemTools {
                 Tile currentNode = null, start = this.map[this.startNode.getGridX()][this.startNode.getGridY()],
                         goal = this.map[this.endNode.getGridX()][this.endNode.getGridY()];
                 this.unopenedNodes.add(start);
+                this.actorTile = start;
+                this.goalTile = goal;
                 System.out.println("Map length [x]: " + this.map.length + ", [y]: " + this.map[0].length);
                 while (this.unopenedNodes.size() != 0) {
 
-                    System.out.println("Size: " + this.openedNodes.size());
-                    System.out.println("");
+                    //System.out.println("Size: " + this.openedNodes.size());
+                    //System.out.println("");
                     currentNode = this.unopenedNodes.poll();
                     this.openedNodes.add(currentNode);
                     if (currentNode == goal) {
@@ -100,7 +105,7 @@ public class SystemTools {
                     boolean test = true;
                     if (test) {
                         Random rand = new Random();
-                        this.range = Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
+                        this.range = 1;//Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
                         double vel = 0;
                         int skip = 0, skipMax = 1;
                         //this.nonPolygonalFunnelAlgorithm(currentNode);
@@ -115,13 +120,13 @@ public class SystemTools {
                                 System.out.println("x: " + proX + ", y: " + proY);
                                 if (prevX == proX) {
                                     vel = prevY > proY ? range : -range;
-                                    this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
+                                    this.velocitys.add(new Pair(new Point2D(vel, 0), currentNode));
                                 } else {
                                     vel = prevX > proX ? range : -range;
                                     this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
                                 }
-                                System.out.println("Count " + counter);
-                                System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
+                                //System.out.println("Count " + counter);
+                                //System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
                                 //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
                                 //currentNode.setType(Tile.BlockType.Path);
                                 counter++;
@@ -133,12 +138,160 @@ public class SystemTools {
                     }
                     Collections.reverse(this.velocitys);
                     System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
+
+                    this.velocitys = this.refinePath(this.velocitys);
+                    //modification for testing purposes
+                    for(int n=this.velocitys.size()-1; n>=0; n--){
+                        Pair<Point2D, Tile> p = this.velocitys.get(n);
+                       // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
+                     //   Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
+                      //  p.getValue().mainBuilding.windowContainer.getChildren().add(c);
+                    //    if(n%2 == 0){
+                      //      this.velocitys.remove(n);
+                        }
+                 //   }
+
                     return true;
                 }
             }
             return false;
         }
 
+        private boolean checkRoute(Tile start, Tile end){
+            int gridWidth = Math.abs(start.getGridX()-end.getGridX())+1;    //grid width of path boundary
+            int gridHeight = Math.abs(start.getGridY()-end.getGridY())+1;   //grid height of path boundary
+
+            double actualWidth = end.getActualX()-start.getActualX();       //actual width of path boundary
+            double actualHeight = end.getActualY()-start.getActualY();      //actual height of path boundary
+            int checkCount = (gridHeight*gridWidth)-1;                      //how many times is the path going to be cross-checked with access points.
+
+            double gradient = actualHeight/actualWidth;                     //gradient of path
+            double inverseGradient = -Math.pow(gradient, -1);               //inverse gradient (used for finding starting coordinates)
+            double euclideanDistance = Math.sqrt(Math.pow(actualHeight, 2)+Math.pow(actualWidth, 2));   //length of path (in pixels)
+            double checkGap = euclideanDistance/checkCount;                 //calculated gap between cross-checked access points
+
+            double xcha, ycha;
+            double currentGap;                                             //current length along path to check
+
+            double[] currentCheckingCoordinate = new double[2];             //
+            int[] gridCheckingCoordinate = new int[2];                      //
+            ArrayList<Tile> tilesInPath = new ArrayList<>();                //A list of tiles that the path crosses over
+
+            currentCheckingCoordinate[0] = start.getActualX()+(start.getWidth()/2);
+            currentCheckingCoordinate[1] = start.getActualY()+(start.getHeight()/2);
+
+        //    System.out.println("inverse gradient: "+inverseGradient);
+       //     System.out.println("Origin point coords: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+            double[] startingCoords1 = new double[2];
+            startingCoords1[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(-actualHeight);
+            startingCoords1[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(actualWidth);;
+
+       //     System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
+        //    Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
+        //    start.mainBuilding.windowContainer.getChildren().add(s1);
+
+            double[] startingCoords2 = new double[2];
+            startingCoords2[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(actualHeight);
+            startingCoords2[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(-actualWidth);;
+
+          //  System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
+         //   Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
+          //  start.mainBuilding.windowContainer.getChildren().add(s2);
+
+            double[] actualStartingCordsTMP = new double[2];
+            actualStartingCordsTMP[0] = start.getActualX()+(start.getWidth()/2);
+            actualStartingCordsTMP[1] = start.getActualY()+(start.getHeight()/2);
+
+            ArrayList<double[]> linesToCheck = new ArrayList<>();
+            linesToCheck.add(startingCoords1);
+            //linesToCheck.add(actualStartingCordsTMP);
+            linesToCheck.add(startingCoords2);
+
+            //for every parallel line to the mid-point that needs to be checked.
+            for(double[] startpoint : linesToCheck) {
+                tilesInPath.clear();
+                currentGap = checkGap;
+                currentCheckingCoordinate[0] = startpoint[0];
+                currentCheckingCoordinate[1] = startpoint[1];
+
+
+                //for each calculated point on the path
+                for (int n = 0; n <= checkCount; n++) {
+                    //Circle tmp = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5, Color.RED);
+                    //start.mainBuilding.windowContainer.getChildren().add(tmp);
+
+                    gridCheckingCoordinate[0] = (int) (currentCheckingCoordinate[0] / start.getWidth());                   //convert actual coordinate to grid coordinate
+                    gridCheckingCoordinate[1] = (int) (currentCheckingCoordinate[1] / start.getHeight());
+
+                    tilesInPath.add(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]]);                        //add the corresponding tile in path to list
+                    xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1)) * Math.signum(actualWidth);       //change in x from last checked actual coordinate
+                    ycha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, -2) + 1)) * Math.signum(actualHeight);     //change in y from last checked actual coorodinate
+
+                    currentCheckingCoordinate[0] = startpoint[0] + xcha;                            //recalculating actual x coordinate
+                    currentCheckingCoordinate[1] = startpoint[1] + ycha;                           //recalculating actual x coordinate
+
+
+
+
+                    //checking pivot points. Don't question this - it just works
+                    if (currentCheckingCoordinate[0] % 50 == 0 && currentCheckingCoordinate[1] % 50 == 0) {
+                        gridCheckingCoordinate[0] = (int) (currentCheckingCoordinate[0] / start.getWidth());
+                        gridCheckingCoordinate[1] = (int) (currentCheckingCoordinate[1] / start.getHeight());
+                        if (this.map[gridCheckingCoordinate[0] - 1][gridCheckingCoordinate[1] - 1].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1] - 1])
+                                && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0] - 1][gridCheckingCoordinate[1]])
+                                && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1] - 1])
+                                && this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]].checkAccess(this.map[gridCheckingCoordinate[0] - 1][gridCheckingCoordinate[1]])) {
+                            currentGap += checkGap;
+                            continue;
+                        } else {
+                            System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
+                            return false;
+                        }}
+                    currentGap += checkGap;
+                }
+                for (int n = 0; n < tilesInPath.size() - 1; n++) {
+                    if (!tilesInPath.get(n).checkAccess(tilesInPath.get(n + 1))) {        //if a wall blocks the path, return false.
+                        System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+
+
+
+
+        private ArrayList<Pair<Point2D, Tile>> refinePath(ArrayList<Pair<Point2D, Tile>> p){
+            ArrayList<Pair<Point2D, Tile>> waypoints = new ArrayList<>();
+            Tile currentWaypoint = this.actorTile;
+            int currentWaypointIndex = -1;
+            waypoints.add(new Pair(new Point2D(0, 0), this.actorTile));
+            p.add(new Pair(new Point2D(0, 0), this.goalTile));
+           // System.out.println("Goal cords: "+this.goalTile.getGridX()+", "+this.goalTile.getGridY());
+
+            boolean reachedEnd = false;
+            while(!reachedEnd) {
+                for (int n = p.size() - 1; n > currentWaypointIndex; n--) {
+              //      System.out.println("Current waypoint coords: "+currentWaypoint.getGridX()+", "+currentWaypoint.getGridY());
+               //     System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
+
+                    ///if(p.get(n).getValue() == c)
+                    if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
+                        currentWaypoint = p.get(n).getValue();
+                        currentWaypointIndex = n;
+                        waypoints.add(new Pair(p.get(currentWaypointIndex).getKey(), currentWaypoint));
+                        if(currentWaypointIndex == p.size()-1) {
+                            reachedEnd = true;
+                        }
+                        break;
+                    }
+                }
+            }
+            //System.out.println(waypoints.size()+" Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
+            return waypoints;
+        }
 
 
         private int calculateDistance(Tile a, Tile b){
@@ -194,16 +347,18 @@ public class SystemTools {
 
         public Tile findClosestExit(Tile startNode) {
             //  for iteration       the amount of blocks in grid                         total amount of blocks to check before lockout
-            int lockoutCounter = 0, lockoutLocal = this.map.length * this.map[0].length, lockoutMax = 182;
+
+            int lockoutCounter = 0, lockoutLocal = this.map.length * this.map[0].length;
             boolean exitCondition = false, success = false;
             ArrayList<Tile> neighbors = new ArrayList<>();
             Queue<Tile> unopenList = new LinkedList<>();
             Queue<Tile> openList = new LinkedList<>();
             unopenList.add(startNode);
             Tile currentTile, exitTile = null;
+            Tile.BlockType target = Tile.BlockType.Exit;
             while (!exitCondition) {
-                System.out.println("lockoutCounter: " + lockoutCounter);
-                if (lockoutCounter < lockoutLocal && lockoutCounter < lockoutMax) {
+                //System.out.println("lockoutCounter: " + lockoutCounter);
+                if (lockoutCounter < lockoutLocal) {
                     currentTile = unopenList.poll();
                     lockoutCounter++;
                     openList.add(currentTile);
@@ -211,7 +366,7 @@ public class SystemTools {
                     neighbors = getNeighbors(currentTile.getGridX(), currentTile.getGridY(), currentTile, false);
                     for (Tile neighbor : neighbors) {
                         if (!openList.contains(neighbor) && !unopenList.contains(neighbor)) {
-                            if (neighbor.type.equals(Tile.BlockType.Exit)) {
+                            if (neighbor.type.equals(target)) {
                                 exitTile = neighbor;
                                 exitCondition = true;
                                 success = true;
@@ -222,16 +377,25 @@ public class SystemTools {
                         }
 
                     }
-                    System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
+                    //System.out.println("cur cords: x: " + currentTile.getGridX() + ", y: " + currentTile.getGridY());
+                    //System.out.println("List size: " + unopenList.size());
                     neighbors.clear();
                     //if exit not found
                 } else {
-                    this.endNode = null;
-                    exitCondition = true;
-                    success = false;
+                    if(target.equals(Tile.BlockType.Exit)){
+                        lockoutCounter = 0;
+                        unopenList.clear();
+                        openList.clear();
+                        unopenList.add(startNode);
+                        target = Tile.BlockType.Stairs;
+                    }else{
+                        this.endNode = null;
+                        exitCondition = true;
+                        success = false;
+                    }
                 }
             }
-            System.out.println("Finished, success: " + success);
+            //System.out.println("Finished, success: " + success);
             this.foundExit = success;
             return exitTile;
         }
@@ -293,3 +457,4 @@ public class SystemTools {
     }
 
 }
+

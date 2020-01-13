@@ -16,7 +16,7 @@ import javafx.scene.text.Text;
 
 import java.net.URISyntaxException;
 import java.io.Serializable;
-
+import java.util.Arrays;
 
 
 public class Tile extends MapObject implements Serializable, Comparable<fireescapedemo.Tile> {
@@ -142,13 +142,13 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Actor a;
                 Circle c;
-                c = new Circle(tile.mainBuilding.getSize()/2);
+                c = new Circle(tile.mainBuilding.getSize()/4);
                 c.setFill(Color.PINK);
 
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
                 c.setLayoutY(tile.getActualY()+tile.mainBuilding.getSize()/2);
 
-                /*
+
                 Image image;
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
@@ -156,7 +156,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                     System.out.println("Complete");
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
-                }*/
+                }
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
                 mainBuilding.windowContainer.getChildren().add(c);
@@ -399,12 +399,56 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     }
 
     public boolean getAccess(int dir){ return this.walls[dir];}
+    public boolean checkAccess(Tile t){
+        System.out.println("~~~~~~~~~~~~~~~~");
+        System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
+        System.out.println("This Tile: "+ Arrays.toString(this.walls));
+        System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
+        System.out.println("~~~~~~~~~~~~~~~~");
+
+
+
+        if(t == this){return true;}
+        if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == 1){
+            return
+                    (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[2])
+                            || (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[1]);
+        }
+
+        if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == 1){
+            return
+                    (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[3])
+                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[2]);
+        }
+
+        if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == -1){
+            return
+                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[1])
+                            || (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[0]);
+        }
+
+        if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == -1){
+            return
+                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[3])
+                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[0]);
+        }
+
+        if(t.getGridX()-this.getGridX() == 1){return this.walls[1];}
+        if(t.getGridX()-this.getGridX() == -1){return this.walls[3];}
+        if(t.getGridY()-this.getGridY() == 1){return this.walls[2];}
+        if(t.getGridY()-this.getGridY() == -1){return this.walls[0];}
+
+        else{
+            return false;
+        }
+    }
+
     public void removeActor(){this.currentActor = null;}
     public Actor getActor(){return this.currentActor;}
 
     @Override
     public String toString(){
-        return ("X:"+this.fxRef.getLayoutX()+" Y:"+this.fxRef.getLayoutY()+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
+        return ("X:"+this.actualCords[0]+" Y:"+this.actualCords[1]+" Size:"+this.fxRef.getWidth()+"x"+this.fxRef.getHeight());
     }
 
 
@@ -442,6 +486,9 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         @Override
         public void initialiseView(){
             Rectangle rec = new Rectangle(this.parent.getActualX(),this.parent.getActualY(),this.parent.mainBuilding.getSize(),this.parent.mainBuilding.getSize());
+            rec.setLayoutX(rec.getX());
+            rec.setLayoutY(rec.getY());
+            System.out.println(rec);
             Image image;
             try {
                 image = new Image(getClass().getResource(this.filename).toURI().toString());
