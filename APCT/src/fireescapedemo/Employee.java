@@ -173,7 +173,7 @@ public class Employee extends Actor implements Serializable{
     void updatePathPoint(){
         double linePathValue = findLineAndRotate();
        // System.out.println("Linepathvale: " + linePathValue);
-        if(linePathValue <= ((Circle)this.fxNode).getRadius()/2){
+        if(linePathValue <= ((Circle)this.fxNode).getRadius()){
             System.out.println("NOICE");
             if(this.path.isEmpty()){
                 this.exited = true;

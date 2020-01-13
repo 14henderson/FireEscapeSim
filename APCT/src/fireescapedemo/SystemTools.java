@@ -144,12 +144,12 @@ public class SystemTools {
                     for(int n=this.velocitys.size()-1; n>=0; n--){
                         Pair<Point2D, Tile> p = this.velocitys.get(n);
                        // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
-                        Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
-                        p.getValue().mainBuilding.windowContainer.getChildren().add(c);
+                     //   Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
+                      //  p.getValue().mainBuilding.windowContainer.getChildren().add(c);
                     //    if(n%2 == 0){
                       //      this.velocitys.remove(n);
-                        //}
-                    }
+                        }
+                 //   }
 
                     return true;
                 }
@@ -180,23 +180,23 @@ public class SystemTools {
             currentCheckingCoordinate[0] = start.getActualX()+(start.getWidth()/2);
             currentCheckingCoordinate[1] = start.getActualY()+(start.getHeight()/2);
 
-            System.out.println("inverse gradient: "+inverseGradient);
-            System.out.println("Origin point coords: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
+        //    System.out.println("inverse gradient: "+inverseGradient);
+       //     System.out.println("Origin point coords: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
             double[] startingCoords1 = new double[2];
             startingCoords1[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(-actualHeight);
             startingCoords1[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(actualWidth);;
 
-            System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
-            Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
-            start.mainBuilding.windowContainer.getChildren().add(s1);
+       //     System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
+        //    Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
+        //    start.mainBuilding.windowContainer.getChildren().add(s1);
 
             double[] startingCoords2 = new double[2];
             startingCoords2[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(actualHeight);
             startingCoords2[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(-actualWidth);;
 
-            System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
-            Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
-            start.mainBuilding.windowContainer.getChildren().add(s2);
+          //  System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
+         //   Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
+          //  start.mainBuilding.windowContainer.getChildren().add(s2);
 
             double[] actualStartingCordsTMP = new double[2];
             actualStartingCordsTMP[0] = start.getActualX()+(start.getWidth()/2);
@@ -289,7 +289,7 @@ public class SystemTools {
                     }
                 }
             }
-            System.out.println(waypoints.size()+" Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
+            //System.out.println(waypoints.size()+" Waypoints found for actor at position: "+this.actorTile.getGridX()+", "+this.actorTile.getGridY());
             return waypoints;
         }
 
@@ -395,7 +395,7 @@ public class SystemTools {
                     }
                 }
             }
-            System.out.println("Finished, success: " + success);
+            //System.out.println("Finished, success: " + success);
             this.foundExit = success;
             return exitTile;
         }
