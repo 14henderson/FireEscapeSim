@@ -12,12 +12,13 @@ import javafx.util.Pair;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Employee extends Actor implements Serializable{
-    private double counter = 0, range = 0;
-    private transient ArrayList<Pair<Point2D,Tile>> path;
+    private double counter = 0, range = 0, releaseTime;
+    private transient ArrayList<Tile> path;
     private boolean findingPath, exited, avgMove;
-    Pair<Point2D,Tile> curPoint,postPoint;
+    Tile curPoint,postPoint;
     public Tile proTile;
 
     enum State{
@@ -37,18 +38,19 @@ public class Employee extends Actor implements Serializable{
                 boolean stateSwitch = tools.pathFinder.exitFound();
                 if(stateSwitch){
                     tools.pathFinder.findPath(false);
-                    employee.setPath(tools.pathFinder.getVelocities());
+                    employee.setPath(tools.pathFinder.getPath());
                 }
                 State state = stateSwitch? State.Escape : State.Idle;
 
                 System.out.println("Now set to " + state.toString());
                 if(state.equals(State.Escape)){
                     employee.proTile = employee.oriTile;
-                    employee.setCurrentState(state);
                     employee.findingPath = false;
                     employee.setrange(tools.pathFinder.getRange());
                     employee.curPoint = employee.getPath().get(0);
                     employee.setCurPoint();
+                    employee.setReleaseTime((Math.random()+1)*100);
+                    employee.setCurrentState(state);
                 }
             }
         },
@@ -58,9 +60,8 @@ public class Employee extends Actor implements Serializable{
 
                 //if(employee.getPath() != null){
                     employee.updatePathPoint();
-                    Tile t = employee.curPoint.getValue();
-                    Circle view = (Circle)employee.fxNode;
-                    Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
+                    //Circle view = (Circle)employee.fxNode;
+                    //Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
                     //Building.windowContainer.getChildren().add(cc);
                 //}
             }
@@ -80,7 +81,7 @@ public class Employee extends Actor implements Serializable{
         this.postPoint = this.curPoint;
         System.out.println("Test 3: " + this.path.isEmpty());
         this.curPoint = this.path.remove(0);
-        System.out.println("new point X:" + this.curPoint.getValue().getActualX() + ", y: " + this.curPoint.getValue().getActualY());
+        System.out.println("new point X:" + this.curPoint.getActualX() + ", y: " + this.curPoint.getActualY());
         //this.velocity = this.curPoint.getKey();
     }
 
@@ -123,10 +124,12 @@ public class Employee extends Actor implements Serializable{
                     break;
                 }
                 case Escape:{
+                    if(this.counter >= this.releaseTime) {
+                        this.currentState.act(this, floor);
+                        this.fxNode.setLayoutX(this.fxNode.getLayoutX() + this.velocity.getX());
+                        this.fxNode.setLayoutY(this.fxNode.getLayoutY() + this.velocity.getY());
+                    }else{this.counter++;}
 
-                    this.currentState.act(this,floor);
-                    this.fxNode.setLayoutX(this.fxNode.getLayoutX() + this.velocity.getX());
-                    this.fxNode.setLayoutY(this.fxNode.getLayoutY() + this.velocity.getY());
                     break;
                 }
                 case Extinguish:{
@@ -141,7 +144,6 @@ public class Employee extends Actor implements Serializable{
 
 
 
-        counter++;
 
         }else{
             this.fxNode.setOpacity(0);
@@ -161,11 +163,12 @@ public class Employee extends Actor implements Serializable{
 
 
 
-    public ArrayList<Pair<Point2D, Tile>> getPath(){return this.path;}
+    public ArrayList<Tile> getPath(){return this.path;}
 
     public void setCurrentState(State state){this.currentState = state;}
-    public void setPath(ArrayList<Pair<Point2D, Tile>> newPath){this.path = newPath;}
+    public void setPath(ArrayList<Tile> newPath){this.path = newPath;}
     public void setrange(double vel){this.range = vel;}
+    public void setReleaseTime(double d){this.releaseTime = d; this.counter = 0; }
     public void toggleExited(){this.exited = !this.exited;}
     public void setAvgMove(boolean b){this.avgMove = b;}
     public boolean hasExited(){return this.exited;}
@@ -173,8 +176,8 @@ public class Employee extends Actor implements Serializable{
     void updatePathPoint(){
         double linePathValue = findLineAndRotate();
        // System.out.println("Linepathvale: " + linePathValue);
-        if(linePathValue <= fxNode.get){
-            System.out.println("NOICE");
+        //System.out.println(((Circle)this.fxNode).getRadius());
+        if(linePathValue <= ((Circle)this.fxNode).getRadius()){
             if(this.path.isEmpty()){
                 this.exited = true;
             }else{
@@ -188,17 +191,14 @@ public class Employee extends Actor implements Serializable{
         return ((Circle)(this.fxNode)).getRadius();
     }
 
-    private void setRotation(double rot){
-        this.fxNode.setRotate(rot);
-    }
+
 
 
 
     private double pow2(double d){return d*d;}
 
     public double findLineAndRotate(){
-        Point2D vel = curPoint.getKey();
-        Tile target = curPoint.getValue();
+        Tile target = this.curPoint;
         /*
         double startX = this.fxNode.getLayoutX(), endX = target.getActualX() + (target.getWidth()/2) ,
                 startY=  this.fxNode.getLayoutY(), endY =  target.getActualY() + (target.getHeight()/2);
@@ -221,12 +221,16 @@ public class Employee extends Actor implements Serializable{
 */
         double startX = this.fxNode.getLayoutX(), startY = this.fxNode.getLayoutY(),
         endX = (target.getActualX() + (target.getWidth()/2)), endY = (target.getActualY() + (target.getHeight()/2));
+
         double dx = endX - startX;
         double dy = endY - startY;
         double angle = Math.atan2(dy, dx) - Math.PI / 2;
+
         Point2D direction = new Point2D(dx,dy);
-        setRotation(angle);
-        this.velocity = direction.normalize();
+
+        this.fxNode.setRotate(angle);
+        this.velocity = direction.normalize().multiply(0.5);
+
         return Math.sqrt(Math.pow(startX - endX,2) + Math.pow(startY - endY,2));
     }
 }
