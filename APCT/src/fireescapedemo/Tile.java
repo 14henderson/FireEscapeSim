@@ -33,6 +33,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     //Node Building Variables
     private transient Rectangle fxRef = null;          //Tile Rectangle object
+    private Floor parentFloor;
     private static boolean buildEnabled = true;
 
     //Path-finding Variables
@@ -159,7 +160,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 }
                 Employee e = new Employee(c,tile);
                 mainBuilding.getCurrentFloor().addEmployee(e);
-                mainBuilding.windowContainer.getChildren().add(c);
+                tile.parentFloor.getPane().getChildren().add(c);
                 tile.setActor(e);
                 tile.setTileObject(e);
             }
@@ -176,7 +177,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
 
         public void prepareTile(Tile tile){
-            tile.mainBuilding.windowContainer.getChildren().remove(tile.fxRef);
+            //System.out.println("Tile: "+tile.parentFloor);
+            tile.parentFloor.getPane().getChildren().remove(tile.fxRef);
             tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
             if(tile.mainBuilding.getSimState()){
                 tile.fxRef.setStroke(Color.TRANSPARENT);
@@ -186,11 +188,11 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
             tile.fxRef.setFill(Color.rgb(0,0,0,0));
             tile.fxRef.setOpacity(1);
-            mainBuilding.windowContainer.getChildren().add(tile.fxRef);
+            tile.parentFloor.getPane().getChildren().add(tile.fxRef);
         }
         public void finalPreparation(Tile tile){
             tile.fxRef.setOnMouseClicked((MouseEvent event) -> {
-                System.out.println("Tile clicked");
+                System.out.println("Tile clicked (Tile Type handler) on "+tile.parentFloor.getId());
                 if(mainBuilding.canEdit) {
                     tile.type = FXMLBuildingController.getActionType();
                     tile.type.initialiseView(0, tile, true);
@@ -230,13 +232,14 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     }
 
 
-    public Tile(int x, int y, int gridX, int gridY, double size){
+    public Tile(Floor thisFloor, int x, int y, int gridX, int gridY, double size){
         this.type = null;
         this.actualCords[0] = x;
         this.actualCords[1] = y;
         this.gridCords[0] = gridX;
         this.gridCords[1] = gridY;
         this.rotation = FXMLBuildingController.currStairOrientation;
+        this.parentFloor = thisFloor;
 
         this.dimensions[0] = size;
         this.dimensions[1] = size;
@@ -253,7 +256,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         for(i = 0; i < this.walls.length; i++){
             this.walls[i] = true;
         }
-        this.initialiseView();
+        this.initialiseView(thisFloor.getPane());
     }
 
 
@@ -277,12 +280,13 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void setTileObject(TileObject t){this.tileObject = t;}
     public TileObject getTileObject(){return this.tileObject;}
     public void setFloorNum(int n){this.floorNum = n;}
+    public Floor getFloor(){return this.parentFloor;}
 
     @Override
-    public void initialiseView(){
+    public void initialiseView(Pane thisFloorPane){
         try{
-            this.mainBuilding.windowContainer.getChildren().remove(this.fxRef);
-            this.mainBuilding.windowContainer.getChildren().remove(this.currentActor.fxNode);
+            this.parentFloor.getPane().getChildren().remove(this.fxRef);
+            this.parentFloor.getPane().getChildren().remove(this.currentActor.fxNode);
         } catch(Exception e){}
         //if(this.tileObject != null) {
         //    this.tileObject.flushNodes();
@@ -291,7 +295,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.type.initialiseView(0, this, false);
         this.currentActor = null;
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
-            System.out.println("Tile clicked");
+            System.out.println("Tile clicked on "+this.parentFloor.getId());
             if(mainBuilding.canEdit) {
                 this.type = FXMLBuildingController.getActionType();
                 this.type.initialiseView(0, this, true);
@@ -305,7 +309,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     @Override
     public void updateView(){
         if(this.fxRef == null){
-            this.initialiseView();
+            this.initialiseView(this.parentFloor.getPane());
         }
         //this.fxRef.setFill(this.getColor(this.type));
         this.fxRef.setX(this.getActualX());
@@ -471,7 +475,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         }
         @Override
         public void flushNodes(){
-            this.parent.mainBuilding.windowContainer.getChildren().remove(this.fxNode);
+            this.parent.parentFloor.getPane().getChildren().remove(this.fxNode);
         }
         @Override
         public void destroy(){}
@@ -486,14 +490,14 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         @Override
         public void initialiseView(){
             Rectangle rec = new Rectangle(this.parent.getActualX(),this.parent.getActualY(),this.parent.mainBuilding.getSize(),this.parent.mainBuilding.getSize());
-            rec.setLayoutX(rec.getX());
-            rec.setLayoutY(rec.getY());
+            rec.setX(rec.getX());
+            rec.setY(rec.getY());
             System.out.println(rec);
             Image image;
             try {
                 image = new Image(getClass().getResource(this.filename).toURI().toString());
                 rec.setFill(new ImagePattern(image));
-                mainBuilding.windowContainer.getChildren().add(rec);
+                this.parent.parentFloor.getPane().getChildren().add(rec);
             } catch (URISyntaxException ex) {
                 System.out.println(ex);
             }

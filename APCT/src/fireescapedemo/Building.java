@@ -7,6 +7,7 @@ import java.util.HashMap;
 
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.TabPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -24,6 +25,7 @@ public class Building extends MapObject implements Serializable {
     private boolean runningSim = false;
     //private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
+    public static transient TabPane paneContainer;
 
 
     public Building(){
@@ -36,14 +38,15 @@ public class Building extends MapObject implements Serializable {
         //this.pan(10, 10);
     }
 
-    public Building(int floorWidth, int floorHeight, int tileSize, Pane windowContainerParent){
+    public Building(int floorWidth, int floorHeight, int tileSize, Pane windowContainerParent, Pane firstFloorPane, TabPane container){
         this.mainBuilding = this;
         this.windowContainer = windowContainerParent;
+        this.paneContainer = container;
         this.stairs = new HashMap<>();
         System.out.println("New Stairs being creates");
         if ( floors == null){
              floors = new ArrayList();
-             Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
+             Floor tmpRef = new Floor(firstFloorPane, "Floor 0", floorHeight,floorWidth,tileSize, 0);
              tmpRef.setFloorNum(0);
              floors.add(tmpRef);
              currentFloor = 0;
@@ -51,14 +54,14 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
-    public Building(int floorWidth, int floorHeight, int tileSize){
+    public Building(int floorWidth, int floorHeight, int tileSize, Pane firstFloorPane){
         this.mainBuilding = this;
         //this.windowContainer = windowContainerParent;
         this.stairs = new HashMap<>();
         System.out.println("New Stairs being creates");
         if ( floors == null){
             floors = new ArrayList();
-            Floor tmpRef = new Floor(floorHeight,floorWidth,tileSize, 0);
+            Floor tmpRef = new Floor(firstFloorPane, "Floor 0", floorHeight,floorWidth,tileSize, 0);
             tmpRef.setFloorNum(0);
             floors.add(tmpRef);
             currentFloor = 0;
@@ -75,13 +78,13 @@ public class Building extends MapObject implements Serializable {
     }
 
     @Override
-    public void initialiseView(){
+    public void initialiseView(Pane currentFloorPane){
         if(this.stairs == null){
             System.out.println("No stairs found");
             this.stairs = new HashMap<>();
         }
         this.mainBuilding = this;
-        this.floors.get(this.currentFloor).initialiseView();
+        this.floors.get(this.currentFloor).initialiseView(currentFloorPane);
     }
 
     public void calculateInitialEmployeeCount(){
@@ -95,24 +98,8 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
-            /*
-    public final ArrayList<Floor> getFloors(){return floors;}
-    public final Pane getCurrentFloor(){ return  floors.get( currentFloor).getFloor(); }
-    public final Pane getFloorPane(int index){return floors.get(index).getFloor(); }
-    public final Floor getFloor(int index) {return floors.get(index);}
-    public final Tile[][] getCurrentFloorBlock(){return  floors.get( currentFloor).getCurrentFloorBlock();}
-    public final int getFloorNum() {return currentFloor;}
-    
-    public boolean hasNextFloor(){return ( currentFloor + 1) <  floors.size(); }
-    public boolean hasPrevFloor(){return ( currentFloor - 1) > -1; }
-    
-    public Pane nextFloor() {
-        if(hasNextFloor()){
-             currentFloor += 1;
-        }
-        return  floors.get( currentFloor).getFloor();
 
-             */
+
     @Override
     public String toString(){
         String output = "";
@@ -134,8 +121,6 @@ public class Building extends MapObject implements Serializable {
     public void setSize(int newSize){this.getCurrentFloor().setTileSize(newSize);}
     public HashMap<Integer, Staircase> getStairs(){return this.stairs;}
     public final ArrayList<Floor> getFloors(){return this.floors;}
-    public final Floor getCurrentFloor(){ return  floors.get( currentFloor); }
-    public final int getCurrentFloorIndex() {return this.currentFloor;}
     public int getTotalFloors(){return this.floors.size();}
     public int getInitialEmployeeCount(){return this.initialEmployeeCount; }
     public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
@@ -151,6 +136,25 @@ public class Building extends MapObject implements Serializable {
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
     public double getActorSize(){return 40;}
+    public void setTabPane(TabPane newTabPane){this.paneContainer = newTabPane;}
+
+    public final Floor getCurrentFloor(){
+        String currTabName = this.paneContainer.getSelectionModel().getSelectedItem().getText();
+        for(Floor f: this.floors){
+            if(f.getId().equals(currTabName)){
+                return f;
+            }
+        }
+        System.out.println("CANNOT FIND FLOOR WITH THE NAME: "+currTabName);
+        return null;
+    }
+
+
+    public final int getCurrentFloorIndex() {
+        System.out.println("Calling unsafe method! (getCurrentFloorIndex)");
+        return this.currentFloor;
+    }
+
 
     public Floor increaseFloor() {
         if(hasNextFloor()){currentFloor += 1;}
@@ -170,9 +174,20 @@ public class Building extends MapObject implements Serializable {
 
     }*/
 
-    public final void addFloor() {
-        Floor newFloor = new Floor(this.getHeight(), this.getWidth(), 50, this.floors.size());
+    public final void addFloor(Pane floorPane, String id) {
+        Floor newFloor = new Floor(floorPane, id, this.getHeight(), this.getWidth(), 50, this.floors.size());
         this.floors.add(newFloor);
+    }
+    public final void removeFloor(String id){
+        this.floors.removeIf(n -> (n.getId() == id));
+        String newId;
+        for(int n=0; n<this.floors.size(); n++){
+            newId = ("Floor "+n);
+            this.floors.get(n).setId(newId);
+            this.paneContainer.getTabs().get(n).setText(newId);
+        }
+
+
     }
 
     public static int normaliseXCoord(double x, Building b){

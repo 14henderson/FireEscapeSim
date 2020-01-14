@@ -1,5 +1,7 @@
 package fireescapedemo;
 
+import javafx.scene.layout.Pane;
+
 import java.util.HashMap;
 
 public abstract class MapObject {
@@ -18,7 +20,7 @@ public abstract class MapObject {
     public abstract void updateView();
 
     //Re-instantiates the javafx Node object
-    public abstract void initialiseView();
+    public abstract void initialiseView(Pane floorPane);
 
     public static void enableBuild() {canEdit = true;}
     public static void disableBuild() {canEdit = false;}

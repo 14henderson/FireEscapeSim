@@ -14,11 +14,11 @@
 
 <AnchorPane id="AnchorPane" fx:id="mainPane" prefHeight="750.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLBuildingController">
     <children>
-      <TabPane prefHeight="750.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="floorPaneContainer" prefHeight="750.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Untitled Tab 1">
+          <Tab text="Floor 0">
             <content>
-                <Pane fx:id="mapPane" layoutY="-3.0" prefHeight="727.0" prefWidth="652.0" />
+                <Pane fx:id="firstFloorPane" layoutY="-3.0" prefHeight="727.0" prefWidth="652.0" />
             </content>
           </Tab>
         </tabs>
@@ -41,9 +41,8 @@
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="750.0" prefWidth="221.0">
             <children>
                 <Rectangle fx:id="colourPane" fill="#e1e1e1" height="773.0" layoutX="-14.0" layoutY="-13.0" stroke="#a4a4a4" strokeLineCap="BUTT" width="249.0" />
-                <Rectangle fx:id="toolContainerRect" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="43.0" layoutX="13.0" layoutY="436.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-                <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="108.0" layoutX="13.0" layoutY="319.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-                <Pane fx:id="toolContainer" layoutX="15.0" layoutY="435.0" prefHeight="34.0" prefWidth="200.0">
+                <Rectangle fx:id="toolContainerRect" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="102.0" layoutX="13.0" layoutY="436.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
+                <Pane fx:id="toolContainer" layoutX="15.0" layoutY="435.0" prefHeight="102.0" prefWidth="200.0">
                     <children>
                         <Label layoutX="3.0" layoutY="6.0" text="Test" />
                     </children>
@@ -117,9 +116,12 @@
                       </font>
                   </Button>
               </Pane>
-            <ListView fx:id="buttonList" layoutX="11.0" layoutY="174.0" prefHeight="138.0" prefWidth="200.0" />
+            <ListView fx:id="buttonList" focusTraversable="false" layoutX="11.0" layoutY="174.0" prefHeight="138.0" prefWidth="200.0" />
             <Separator layoutX="15.0" layoutY="137.0" prefWidth="200.0" />
             <Separator layoutX="13.0" layoutY="315.0" prefWidth="200.0" />
+            <Separator layoutX="9.0" layoutY="420.0" prefWidth="200.0" />
+            <Button layoutX="-87.0" layoutY="2.0" mnemonicParsing="false" onAction="#newFloor" text="Add Floor" />
+            <Button layoutX="-171.0" layoutY="2.0" mnemonicParsing="false" onAction="#removeFloor" text="Delete Floor" />
             </children>
         </Pane>
     </children>

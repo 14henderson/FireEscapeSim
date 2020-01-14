@@ -28,7 +28,7 @@ public class Exit extends TileObject implements Serializable {
 
     @Override
     public void flushNodes(){
-        this.parent.mainBuilding.windowContainer.getChildren().removeAll(fxNode);
+        this.parent.getFloor().getPane().getChildren().removeAll(fxNode);
     }
     @Override
     public void destroy(){}
@@ -47,7 +47,7 @@ public class Exit extends TileObject implements Serializable {
         try {
             image = new Image(getClass().getResource("/Assets/estExit.PNG").toURI().toString());
             rec.setFill(new ImagePattern(image));
-            this.parent.mainBuilding.windowContainer.getChildren().add(rec);
+            this.parent.getFloor().getPane().getChildren().add(rec);
         } catch (URISyntaxException ex) {
             System.out.println(ex);
         }

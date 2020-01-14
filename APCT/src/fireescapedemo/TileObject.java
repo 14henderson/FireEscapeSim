@@ -12,7 +12,7 @@ public abstract class TileObject implements Serializable {
     public abstract void setNode(Node n);
     public abstract void destroy();
     public void flushNodes() {
-        this.parent.mainBuilding.windowContainer.getChildren().remove(fxNode);
+        this.parent.getFloor().getPane().getChildren().remove(fxNode);
     }
     public boolean hasNode(){return this.fxNode!=null;}
     public abstract void updateView();

@@ -42,7 +42,7 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     Label timerLabel;
     @FXML
-    Pane mapPane;
+    Pane firstFloorPane;
     @FXML
     Button StartSimButton;
     @FXML
@@ -70,14 +70,14 @@ public class FXMLSimulationController implements Initializable {
         );
         if(mainBuilding == null){
             System.out.println("Building is null. ERROR");
-            mainBuilding = new Building(14,13,50, mapPane);
+            mainBuilding = new Building(14,13,50, firstFloorPane, firstFloorPane, new TabPane());
         }
-        mainBuilding.setWindowContainer(mapPane);
+        mainBuilding.setWindowContainer(firstFloorPane);
         mainBuilding.disableBuild();
         //mainBuilding.enableSim();
 
         floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
-        mainBuilding.initialiseView();
+        mainBuilding.initialiseView(this.firstFloorPane);
         this.PauseSimButton.setDisable(true);
         timeline.setCycleCount(Timeline.INDEFINITE);
         employeesLeft = new Label("Employees Left: " + mainBuilding.getInitialEmployeeCount());
@@ -129,7 +129,7 @@ public class FXMLSimulationController implements Initializable {
                 //quadTree.insertAll(floor.employees);
                 //quadTree.drawLines(mapPane);
                 if (drawLines) {
-                    quadTree.drawLines(mapPane);
+                    quadTree.drawLines(firstFloorPane);
                 }
                 floorNum++;
             }
@@ -256,7 +256,7 @@ public class FXMLSimulationController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.initialiseView();
+            mainBuilding.initialiseView(firstFloorPane);
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
 
@@ -271,7 +271,7 @@ public class FXMLSimulationController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.initialiseView();
+            mainBuilding.initialiseView(firstFloorPane);
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
             //mainBuilding.prevFloor();
@@ -346,7 +346,7 @@ public class FXMLSimulationController implements Initializable {
         PauseSimButton.setDisable(true);
         PauseSimButton.setText("Pause");
         timeline.stop();
-        mainBuilding.initialiseView();
+        mainBuilding.initialiseView(firstFloorPane);
     }
 
     public void returnHome(ActionEvent actionEvent) throws IOException {
@@ -356,7 +356,7 @@ public class FXMLSimulationController implements Initializable {
     }
 
     public void uninitialise(){
-        this.mapPane.getChildren().clear();
+        this.firstFloorPane.getChildren().clear();
         this.mainBuilding = null;
     }
 }

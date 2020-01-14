@@ -69,7 +69,7 @@ public class Staircase extends TileObject implements Serializable {
     }
     @Override
     public void flushNodes(){
-        this.parent.mainBuilding.windowContainer.getChildren().removeAll(this.fxNode, this.fxNode, this.IDText);
+        this.parent.getFloor().getPane().getChildren().removeAll(this.fxNode, this.fxNode, this.IDText);
     }
     @Override
     public void destroy(){
@@ -82,7 +82,7 @@ public class Staircase extends TileObject implements Serializable {
     @Override
     public void updateView(){
         System.out.println(this.toString());
-        if(!parent.mainBuilding.windowContainer.getChildren().contains(this.fxNode)){
+        if(!this.parent.getFloor().getPane().getChildren().contains(this.fxNode)){
             System.out.println("Initialised view");
             this.initialiseView();
         }
@@ -142,7 +142,7 @@ public class Staircase extends TileObject implements Serializable {
         this.IDText.setFill(Color.RED);
         this.IDText.setX(this.parent.getActualX()+this.parent.getSize()/8);
         this.IDText.setY(this.parent.getActualY()+this.parent.getSize()/4);
-        this.parent.mainBuilding.windowContainer.getChildren().addAll(rec, this.IDText);
+        this.parent.getFloor().getPane().getChildren().addAll(rec, this.IDText);
         this.IDText.toFront();
         this.fxNode = rec;
     }

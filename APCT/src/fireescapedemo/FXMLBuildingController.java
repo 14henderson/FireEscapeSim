@@ -10,10 +10,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.ImagePattern;
@@ -50,9 +47,11 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Pane assetPane;
     @FXML
-    private Pane mapPane;
+    private Pane firstFloorPane;
     @FXML
     private Pane stairOptionsPane;
+    @FXML
+    private TabPane floorPaneContainer;
     @FXML
     private ListView buttonList;
     //@FXML
@@ -116,19 +115,35 @@ public class FXMLBuildingController implements Initializable {
             int width = manager.getGlobalBuildingSettings().getWidth();
             int height = manager.getGlobalBuildingSettings().getHeight();
             int size = manager.getGlobalBuildingSettings().getSize();
-            mainBuilding = new Building(width, height, size, mapPane);
+            mainBuilding = new Building(width, height, size, firstFloorPane, firstFloorPane, this.floorPaneContainer);
         }else if(this.manager.getLoadType() == 1){
+
             System.out.println("Loading from Global Building");
             mainBuilding = manager.getGlobalBuilding();
+            mainBuilding.setTabPane(floorPaneContainer);
+            for(Floor f : mainBuilding.getFloors()){
+                if(!f.getId().equals("Floor 0")){
+                    System.out.println("Preparing Floor that is NOT 0");
+                    Tab newPane = new Tab(f.getId());
+                    Pane newFloorPane = new Pane();
+                    newPane.setContent(newFloorPane);
+                    f.setPane(newFloorPane);
+                    this.floorPaneContainer.getTabs().add(newPane);
+                }else{
+                    System.out.println("Preparing floor 0");
+                    f.setPane(firstFloorPane);
+                }
+            }
+
         }else{
             System.out.println("Building is null. Making new one");
-            mainBuilding = new Building(20, 20, 50, mapPane);
+            mainBuilding = new Building(20, 20, 50, firstFloorPane, firstFloorPane, this.floorPaneContainer);
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
-        this.mainBuilding.setWindowContainer(mapPane);
+        this.mainBuilding.setWindowContainer(firstFloorPane);
         //floorLevel.setText("Floor " + floorNum);
-        mainBuilding.initialiseView();
+        mainBuilding.initialiseView(firstFloorPane);
         errorText.setText("");
         this.tileButtons.add(new Pair<>("Default", Tile.BlockType.Default));
         this.tileButtons.add(new Pair<>("Exit", Tile.BlockType.Exit));
@@ -180,7 +195,7 @@ public class FXMLBuildingController implements Initializable {
         } catch (URISyntaxException ex) {}
 
 
-        this.mapPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        this.firstFloorPane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 refreshStairToolContainer();
@@ -199,14 +214,6 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    @FXML
-    private void handleButtonAction(ActionEvent event) {
-    }
-
-    @FXML
-    private void renderBlocks() throws IOException {
-
-    }
 
     public static void refreshLineTiles(){
         for(LineTile[] tiles : lineTiles){
@@ -272,7 +279,7 @@ public class FXMLBuildingController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.initialiseView();
+            mainBuilding.initialiseView(firstFloorPane);
             this.renderLineBlocks();
             this.disableLineBlocks();
             this.renderDragLine();
@@ -287,7 +294,7 @@ public class FXMLBuildingController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.decreaseFloor();
-            mainBuilding.initialiseView();
+            mainBuilding.initialiseView(firstFloorPane);
             this.renderLineBlocks();
             this.disableLineBlocks();
             this.renderDragLine();
@@ -298,24 +305,41 @@ public class FXMLBuildingController implements Initializable {
        // floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
-   // @FXML
-    private void addRoom(){
-        mainBuilding.addFloor();
-        this.nextRoom();
+
+
+    @FXML
+    public void newFloor(){
+        String newFloorID = "Floor "+mainBuilding.getTotalFloors();
+        Tab newPane = new Tab(newFloorID);
+        Pane newFloorPane = new Pane();
+        newPane.setContent(newFloorPane);
+        mainBuilding.addFloor(newFloorPane, newFloorID);
+        this.floorPaneContainer.getTabs().add(newPane);
+    }
+
+    @FXML
+    public void removeFloor(){
+        if(this.floorPaneContainer.getTabs().size() > 1) {
+            this.floorPaneContainer.getTabs().remove(this.floorPaneContainer.getSelectionModel().getSelectedItem());
+            mainBuilding.removeFloor(mainBuilding.getCurrentFloor().getId());
+
+
+        }else{
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Error");
+            alert.setContentText("Cannot Remove Only Remaining Floor");
+            alert.show();
+        }
     }
 
 
-    private void onUpdate(){
-        /*characters.forEach((prefab) -> {
-            //prefab.update();
-        });*/
-    }
+
 
 
     public static Tile.BlockType getActionType(){return actionType;}
 
 
-        @FXML
+    @FXML
     public void normWallButton(){
         this.enableLineBlocks();
         this.buildingWalls = true;
@@ -500,12 +524,6 @@ public class FXMLBuildingController implements Initializable {
         if(currStairOrientation == 360){currStairOrientation = 0;}
         this.stairTileContainer.setRotate(this.stairTileContainer.getRotate()+90);
     }
-    @FXML
-    public void employeeTileButton(){
-        this.actionType = Tile.BlockType.Employee;
-        this.disableLineBlocks();
-        this.stairOptionsPane.setVisible(false);
-    }
 
 
 
@@ -554,7 +572,7 @@ public class FXMLBuildingController implements Initializable {
         this.movingWall.setStroke(Color.GREEN);
         mainBuilding.windowContainer.getChildren().add(this.movingWall);
         this.movingWall.setVisible(false);
-        this.mapPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
+        this.firstFloorPane.setOnMouseMoved(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 //refreshStairToolContainer();
@@ -587,18 +605,10 @@ public class FXMLBuildingController implements Initializable {
         });
     }
 
-    public void initAnimation(){
-        AnimationTimer t = new AnimationTimer(){
-            @Override
-            public void handle(long now) {
-                onUpdate();
-            }
-        };
-        t.start();
-    }
+
 
     public void uninitialise(){
-        this.mapPane.getChildren().clear();
+        this.firstFloorPane.getChildren().clear();
         cancelLineClicked();
         lineCords[0] = 0;lineCords[1] = 0;
         this.actionType = Tile.BlockType.Default;

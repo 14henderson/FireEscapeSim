@@ -28,11 +28,14 @@ public class Floor extends MapObject implements Serializable {
     ArrayList<Exit> exits;
     private ArrayList<int[]> walls;
     private transient ArrayList<Line> wallsNodes;
+    public transient Pane floorPane;
     public int floorNum;
+    private String id;
 
 
 
-    public Floor(int height, int width, int size, int floorIndex){
+
+    public Floor(Pane thisFloorPane, String floorName, int height, int width, int size, int floorIndex){
         this.mapHeight = height;
         this.mapWidth = width;
         this.tileSize = size;
@@ -43,6 +46,8 @@ public class Floor extends MapObject implements Serializable {
         this.walls = new ArrayList<>();
         this.wallsNodes = new ArrayList<>();
         this.exits = new ArrayList<>();
+        this.floorPane = thisFloorPane;
+        this.id = floorName;
 
         this.panXOffset = 0;
         this.panYOffset = 0;
@@ -50,7 +55,7 @@ public class Floor extends MapObject implements Serializable {
         System.out.println("Tile size: "+this.tileSize);
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){
-                this.floorBlocks[i][j] = new Tile(i*this.tileSize,j*this.tileSize, i, j, this.tileSize);
+                this.floorBlocks[i][j] = new Tile(this, i*this.tileSize,j*this.tileSize, i, j, this.tileSize);
                 this.floorBlocks[i][j].setFloorNum(this.floorNum);
         }}
     }
@@ -62,13 +67,16 @@ public class Floor extends MapObject implements Serializable {
     public ArrayList<Employee> getEmployees(){
         return this.employees;
     }
-
+    public Pane getPane(){return this.floorPane;}
+    public void setPane(Pane thisFloorPane){this.floorPane = thisFloorPane;}
+    public String getId(){return this.id;}
+    public void setId(String Id){this.id = Id;}
 
 
 
     @Override
     public void updateView(){
-        if (this.wallsNodes == null) {this.initialiseView();}       //if wall nodes never initialised.
+        if (this.wallsNodes == null) {this.initialiseView(this.floorPane);}       //if wall nodes never initialised.
         if(this.wallsNodes.size() != this.walls.size()){this.initialiseWalls();}    //re-draw walls if required
         for(Tile[] tileRow : this.floorBlocks){                     //update tiles
             for(Tile aTile : tileRow){
@@ -122,7 +130,7 @@ public class Floor extends MapObject implements Serializable {
                 if(this.floorBlocks[i][j].tileObject != null){
                     this.floorBlocks[i][j].updateView();
                 }else {
-                    this.floorBlocks[i][j].initialiseView();
+                    this.floorBlocks[i][j].initialiseView(this.floorPane);
                 }
             }
         }
@@ -165,7 +173,7 @@ public class Floor extends MapObject implements Serializable {
 
 
     @Override
-    public void initialiseView(){
+    public void initialiseView(Pane floorPane){
         //this.panXOffset = 10;
         //this.panYOffset = 10;
         this.wallsNodes = new ArrayList<>();
@@ -178,7 +186,7 @@ public class Floor extends MapObject implements Serializable {
         mainBuilding.windowContainer.setLayoutY(15);
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
-                aTile.initialiseView();
+                aTile.initialiseView(this.floorPane);
                 if(mainBuilding.getStairs() == null && aTile.tileObject instanceof Staircase){  //repopulating stairs hashmap if null
                     this.mainBuilding.getStairs().put(((Staircase) aTile.tileObject).ID, (Staircase)aTile.tileObject);
                 }
