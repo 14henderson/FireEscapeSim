@@ -33,6 +33,7 @@ public class Building extends MapObject implements Serializable {
         if(floors == null){
             throw new RuntimeException();
         }
+        //this.pan(10, 10);
     }
 
     public Building(int floorWidth, int floorHeight, int tileSize, Pane windowContainerParent){

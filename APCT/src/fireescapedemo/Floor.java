@@ -166,6 +166,8 @@ public class Floor extends MapObject implements Serializable {
 
     @Override
     public void initialiseView(){
+        //this.panXOffset = 10;
+        //this.panYOffset = 10;
         this.wallsNodes = new ArrayList<>();
         try{this.exits.clear();}catch(Exception e){}
         try{this.employees.clear();}catch(Exception e){}

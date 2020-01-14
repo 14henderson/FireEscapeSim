@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.scene.paint.ImagePattern;
@@ -22,6 +23,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Pair;
 import sun.security.krb5.internal.crypto.CksumType;
 
 import javax.swing.*;
@@ -52,9 +54,11 @@ public class FXMLBuildingController implements Initializable {
     @FXML
     private Pane stairOptionsPane;
     @FXML
-    private Pane toolContainer;
-    @FXML
-    private Label floorLevel;
+    private ListView buttonList;
+    //@FXML
+    //private Pane toolContainer;
+   // @FXML
+    //private Label floorLevel;
     @FXML
     private Button exitButton;
     @FXML
@@ -94,6 +98,7 @@ public class FXMLBuildingController implements Initializable {
     public static int currStairOrientation = 0;
     public static String currStairDirection = "up";
     public HashMap<String, Integer> stairChoiceBox;
+    public ArrayList<Pair<String, Tile.BlockType>> tileButtons = new ArrayList<>();
     enum wallType{
         Wall,
         Delete
@@ -122,9 +127,45 @@ public class FXMLBuildingController implements Initializable {
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
         this.mainBuilding.setWindowContainer(mapPane);
-        floorLevel.setText("Floor " + floorNum);
+        //floorLevel.setText("Floor " + floorNum);
         mainBuilding.initialiseView();
         errorText.setText("");
+        this.tileButtons.add(new Pair<>("Default", Tile.BlockType.Default));
+        this.tileButtons.add(new Pair<>("Exit", Tile.BlockType.Exit));
+        this.tileButtons.add(new Pair<>("Employee", Tile.BlockType.Employee));
+
+        this.tileButtons.add(new Pair<>("Stair Up", Tile.BlockType.Stairs));
+        this.tileButtons.add(new Pair<>("Stair Down", Tile.BlockType.Stairs));
+        this.tileButtons.add(new Pair<>("Blocked", Tile.BlockType.Blocked));
+
+        Button a;
+        for(Pair<String, Tile.BlockType> buttons : this.tileButtons){
+            a = new Button(buttons.getKey());
+            a.setOnAction(new EventHandler<ActionEvent>() {
+                @Override
+                public void handle(ActionEvent Event){
+                    System.out.println("Here old man");
+                    actionType = buttons.getValue();
+                    disableLineBlocks();
+
+                    switch (buttons.getKey()){
+                        case "Stair Up":
+                            stairsUpButton();
+                            break;
+                        case "Stair Down":
+                            stairsDownButton();
+                            break;
+                        default:
+                            stairOptionsPane.setVisible(false);
+                            break;
+                    }
+                }
+            });
+            this.buttonList.getItems().add(a);
+        }
+
+
+
         this.initLineBlocks();
         this.renderLineBlocks();
         this.disableLineBlocks();
@@ -227,7 +268,7 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    @FXML
+   // @FXML
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
@@ -239,10 +280,10 @@ public class FXMLBuildingController implements Initializable {
         }else{
             System.out.println("No next floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
+        //floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
-    @FXML
+   // @FXML
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.decreaseFloor();
@@ -254,10 +295,10 @@ public class FXMLBuildingController implements Initializable {
         }else{
             System.out.println("No prev floor");
         }
-        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
+       // floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
     }
 
-    @FXML
+   // @FXML
     private void addRoom(){
         mainBuilding.addFloor();
         this.nextRoom();
@@ -336,7 +377,7 @@ public class FXMLBuildingController implements Initializable {
         this.lineCords[0] += 30;
     }
 
-
+/*
     @FXML
     public void blockedTileButton(){
         this.actionType = Tile.BlockType.Blocked;
@@ -358,6 +399,8 @@ public class FXMLBuildingController implements Initializable {
 
 
 
+ */
+
 
 
     public void stairPaneInitialise(){
@@ -370,11 +413,9 @@ public class FXMLBuildingController implements Initializable {
         currStairOrientation = 0;
         currStairDirection = "up";
     }
-    @FXML
+
     public void stairsUpButton(){
-        this.actionType = Tile.BlockType.Stairs;
         this.currStairDirection = "up";
-        this.disableLineBlocks();
         this.stairOptionsPane.setVisible(true);
         Image image;
         try {
@@ -383,11 +424,9 @@ public class FXMLBuildingController implements Initializable {
             stairTileContainer.toFront();
         } catch (URISyntaxException ex) {}
     }
-    @FXML
+
     public void stairsDownButton(){
-        this.actionType = Tile.BlockType.Stairs;
         this.currStairDirection = "down";
-        this.disableLineBlocks();
         this.stairOptionsPane.setVisible(true);
         Image image;
         try {
@@ -399,7 +438,7 @@ public class FXMLBuildingController implements Initializable {
     public void refreshStairToolContainer(){
         System.out.println("In tool container!");
         System.out.println("Stairs: "+mainBuilding.getStairs().size());
-        toolContainer.getChildren().clear();
+       // toolContainer.getChildren().clear();
         String details;
         int recordCount = 1;
         for(int id : mainBuilding.getStairs().keySet()){
@@ -439,8 +478,8 @@ public class FXMLBuildingController implements Initializable {
                 }
             });
             recordCount++;
-            this.toolContainer.getChildren().add(stairRecord);
-            this.toolContainer.getChildren().add(link);
+         //   this.toolContainer.getChildren().add(stairRecord);
+           // this.toolContainer.getChildren().add(link);
         }
     }
 
