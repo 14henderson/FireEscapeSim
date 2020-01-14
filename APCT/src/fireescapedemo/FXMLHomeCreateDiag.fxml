@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="HomeAnchorPane" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLHomeCreateDiagController">
+<AnchorPane fx:id="HomeAnchorPane" prefHeight="300.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLHomeCreateDiagController">
     <children>
       <Label layoutX="32.0" layoutY="23.0" text="Fire Escape Simulation">
          <font>
@@ -17,8 +17,8 @@
          </font>
       </Label>
       <Label layoutX="7.0" layoutY="263.0" text="An application by Niklas Henderson and Liam Oldham" />
-      <Button onAction="#ReturnHome" layoutX="32.0" layoutY="230.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="101.0" text="Go Back" />
-      <Button onAction="#Create" layoutX="168.0" layoutY="230.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="101.0" text="Create" />
+      <Button layoutX="32.0" layoutY="230.0" mnemonicParsing="false" onAction="#ReturnHome" prefHeight="25.0" prefWidth="101.0" text="Go Back" />
+      <Button layoutX="168.0" layoutY="230.0" mnemonicParsing="false" onAction="#Create" prefHeight="25.0" prefWidth="101.0" text="Create" />
       <Group layoutX="32.0" layoutY="168.0">
          <children>
             <Label layoutY="2.0" text="Width:">
@@ -45,9 +45,24 @@
          </font>
       </Text>
       <Text layoutX="50.0" layoutY="94.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Small-Medium House: 20x20" />
-      <Text layoutX="50.0" layoutY="111.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Large House or Flat:  30x30" />
-      <Text layoutX="50.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Commercial Building:  50x50" />
+      <Text layoutX="50.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Large House or Flat:  30x30" />
+      <Text layoutX="50.0" layoutY="139.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Commercial Building:  50x50" />
       <Separator layoutX="36.0" layoutY="80.0" orientation="VERTICAL" prefHeight="55.0" prefWidth="7.0" />
+      <Button graphicTextGap="0.0" onAction="#createSmall" layoutX="217.0" layoutY="80.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="59.0" text="Create Now">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Button>
+      <Button graphicTextGap="0.0" onAction="#createMed" layoutX="217.0" layoutY="102.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="59.0" text="Create Now">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Button>
+      <Button graphicTextGap="0.0" onAction="#createLarge" layoutX="217.0" layoutY="124.0" mnemonicParsing="false" prefHeight="19.0" prefWidth="59.0" text="Create Now">
+         <font>
+            <Font size="9.0" />
+         </font>
+      </Button>
 
     </children>
 </AnchorPane>
