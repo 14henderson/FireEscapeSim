@@ -100,52 +100,27 @@ public class SystemTools {
                 Point2D point;
                 System.out.println("Finished");
                 if (this.openedNodes.contains(goal)) {
-                    int counter = 1;
                     currentNode = goal;
-                    boolean test = true;
-                    if (test) {
-                        Random rand = new Random();
-                        this.range = 1;//Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
-                        double vel = 0;
-                        int skip = 0, skipMax = 1;
-                        //this.nonPolygonalFunnelAlgorithm(currentNode);
 
-                        do {
-                            if (/*currentNode == startNode ||*/ currentNode == endNode) {
-                                skip = skipMax;
-                            }
-                            if (skip == skipMax) {
-                                this.path.add(currentNode);
+                    do {this.path.add(currentNode);currentNode = currentNode.getParent();} while (currentNode != start);
 
-                                //System.out.println("Count " + counter);
-                                //System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                                //currentNode.setType(Tile.BlockType.Path);
-                                counter++;
-                                skip = 0;
-                            }
-                            currentNode = currentNode.getParent();
-                            skip++;
-                        } while (currentNode != start);
-                    }
 
                     Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     this.path = this.refinePath(this.path);
                     //modification for testing purposes
-                    for(int n=this.path.size()-1; n>=0; n--){
-                        Tile t  = this.path.get(n);
+                  //  for(int n=this.path.size()-1; n>=0; n--){
+                     //   Tile t  = this.path.get(n);
                        // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
                      //   Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
                       //  p.getValue().mainBuilding.windowContainer.getChildren().add(c);
                     //    if(n%2 == 0){
                       //      this.velocitys.remove(n);
-                        }
+                      //  }
                  //   }
 
 
-                    Collections.reverse(this.path);
                     //System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     return true;

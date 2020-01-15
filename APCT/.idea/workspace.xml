@@ -1,17 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a0aac5f9-0cca-43cc-a496-57643b3ed283" name="Default Changelist" comment="">
+    <list default="true" id="52836b8f-08b4-4af6-ba4c-645ac778e7b2" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-<<<<<<< HEAD
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeCreateDiag.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeCreateDiag.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeCreateDiagController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLHomeCreateDiagController.java" afterDir="false" />
-=======
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Employee.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/QuadTree.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/QuadTree.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
->>>>>>> DebugOrDie
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -22,20 +14,12 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
-  <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
-  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="1" />
   </component>
-  <component name="ProjectId" id="1VeaRUXDbxEhIv0T1KnwH8ELBnf" />
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="Project" />
-    <property name="project.structure.proportion" value="0.0" />
-    <property name="project.structure.side.proportion" value="0.0" />
-    <property name="restartRequiresConfirmation" value="false" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -74,21 +58,12 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="a0aac5f9-0cca-43cc-a496-57643b3ed283" name="Default Changelist" comment="" />
-      <created>1575238674984</created>
+      <changelist id="52836b8f-08b4-4af6-ba4c-645ac778e7b2" name="Default Changelist" comment="" />
+      <created>1579101347950</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1575238674984</updated>
-      <workItem from="1575238678656" duration="2168000" />
-<<<<<<< HEAD
-=======
-      <workItem from="1578247260272" duration="15662000" />
-      <workItem from="1578440896593" duration="5204000" />
-      <workItem from="1578515465662" duration="4474000" />
-      <workItem from="1578583655685" duration="2710000" />
-      <workItem from="1578699301845" duration="31515000" />
-      <workItem from="1579005348994" duration="2753000" />
->>>>>>> DebugOrDie
+      <updated>1579101347950</updated>
+      <workItem from="1579101375086" duration="616000" />
     </task>
     <servers />
   </component>
@@ -100,9 +75,7 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
