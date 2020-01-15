@@ -26,6 +26,7 @@ public class Building extends MapObject implements Serializable {
     private boolean calledFromSim = false;
     private int width;
     private int height;
+    private int actorSize = 20;
     private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
     public static transient TabPane paneContainer;
@@ -183,10 +184,11 @@ public class Building extends MapObject implements Serializable {
     }
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
-    public double getActorSize(){return 20;}
+    public double getActorSize(){return this.actorSize;}
     public void setTabPane(TabPane newTabPane){this.paneContainer = newTabPane;}
     public void setCalledBySim(boolean b){this.calledFromSim = b;}
     public boolean getCalledBySim(){return this.calledFromSim;}
+    public void setActorSize(int s){this.actorSize = s;}
 
     public final Floor getCurrentFloor(){
         if(this.paneContainer.getTabs().size() == 0){

@@ -40,7 +40,7 @@ public class Actor extends TileObject implements Serializable {
         Circle tmp = (Circle)this.fxNode;
         tmp.setLayoutX(this.parent.getActualX()+(this.parent.getWidth()/2));
         tmp.setLayoutY(this.parent.getActualY()+(this.parent.getHeight()/2));
-        tmp.setRadius(this.parent.getFloor().getBuilding().getActorSize()*this.parent.getFloor().tileSize/50.0);
+        tmp.setRadius((this.parent.getFloor().getBuilding().getActorSize()/2)*this.parent.getFloor().tileSize/50.0);
         System.out.println("Updating view!");
     }
     @Override

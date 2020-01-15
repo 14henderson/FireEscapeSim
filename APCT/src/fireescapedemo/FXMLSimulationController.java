@@ -114,6 +114,7 @@ public class FXMLSimulationController implements Initializable {
 
         mainBuilding.initialiseAll();
         mainBuilding.getCurrentFloor().setTileSize(50);
+        mainBuilding.zoom(0);
         employeesLeft.setText("x" + mainBuilding.getInitialEmployeeCount());
         reportFilename = "[your local directory]";
         reportAlert = new Alert(Alert.AlertType.INFORMATION);
@@ -139,6 +140,7 @@ public class FXMLSimulationController implements Initializable {
             }
         };
         t.start();
+
     }
     double nX, nY, nW, nH;
     int cap = 1000000;

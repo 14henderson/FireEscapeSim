@@ -118,6 +118,7 @@ public class FXMLBuildingController implements Initializable {
         }
         this.actionType = Tile.BlockType.Default;
         this.mainBuilding.enableBuild();
+        mainBuilding.setActorSize(20);
         mainBuilding.initialiseView();
         errorText.setText("");
 
