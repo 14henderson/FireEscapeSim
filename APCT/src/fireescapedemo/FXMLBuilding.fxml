@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -22,29 +21,24 @@
         </TabPane>
 
         <Pane fx:id="stairOptionsPane" layoutX="498.0" layoutY="125.0" prefHeight="120.0" prefWidth="160.0">
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="114.0" layoutX="8.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#e1e1e1" height="114.0" layoutX="8.0" stroke="#b5b5b5" strokeType="INSIDE" width="153.0" />
             <Label layoutX="46.0" layoutY="3.0" text="Stair Options">
                 <font>
                     <Font name="System Bold" size="13.0" />
                 </font>
             </Label>
+
+            <Rectangle fx:id="stairTileContainer" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="85.0" layoutX="43.0" layoutY="19.0" stroke="#aeaeae" strokeType="INSIDE" width="85.0" />
             <Button layoutX="130.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateRight" prefHeight="25.0" prefWidth="27.0" text="⭮" />
             <Button layoutX="13.0" layoutY="42.0" mnemonicParsing="false" onAction="#rotateLeft" text="⭯" />
-         <Rectangle fx:id="stairTileContainer" arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="85.0" layoutX="43.0" layoutY="19.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
         </Pane>
 
 
         <Pane fx:id="assetPane" layoutX="689.0" prefHeight="750.0" prefWidth="221.0">
             <children>
                 <Rectangle fx:id="colourPane" fill="#e1e1e1" height="773.0" layoutX="-14.0" layoutY="-13.0" stroke="#a4a4a4" strokeLineCap="BUTT" width="249.0" />
-                <Rectangle fx:id="toolContainerRect" arcHeight="5.0" arcWidth="5.0" fill="#1f93ff00" height="102.0" layoutX="13.0" layoutY="436.0" stroke="BLACK" strokeType="INSIDE" width="200.0" />
-                <Pane fx:id="toolContainer" layoutX="15.0" layoutY="435.0" prefHeight="102.0" prefWidth="200.0">
-                    <children>
-                        <Label layoutX="3.0" layoutY="6.0" text="Test" />
-                    </children>
-                </Pane>
 
-                <Text fx:id="errorText" fill="RED" layoutX="31.0" layoutY="586.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
+                <Text fx:id="errorText" fill="RED" layoutX="18.0" layoutY="613.0" smooth="false" strokeType="OUTSIDE" strokeWidth="0.0" text="Error: This is a temporary error message" wrappingWidth="190.99999221786857" />
                 <Button fx:id="saveButton" layoutX="41.0" layoutY="669.0" mnemonicParsing="false" onAction="#saveToHome" prefHeight="25.0" prefWidth="133.0" text="Save &amp; return home" />
                 <Button fx:id="saveToSim" layoutX="41.0" layoutY="702.0" mnemonicParsing="false" onAction="#saveToSim" text="Save &amp; run simulation" />
                 <Button fx:id="cancelButton" layoutX="41.0" layoutY="637.0" mnemonicParsing="false" onAction="#cancelToHome" text="Cancel &amp; return home" />
@@ -114,10 +108,16 @@
               </Pane>
             <ListView fx:id="buttonList" focusTraversable="false" layoutX="11.0" layoutY="174.0" prefHeight="138.0" prefWidth="200.0" />
             <Separator layoutX="15.0" layoutY="137.0" prefWidth="200.0" />
-            <Separator layoutX="13.0" layoutY="315.0" prefWidth="200.0" />
+            <Separator layoutX="13.0" layoutY="316.0" prefWidth="200.0" />
             <Separator layoutX="9.0" layoutY="420.0" prefWidth="200.0" />
             <Button layoutX="-87.0" layoutY="2.0" mnemonicParsing="false" onAction="#newFloor" text="Add Floor" />
             <Button layoutX="-171.0" layoutY="2.0" mnemonicParsing="false" onAction="#removeFloor" text="Delete Floor" />
+            <ListView fx:id="stairsListView" layoutX="11.0" layoutY="456.0" prefHeight="105.0" prefWidth="200.0" />
+            <Label layoutX="56.0" layoutY="431.0" text="Join Stairs By ID">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
             </children>
         </Pane>
 

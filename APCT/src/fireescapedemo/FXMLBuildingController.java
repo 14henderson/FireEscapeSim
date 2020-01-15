@@ -46,12 +46,14 @@ public class FXMLBuildingController implements Initializable {
     private AnchorPane mainPane;
     @FXML
     private Pane assetPane;
+    //@FXML
+    //private Pane toolContainer;
     @FXML
     private Pane stairOptionsPane;
     @FXML
     private TabPane floorPaneContainer;
     @FXML
-    private ListView buttonList;
+    private ListView buttonList, stairsListView;
     @FXML
     private Button cancelButton, saveToSim, saveButton;
     @FXML
@@ -140,6 +142,7 @@ public class FXMLBuildingController implements Initializable {
                     actionType = buttons.getValue();
                     unrenderLineBlocks(mainBuilding.getCurrentFloor().getPane());
 
+                    System.out.println("Button: "+buttons.getKey());
                     switch (buttons.getKey()){
                         case "Stair Up":
                             stairsUpButton();
@@ -385,6 +388,7 @@ public class FXMLBuildingController implements Initializable {
             this.stairPreview.setFill(new ImagePattern(image));
             stairTileContainer.toFront();
         } catch (URISyntaxException ex) {}
+        this.stairOptionsPane.toFront();
     }
 
     public void stairsDownButton(){
@@ -396,37 +400,46 @@ public class FXMLBuildingController implements Initializable {
             this.stairPreview.setFill(new ImagePattern(image));
             stairTileContainer.toFront();
         } catch (URISyntaxException ex) {}
+        this.stairOptionsPane.toFront();
     }
+
+
+    //refresh all the stair ID+joinedIDs in the listBox object in asset pane
     public void refreshStairToolContainer(){
         System.out.println("In tool container!");
         System.out.println("Stairs: "+mainBuilding.getStairs().size());
-       // toolContainer.getChildren().clear();
+        stairsListView.getItems().clear();
+
         String details;
-        int recordCount = 1;
         for(int id : mainBuilding.getStairs().keySet()){
             details = "Floor:%d      ID:%d";
             details = String.format(details, mainBuilding.getStairs().get(id).parent.floorNum, id);
             Text stairRecord = new Text(details);
             stairRecord.setX(10);
-            stairRecord.setY(25*recordCount);
+            stairRecord.setY(17);
+
             ChoiceBox link = new ChoiceBox();
             link.setLayoutX(120);
-            link.setLayoutY(25*recordCount-15);
+            link.setLayoutY(0);
             link.setPrefWidth(30);
-            link.setPrefHeight(20);
+
+            Pane tmpP = new Pane();
+            tmpP.setPrefHeight(25);
+            tmpP.setMaxHeight(25);
+
+            tmpP.getChildren().add(stairRecord);
+            tmpP.getChildren().add(link);
+            stairsListView.getItems().add(tmpP);
+
             String choiceBoxID = "Stair_"+id;
             link.setId(choiceBoxID);
             this.stairChoiceBox.put(choiceBoxID, id);
-            if(mainBuilding.getStairs().keySet().size() == 1){
-                link.setDisable(true);
-            }
+            if(mainBuilding.getStairs().keySet().size() == 1){link.setDisable(true);}
+
             //add other stair IDs to linkbox
-            for(int tmpID : mainBuilding.getStairs().keySet()) {
-                if (tmpID != mainBuilding.getStairs().get(id).ID) {      //can't link to self
-                    link.getItems().add(tmpID);
-                } else {}
-            }
+            for(int tmpID : mainBuilding.getStairs().keySet()) {link.getItems().add(tmpID);}
             if(mainBuilding.getStairs().get(id).joinedID != -1){
+                System.out.println("This stair has a joined ID of: "+mainBuilding.getStairs().get(id).joinedID);
                 link.getSelectionModel().select(mainBuilding.getStairs().get(id).joinedID);
             }
             link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
@@ -436,10 +449,18 @@ public class FXMLBuildingController implements Initializable {
                     int selectedOption = (int)link.getItems().get((Integer) number2);   //id of stair to link to
                     String eventChoiceBoxId = link.getId();
                     int stairId = stairChoiceBox.get(eventChoiceBoxId);
-                    mainBuilding.getStairs().get(stairId).joinedID = selectedOption;
+                    if(mainBuilding.getStairs().get(stairId).parent.getFloor() == mainBuilding.getStairs().get(selectedOption).parent.getFloor()) {
+                        raiseError("Cannot join stairs that share the same floor");
+                        refreshStairToolContainer();
+                    }else if(stairId == selectedOption){
+                        raiseError("Stair cannot link with itself.");
+                        refreshStairToolContainer();
+
+                    }else {
+                        mainBuilding.getStairs().get(stairId).joinedID = selectedOption;
+                    }
                 }
             });
-            recordCount++;
         }
     }
     @FXML
@@ -714,4 +735,17 @@ public class FXMLBuildingController implements Initializable {
         }
         //refreshLineTiles();
     }
+
+    public void raiseError(String errormessage){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setContentText(errormessage);
+        alert.show();
+        refreshStairToolContainer();
+    }
+
+
+
+
+
 }
