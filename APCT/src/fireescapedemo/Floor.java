@@ -11,12 +11,15 @@ import javafx.scene.shape.Rectangle;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+
 import fireescapedemo.Tile.BlockType;
 
 
 public class Floor extends MapObject implements Serializable {
     public ArrayList<Employee> employees;
     public Tile[][] floorBlocks;
+    public Building parentBuilding;
     int mapHeight;
     int mapWidth;
     int tileSize;
@@ -35,11 +38,12 @@ public class Floor extends MapObject implements Serializable {
 
 
 
-    public Floor(Pane thisFloorPane, String floorName, int height, int width, int size, int floorIndex){
+    public Floor(Pane thisFloorPane, String floorName, Building b, int height, int width, int size, int floorIndex){
         this.mapHeight = height;
         this.mapWidth = width;
         this.tileSize = size;
         this.floorNum = floorIndex;
+        this.parentBuilding = b;
 
         this.floorBlocks = new Tile[this.mapWidth][this.mapHeight];
         this.employees = new ArrayList<>();
@@ -76,7 +80,7 @@ public class Floor extends MapObject implements Serializable {
 
     @Override
     public void updateView(){
-        if (this.wallsNodes == null) {this.initialiseView(this.floorPane);}       //if wall nodes never initialised.
+        if (this.wallsNodes == null) {this.initialiseView();}       //if wall nodes never initialised.
         if(this.wallsNodes.size() != this.walls.size()){this.initialiseWalls();}    //re-draw walls if required
         for(Tile[] tileRow : this.floorBlocks){                     //update tiles
             for(Tile aTile : tileRow){
@@ -98,7 +102,7 @@ public class Floor extends MapObject implements Serializable {
     }
     public void initialiseWalls(){
         for(Node wall : this.wallsNodes) {
-            this.mainBuilding.windowContainer.getChildren().remove(wall);
+            this.getPane().getChildren().remove(wall);
         }
         this.wallsNodes.clear();
         for(int[] line : this.walls){
@@ -110,19 +114,23 @@ public class Floor extends MapObject implements Serializable {
             this.wallsNodes.add(wallLine);
             wallLine.setStroke(Color.BLUE);
             wallLine.setStrokeWidth(10*this.tileSize/50.0);
-            mainBuilding.windowContainer.getChildren().add(wallLine);
+            this.getPane().getChildren().add(wallLine);
         }
     }
 
 
     public void zoom(int zoomValue){
-        int newZoomValue = this.tileSize + zoomValue;
+        System.out.println("Current tile size: "+this.tileSize);
+        int newZoomValue = mainBuilding.getSize() + zoomValue;
         this.mainBuilding.setSize(newZoomValue);
         this.tileSize = newZoomValue;
 
-        FXMLBuildingController.zoomLineBlocks();
+        if(!this.getBuilding().getCalledBySim()) {
+            FXMLBuildingController.zoomLineBlocks();
+        }
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){         //for every tile
+                System.out.println(Arrays.toString(this.floorBlocks[i][j].dimensions));
                 this.floorBlocks[i][j].setActualCords(
                         (this.floorBlocks[i][j].getGridX()*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
                         (this.floorBlocks[i][j].getGridY()*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
@@ -130,7 +138,7 @@ public class Floor extends MapObject implements Serializable {
                 if(this.floorBlocks[i][j].tileObject != null){
                     this.floorBlocks[i][j].updateView();
                 }else {
-                    this.floorBlocks[i][j].initialiseView(this.floorPane);
+                    this.floorBlocks[i][j].initialiseView();
                 }
             }
         }
@@ -144,6 +152,8 @@ public class Floor extends MapObject implements Serializable {
             this.wallsNodes.get(n).toFront();
         }
     }
+
+
 
     public int getPanXOffset(){return this.panXOffset;}
     public int getPanYOffset(){return this.panYOffset;}
@@ -165,7 +175,9 @@ public class Floor extends MapObject implements Serializable {
             this.wallsNodes.get(n).setStrokeWidth(10 * mainBuilding.getSize() / 50.0);
             this.wallsNodes.get(n).toFront();
         }
-        FXMLBuildingController.panLineBlocks(xinc, yinc);
+        if(!this.getBuilding().getCalledBySim()) {
+            FXMLBuildingController.panLineBlocks(xinc, yinc);
+        }
     }
 
 
@@ -173,20 +185,20 @@ public class Floor extends MapObject implements Serializable {
 
 
     @Override
-    public void initialiseView(Pane floorPane){
+    public void initialiseView(){
         //this.panXOffset = 10;
         //this.panYOffset = 10;
         this.wallsNodes = new ArrayList<>();
         try{this.exits.clear();}catch(Exception e){}
         try{this.employees.clear();}catch(Exception e){}
-        mainBuilding.windowContainer.getChildren().clear();
-        mainBuilding.windowContainer.setPrefHeight(500);
-        mainBuilding.windowContainer.setPrefWidth(500);
-        mainBuilding.windowContainer.setLayoutX(15);
-        mainBuilding.windowContainer.setLayoutY(15);
+        this.getPane().getChildren().clear();
+        this.getPane().setPrefHeight(500);
+        this.getPane().setPrefWidth(500);
+        this.getPane().setLayoutX(15);
+        this.getPane().setLayoutY(15);
         for(Tile[] tileRow : this.floorBlocks){
             for(Tile aTile : tileRow){
-                aTile.initialiseView(this.floorPane);
+                aTile.initialiseView();
                 if(mainBuilding.getStairs() == null && aTile.tileObject instanceof Staircase){  //repopulating stairs hashmap if null
                     this.mainBuilding.getStairs().put(((Staircase) aTile.tileObject).ID, (Staircase)aTile.tileObject);
                 }
@@ -213,6 +225,7 @@ public class Floor extends MapObject implements Serializable {
     public final double getActualY(){return this.floorBlocks[0][0].getActualY();}
     public final double getActualWidth(){return this.floorBlocks.length * this.floorBlocks[0][0].getWidth();}
     public final double getActualHeight(){return this.floorBlocks[0].length * this.floorBlocks[0][0].getHeight();}
+    public final Building getBuilding(){return this.parentBuilding;}
 
 
 
@@ -243,6 +256,7 @@ public class Floor extends MapObject implements Serializable {
     public int getMapWidth(){return this.mapWidth;}
     public int getTileSize(){return this.tileSize;}
     public void setTileSize(int size){this.tileSize = size;}
+
 
 }
 /*

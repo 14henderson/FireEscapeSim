@@ -2,8 +2,11 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.shape.Rectangle?>
@@ -11,40 +14,10 @@
 
 <AnchorPane fx:id="mainPane" prefHeight="550.0" prefWidth="890.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLSimulationController">
     <children>
-      <TabPane fx:id="testTabPane" prefHeight="573.0" prefWidth="897.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
-        <tabs>
-          <Tab text="All Floors">
-            <content>
-                <Pane fx:id="mapPane" prefHeight="465.0" prefWidth="784.0" />
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
-
-
-
-        <Pane fx:id="simControlPane" layoutX="670.0" layoutY="14.0" prefHeight="73.0" prefWidth="200.0">
-               <children>
-                    <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="72.0" stroke="BLACK" strokeType="INSIDE" width="198.0" />
-                    <Button fx:id="StartSimButton" layoutX="8.0" layoutY="39.0" mnemonicParsing="false" onAction="#StartSim" prefHeight="25.0" prefWidth="55.0" text="Start" />
-                    <Button fx:id="PauseSimButton" layoutX="73.0" layoutY="39.0" mnemonicParsing="false" onAction="#PauseSim" prefHeight="25.0" prefWidth="55.0" text="Pause" />
-                    <Button fx:id="ResetSimButton" layoutX="138.0" layoutY="39.0" mnemonicParsing="false" onAction="#ResetSim" prefHeight="25.0" prefWidth="55.0" text="Stop" />
-                    <Label layoutX="34.0" layoutY="8.0" text="Simulation Controls">
-                        <font>
-                            <Font size="15.0" />
-                        </font>
-                    </Label>
-            <Label fx:id="timerLabel" layoutX="78.0" layoutY="73.0" text="0s" textFill="RED">
-               <font>
-                  <Font size="46.0" />
-               </font>
-            </Label>
-               </children>
-              </Pane>
 
       <Pane fx:id="assetPane" layoutX="10.0" layoutY="584.0" prefHeight="167.0" prefWidth="890.0">
          <children>
-            <Rectangle fx:id="colourPane" fill="#c7dcff" height="180.0" layoutX="-24.0" layoutY="2.0" stroke="BLACK" strokeLineCap="BUTT" strokeWidth="3.0" width="937.0" />
+            <Rectangle fx:id="colourPane" fill="#d3d3d3" height="181.0" layoutX="-24.0" layoutY="2.0" stroke="#b2b2b2" strokeLineCap="BUTT" width="917.0" />
             <Label layoutX="37.0" layoutY="14.0" text="Simulation">
                <font>
                   <Font name="System Bold" size="19.0" />
@@ -52,8 +25,97 @@
             </Label>
             <Label fx:id="floorLevel" layoutX="37.0" layoutY="59.0" text="69" />
             <Button fx:id="returnToHome" layoutX="746.0" layoutY="128.0" mnemonicParsing="false" onAction="#returnHome" text="Return to Main Menu" />
+            <Slider fx:id="speedSlider" layoutX="571.0" layoutY="35.0" />
+            <Label layoutX="618.0" layoutY="18.0" text="Speed" />
+            <Label layoutX="573.0" layoutY="49.0" text="x1" />
+            <Label layoutX="689.0" layoutY="48.0" text="x10" />
+            <Label fx:id="currentSpeedLabel" layoutX="612.0" layoutY="50.0" text="Current: x1" />
+            <Separator layoutX="549.0" layoutY="14.0" orientation="VERTICAL" prefHeight="144.0" prefWidth="18.0" />
+            <Separator layoutX="720.0" layoutY="14.0" orientation="VERTICAL" prefHeight="144.0" prefWidth="0.0" />
+                    <Button fx:id="StartSimButton" layoutX="733.0" layoutY="15.0" mnemonicParsing="false" onAction="#StartSim" prefHeight="25.0" prefWidth="44.0" text="Start" />
+                    <Button fx:id="PauseSimButton" disable="true" layoutX="781.0" layoutY="15.0" mnemonicParsing="false" onAction="#PauseSim" prefHeight="25.0" prefWidth="51.0" text="Pause" />
+                    <Button fx:id="ResetSimButton" layoutX="836.0" layoutY="15.0" mnemonicParsing="false" onAction="#ResetSim" prefHeight="25.0" prefWidth="44.0" text="Stop" />
+            <Label fx:id="timerLabel" layoutX="786.0" layoutY="61.0" text="0s" textFill="RED">
+               <font>
+                  <Font size="46.0" />
+               </font>
+            </Label>
+            <ImageView fitHeight="28.0" fitWidth="27.0" layoutX="602.0" layoutY="115.0">
+               <image>
+                  <Image url="@../Assets/testEmployee.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="579.0" layoutY="94.0" text="Souls still in building:" />
+            <Label fx:id="employeesLeft" layoutX="635.0" layoutY="115.0" text="x5">
+               <font>
+                  <Font name="System Bold" size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="764.0" layoutY="55.0" text="Time Elapsed:">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Pane fx:id="zoomAndPanPane" layoutX="453.0" layoutY="2.0" prefHeight="167.0" prefWidth="96.0">
+               <children>
+                  <Label layoutX="28.0" layoutY="94.0" text="Zoom">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="34.0" layoutY="8.0" text="Pan">
+                     <font>
+                        <Font name="System Bold" size="13.0" />
+                     </font>
+                  </Label>
+                  <Button layoutX="19.0" layoutY="116.0" mnemonicParsing="false" onAction="#zoomIn" text="+">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="48.0" layoutY="116.0" mnemonicParsing="false" onAction="#zoomOut" prefHeight="25.0" prefWidth="24.0" text="-">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="35.0" layoutY="32.0" mnemonicParsing="false" onAction="#panUp" prefHeight="20.0" prefWidth="22.0" text="↑">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="5.0" layoutY="47.0" mnemonicParsing="false" onAction="#panLeft" prefHeight="25.0" prefWidth="28.0" text="←">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="59.0" layoutY="47.0" mnemonicParsing="false" onAction="#panRight" prefHeight="25.0" prefWidth="28.0" text="→">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+                  <Button layoutX="35.0" layoutY="60.0" mnemonicParsing="false" onAction="#panDown" prefHeight="20.0" prefWidth="22.0" text="↓">
+                     <font>
+                        <Font name="System Bold" size="12.0" />
+                     </font>
+                  </Button>
+               </children>
+            </Pane>
+            <Separator layoutX="436.0" layoutY="14.0" orientation="VERTICAL" prefHeight="144.0" prefWidth="18.0" />
+            <Button layoutX="233.0" layoutY="47.0" mnemonicParsing="false" onAction="#createReportButton" text="create report" />
+            <ImageView fx:id="scaleImage" layoutX="6.0" layoutY="-44.0" fitWidth="50">
+               <image>
+                  <Image url="@../Assets/scale.fw.png" />
+               </image>
+            </ImageView>
+            <Label layoutX="42.0" layoutY="-34.0" prefHeight="17.0" prefWidth="22.0" text="1m" />
          </children>
       </Pane>
+
+      <TabPane fx:id="floorPaneContainer" layoutY="-4.0" prefHeight="587.0" prefWidth="908.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="168.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-8.0" AnchorPane.topAnchor="-4.0">
+          <tabs>
+
+          </tabs>
+      </TabPane>
 
 
     </children>

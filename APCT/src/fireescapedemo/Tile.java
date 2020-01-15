@@ -52,7 +52,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Exit exit = new Exit(tile);
                 tile.setTileObject(exit);
-                mainBuilding.getFloors().get(index).addExit(exit);
+                tile.getFloor().addExit(exit);
                 this.finalPreparation(tile);
             }
         },
@@ -154,12 +154,11 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 try {
                     image = new Image(getClass().getResource("/Assets/testEmployee.PNG").toURI().toString());
                     c.setFill(new ImagePattern(image));
-                    System.out.println("Complete");
                 } catch (URISyntaxException ex) {
                     System.out.println(ex);
                 }
                 Employee e = new Employee(c,tile);
-                mainBuilding.getCurrentFloor().addEmployee(e);
+                tile.getFloor().addEmployee(e);
                 tile.parentFloor.getPane().getChildren().add(c);
                 tile.setActor(e);
                 tile.setTileObject(e);
@@ -180,7 +179,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             //System.out.println("Tile: "+tile.parentFloor);
             tile.parentFloor.getPane().getChildren().remove(tile.fxRef);
             tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-            if(tile.mainBuilding.getSimState()){
+            System.out.println(tile.mainBuilding);
+            if(tile.getFloor().getBuilding().getSimState()){
                 tile.fxRef.setStroke(Color.TRANSPARENT);
             }else{
                 tile.fxRef.setStroke(Color.BLACK);
@@ -256,7 +256,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         for(i = 0; i < this.walls.length; i++){
             this.walls[i] = true;
         }
-        this.initialiseView(thisFloor.getPane());
+        this.initialiseView();
     }
 
 
@@ -283,7 +283,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public Floor getFloor(){return this.parentFloor;}
 
     @Override
-    public void initialiseView(Pane thisFloorPane){
+    public void initialiseView(){
         try{
             this.parentFloor.getPane().getChildren().remove(this.fxRef);
             this.parentFloor.getPane().getChildren().remove(this.currentActor.fxNode);
@@ -309,7 +309,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     @Override
     public void updateView(){
         if(this.fxRef == null){
-            this.initialiseView(this.parentFloor.getPane());
+            this.initialiseView();
         }
         //this.fxRef.setFill(this.getColor(this.type));
         this.fxRef.setX(this.getActualX());
@@ -415,26 +415,26 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         if(t == this){return true;}
         if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == 1){
             return
-                    (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[2])
-                            || (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[1]);
+                    (this.walls[1] && t.getFloor().getTile(this.getGridX()+1, this.getGridY()).walls[2])
+                            || (this.walls[2] && t.getFloor().getTile(this.getGridX(), this.getGridY()+1).walls[1]);
         }
 
         if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == 1){
             return
-                    (this.walls[2] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()+1).walls[3])
-                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[2]);
+                    (this.walls[2] && t.getFloor().getTile(this.getGridX(), this.getGridY()+1).walls[3])
+                            || (this.walls[3] && t.getFloor().getTile(this.getGridX()-1, this.getGridY()).walls[2]);
         }
 
         if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == -1){
             return
-                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[1])
-                            || (this.walls[1] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()+1, this.getGridY()).walls[0]);
+                    (this.walls[0] && t.getFloor().getTile(this.getGridX(), this.getGridY()-1).walls[1])
+                            || (this.walls[1] && t.getFloor().getTile(this.getGridX()+1, this.getGridY()).walls[0]);
         }
 
         if(t.getGridX()-this.getGridX() == -1 && t.getGridY()-this.getGridY() == -1){
             return
-                    (this.walls[0] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX(), this.getGridY()-1).walls[3])
-                            || (this.walls[3] && this.mainBuilding.getCurrentFloor().getTile(this.getGridX()-1, this.getGridY()).walls[0]);
+                    (this.walls[0] && t.getFloor().getTile(this.getGridX(), this.getGridY()-1).walls[3])
+                            || (this.walls[3] && t.getFloor().getTile(this.getGridX()-1, this.getGridY()).walls[0]);
         }
 
         if(t.getGridX()-this.getGridX() == 1){return this.walls[1];}

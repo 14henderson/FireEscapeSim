@@ -14,16 +14,12 @@
 
 <AnchorPane id="AnchorPane" fx:id="mainPane" prefHeight="750.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fireescapedemo.FXMLBuildingController">
     <children>
-      <TabPane fx:id="floorPaneContainer" prefHeight="750.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
-        <tabs>
-          <Tab text="Floor 0">
-            <content>
-                <Pane fx:id="firstFloorPane" layoutY="-3.0" prefHeight="727.0" prefWidth="652.0" />
-            </content>
-          </Tab>
-        </tabs>
-      </TabPane>
 
+        <TabPane fx:id="floorPaneContainer" prefHeight="750.0" prefWidth="679.0" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+
+            </tabs>
+        </TabPane>
 
         <Pane fx:id="stairOptionsPane" layoutX="498.0" layoutY="125.0" prefHeight="120.0" prefWidth="160.0">
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#c7dcff" height="114.0" layoutX="8.0" stroke="BLACK" strokeType="INSIDE" width="153.0" />
@@ -124,5 +120,8 @@
             <Button layoutX="-171.0" layoutY="2.0" mnemonicParsing="false" onAction="#removeFloor" text="Delete Floor" />
             </children>
         </Pane>
+
+
+
     </children>
 </AnchorPane>

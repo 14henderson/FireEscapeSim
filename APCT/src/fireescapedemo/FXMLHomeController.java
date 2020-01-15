@@ -46,6 +46,7 @@ public class FXMLHomeController implements Initializable{
                 manager.setGlobalBuilding(loadedBuilding);
                 manager.showScene("simulation");
             } catch (IOException | ClassNotFoundException ex) {
+                ex.printStackTrace();
                 System.out.println("Serializable Error thrown: " + ex);
 
             }

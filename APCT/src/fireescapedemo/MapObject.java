@@ -20,7 +20,7 @@ public abstract class MapObject {
     public abstract void updateView();
 
     //Re-instantiates the javafx Node object
-    public abstract void initialiseView(Pane floorPane);
+    public abstract void initialiseView();
 
     public static void enableBuild() {canEdit = true;}
     public static void disableBuild() {canEdit = false;}

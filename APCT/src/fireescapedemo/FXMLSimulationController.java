@@ -1,21 +1,19 @@
 package fireescapedemo;
 
-import javafx.animation.AnimationTimer;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
@@ -28,6 +26,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 
 public class FXMLSimulationController implements Initializable {
@@ -36,7 +35,7 @@ public class FXMLSimulationController implements Initializable {
     @FXML
     Pane assetPane;
     @FXML
-    Pane simControlPane;
+    TabPane floorPaneContainer;
     @FXML
     Label floorLevel;
     @FXML
@@ -49,43 +48,76 @@ public class FXMLSimulationController implements Initializable {
     Button PauseSimButton;
     @FXML
     Button ResetSimButton;
+    @FXML
+    Slider speedSlider;
+    @FXML
+    Label currentSpeedLabel;
+    @FXML
+    ImageView scaleImage;
     QuadTree quadTree;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
     Timeline timeline;
-   // Label timer;
+    static int speedScaler = 1;
+    PDFCreator.simResults provisionalResults;
+    @FXML
     Label employeesLeft;
     int second = 0;
     boolean paused = false;
+    public final int minZoom = 10;
+    public final int maxZoom = 100;
+    private String reportFilename;
+    private Alert reportAlert;
 
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        ResetSimButton.setText("Reset");
-        PauseSimButton.setDisable(true);
         this.manager = new SceneManager();
         this.mainBuilding = manager.getGlobalBuilding();
-        timeline = new Timeline(
-                new KeyFrame(Duration.seconds(1), e-> addSecond())
-        );
+        mainBuilding.setTabPane(floorPaneContainer);
+        mainBuilding.setCalledBySim(true);
+        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e-> addSecond()));
+        //if issue with loading
         if(mainBuilding == null){
             System.out.println("Building is null. ERROR");
-            mainBuilding = new Building(14,13,50, firstFloorPane, firstFloorPane, new TabPane());
+            mainBuilding = new Building(14,13, new TabPane());
         }
-        mainBuilding.setWindowContainer(firstFloorPane);
-        mainBuilding.disableBuild();
-        //mainBuilding.enableSim();
 
-        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
-        mainBuilding.initialiseView(this.firstFloorPane);
-        this.PauseSimButton.setDisable(true);
+        for(Floor f : mainBuilding.getFloors()){
+            Tab newPane = new Tab(f.getId());
+            Pane newFloorPane = new Pane();
+            newPane.setContent(newFloorPane);
+            f.setPane(newFloorPane);
+            this.floorPaneContainer.getTabs().add(newPane);
+        }
+
+        floorPaneContainer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+            @Override
+            public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
+                //mainBuilding.getCurrentFloor().initialiseView();
+            }
+        });
+        speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                speedScaler = (int)((newValue.doubleValue()-5)/10.0)+1;
+                currentSpeedLabel.setText("Current: x"+speedScaler);
+            }
+        });
+
+        mainBuilding.initialiseAll();
+        mainBuilding.getCurrentFloor().setTileSize(50);
+        employeesLeft.setText("x" + mainBuilding.getInitialEmployeeCount());
+        reportFilename = "[your local directory]";
+        reportAlert = new Alert(Alert.AlertType.INFORMATION);
+        reportAlert.setTitle("Simulation Complete");
+        reportAlert.setContentText("Simulation has been completed. Report has been generated and can be found at: "+reportFilename);
+        mainBuilding.calculateInitialEmployeeCount();
+        provisionalResults = new PDFCreator.simResults(mainBuilding.getInitialEmployeeCount(), -1, "0s");
+
+        mainBuilding.disableBuild();
         timeline.setCycleCount(Timeline.INDEFINITE);
-        employeesLeft = new Label("Employees Left: " + mainBuilding.getInitialEmployeeCount());
-        employeesLeft.setLayoutX(50);
-        employeesLeft.setLayoutY(100);
-        assetPane.getChildren().add(employeesLeft);
         initAnimation();
-        simControlPane.toFront();
     }
 
     void addSecond(){second++; timerLabel.setText(Integer.toString(second) + "s");}
@@ -108,6 +140,18 @@ public class FXMLSimulationController implements Initializable {
     private void onUpdate() {
         int floorNum = 0;
         if(!paused){
+            if(employeesLeft.getText().equals("x0") && started == true){
+                provisionalResults.setSoulsEnd(mainBuilding.getInitialEmployeeCount());
+                provisionalResults.setTimeTaken(timerLabel.getText());
+                if(!reportAlert.isShowing()){
+                    reportAlert.show();
+                    PDFCreator.createReport(this.provisionalResults);
+                }
+                this.started = false;
+                this.ResetSim();
+            }
+
+
             for(Floor floor : mainBuilding.getFloors()) {
                 for (Employee e : floor.employees) {
                     e.update(floor);
@@ -134,7 +178,7 @@ public class FXMLSimulationController implements Initializable {
                 floorNum++;
             }
             mainBuilding.calculateInitialEmployeeCount();
-            employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+            employeesLeft.setText("x" + mainBuilding.getInitialEmployeeCount());
 
             if (mainBuilding.getInitialEmployeeCount() <= 0) {
                 timeline.stop();
@@ -256,7 +300,7 @@ public class FXMLSimulationController implements Initializable {
     private void nextRoom(){
         if(mainBuilding.hasNextFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.initialiseView(firstFloorPane);
+            mainBuilding.initialiseView();
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
 
@@ -271,7 +315,7 @@ public class FXMLSimulationController implements Initializable {
     private void prevRoom(){
         if(mainBuilding.hasPrevFloor()){
             mainBuilding.increaseFloor();
-            mainBuilding.initialiseView(firstFloorPane);
+            mainBuilding.initialiseView();
             //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
             //System.out.println("Wow");
             //mainBuilding.prevFloor();
@@ -338,15 +382,15 @@ public class FXMLSimulationController implements Initializable {
                 employee.toggleExited();
             }
         }
+        timerLabel.setText("0s");
         mainBuilding.calculateInitialEmployeeCount();
-        employeesLeft.setText("Employees Left: " + mainBuilding.getInitialEmployeeCount());
+        employeesLeft.setText("x" + mainBuilding.getInitialEmployeeCount());
         this.StartSimButton.setDisable(false);
         paused = false;
         started = false;
         PauseSimButton.setDisable(true);
-        PauseSimButton.setText("Pause");
         timeline.stop();
-        mainBuilding.initialiseView(firstFloorPane);
+        mainBuilding.initialiseAll();
     }
 
     public void returnHome(ActionEvent actionEvent) throws IOException {
@@ -359,4 +403,50 @@ public class FXMLSimulationController implements Initializable {
         this.firstFloorPane.getChildren().clear();
         this.mainBuilding = null;
     }
+
+
+    @FXML
+    public void zoomIn(){
+        if(this.mainBuilding.getSize()+2 > this.minZoom && this.mainBuilding.getSize()+2 < this.maxZoom) {
+            mainBuilding.zoom(2);
+            this.mainBuilding.initialiseView();
+            this.scaleImage.setFitWidth(this.mainBuilding.getSize());
+        }
+    }
+    @FXML
+    public void zoomOut(){
+        if(this.mainBuilding.getSize()-2 > this.minZoom && this.mainBuilding.getSize()-2 < this.maxZoom) {
+            mainBuilding.zoom(-2);
+            this.mainBuilding.initialiseView();
+            this.scaleImage.setFitWidth(this.mainBuilding.getSize());
+        }
+    }
+    @FXML
+    public void panUp(){
+        mainBuilding.pan(0, 30);
+    }
+    @FXML
+    public void panDown() {
+        mainBuilding.pan(0, -30);
+    }
+    @FXML
+    public void panRight(){
+        mainBuilding.pan(-30, 0);
+    }
+    @FXML
+    public void panLeft(){
+        mainBuilding.pan(30, 0);
+    }
+
+    @FXML
+    public void createReportButton(){
+        PDFCreator.createReport(new PDFCreator.simResults(0, 0, "0"));
+    }
+
+
+
+
 }
+
+
+

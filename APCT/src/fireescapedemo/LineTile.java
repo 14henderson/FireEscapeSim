@@ -14,21 +14,23 @@ public class LineTile{
     private int size =  2;
     private Building mainBuilding;
     private Circle lineTileCircle;
+    private Pane currentPane;
 
-    public LineTile(int XSetter, int YSetter, int xGrid, int yGrid, Building mainBuilding){
+    public LineTile(int XSetter, int YSetter, int xGrid, int yGrid, Building mainBuilding, Pane currPane){
         this.actualCords[0] = XSetter;
         this.actualCords[1] = YSetter;
         this.gridCords[0] = xGrid;
         this.gridCords[1] = yGrid;
         this.mainBuilding = mainBuilding;
+        this.currentPane = currPane;
     //    System.out.println(this.getX()+", "+this.getY()+", "+mainBuilding.getSize());
     }
     public void bringToFront(){
         this.lineTileCircle.toFront();
     }
-    public void render(){
+    public void render(Pane p){
         try{
-            this.mainBuilding.windowContainer.getChildren().remove(this.lineTileCircle);
+            p.getChildren().remove(this.lineTileCircle);
         } catch(Exception e){}
         this.lineTileCircle = new Circle(this.size);
         this.refreshLocations();
@@ -39,7 +41,7 @@ public class LineTile{
         this.lineTileCircle.setOpacity(1);
         this.lineTileCircle.setStroke(Color.BLACK);
         this.lineTileCircle.setStrokeWidth(4);
-        this.mainBuilding.windowContainer.getChildren().add(this.lineTileCircle);
+        p.getChildren().add(this.lineTileCircle);
         this.lineTileCircle.toFront();
     }
 
@@ -58,6 +60,8 @@ public class LineTile{
     public int getSize(){
         return this.size;
     }
+    public void setCurrPane(Pane p){this.currentPane = p;}
+
 
     public Circle getLineTileRect(){return this.lineTileCircle;}
 
