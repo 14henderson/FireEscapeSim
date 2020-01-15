@@ -102,33 +102,12 @@ public class SystemTools {
                 if (this.openedNodes.contains(goal)) {
                     int counter = 1;
                     currentNode = goal;
-                    boolean test = true;
-                    if (test) {
-                        Random rand = new Random();
-                        this.range = 1;//Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
-                        double vel = 0;
-                        int skip = 0, skipMax = 1;
-                        //this.nonPolygonalFunnelAlgorithm(currentNode);
+                    do {
+                        this.path.add(currentNode);
+                        currentNode = currentNode.getParent();
+                    } while (currentNode != start);
 
-                        do {
-                            if (/*currentNode == startNode ||*/ currentNode == endNode) {
-                                skip = skipMax;
-                            }
-                            if (skip == skipMax) {
-                                this.path.add(currentNode);
-
-                                //System.out.println("Count " + counter);
-                                //System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                                //currentNode.setType(Tile.BlockType.Path);
-                                counter++;
-                                skip = 0;
-                            }
-                            currentNode = currentNode.getParent();
-                            skip++;
-                        } while (currentNode != start);
-                    }
-
+                    this.path.addAll(this.openedNodes);
                     Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
@@ -145,7 +124,7 @@ public class SystemTools {
                  //   }
 
 
-                    Collections.reverse(this.path);
+                    //Collections.reverse(this.path);
                     //System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     return true;
