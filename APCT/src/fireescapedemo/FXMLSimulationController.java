@@ -54,6 +54,10 @@ public class FXMLSimulationController implements Initializable {
     Label currentSpeedLabel;
     @FXML
     ImageView scaleImage;
+    @FXML
+    Button zoomInButton, zoomOutButton;
+    @FXML
+    Button panUpButton, panLeftButton, panRightButton, panDownButton;
     QuadTree quadTree;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
@@ -299,48 +303,20 @@ public class FXMLSimulationController implements Initializable {
         return b;
     }
 
-    @FXML
-    private void nextRoom(){
-        if(mainBuilding.hasNextFloor()){
-            mainBuilding.increaseFloor();
-            mainBuilding.initialiseView();
-            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            //System.out.println("Wow");
 
-            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-        }else{
-            System.out.println("No next floor");
-        }
-        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
-    }
-
-    @FXML
-    private void prevRoom(){
-        if(mainBuilding.hasPrevFloor()){
-            mainBuilding.increaseFloor();
-            mainBuilding.initialiseView();
-            //mainPane.getChildren().remove(mainPane.getChildren().size()-1);
-            //System.out.println("Wow");
-            //mainBuilding.prevFloor();
-            //mainPane.getChildren().add(mainBuilding.getCurrentFloor());
-        }else{
-            System.out.println("No prev floor");
-        }
-        floorLevel.setText("Floor " + mainBuilding.getCurrentFloorIndex());
-    }
 
 
     public void StartSim() {
         this.PauseSimButton.setDisable(false);
-/*
-        System.out.println("in alarm handler");
-        timerLabel.setText(0 + "s");
-        for(Floor floor : mainBuilding.getFloors()){
-            for(Employee employee : floor.employees){
-                employee.setCurrentState(Employee.State.FindRoute);
-            }
-        }
-*/
+        this.zoomInButton.setDisable(true);
+        this.zoomOutButton.setDisable(true);
+        this.panDownButton.setDisable(true);
+        this.panLeftButton.setDisable(true);
+        this.panRightButton.setDisable(true);
+        this.panUpButton.setDisable(true);
+
+
+
         timeline.play();
         started= true;
         PauseSimButton.setText("Pause");
@@ -365,16 +341,19 @@ public class FXMLSimulationController implements Initializable {
         this.timeline.pause();
     }
 
-    public void StopSim(ActionEvent actionEvent) {
-        this.PauseSimButton.setDisable(false);
-        this.StartSimButton.setDisable(false);
-        this.paused = false;
-        timeline.stop();
-    }
 
     public void ResetSim() {
         second = 0;
         this.timeline.stop();
+        this.zoomInButton.setDisable(false);
+        this.zoomOutButton.setDisable(false);
+        this.panDownButton.setDisable(false);
+        this.panLeftButton.setDisable(false);
+        this.panRightButton.setDisable(false);
+        this.panUpButton.setDisable(false);
+
+
+
        // timer.setTextFill(Color.BLACK);
         for(Floor floor : mainBuilding.getFloors()){
             for(Employee employee : floor.employees){
@@ -395,6 +374,8 @@ public class FXMLSimulationController implements Initializable {
         timeline.stop();
         mainBuilding.initialiseAll();
     }
+
+
 
     public void returnHome(ActionEvent actionEvent) throws IOException {
         //this.manager.setGlobalBuilding(null);

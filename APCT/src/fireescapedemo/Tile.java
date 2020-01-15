@@ -260,6 +260,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     }
 
 
+
     public BlockType getType(){return this.type;}
     public double[] getActualCords(){return this.actualCords;}
     public int[] getGridCords(){return this.gridCords;}
@@ -271,6 +272,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.dimensions[0] = width;
         this.dimensions[1] = height;
     }
+
     public double getActualX(){return this.actualCords[0];}
     public double getActualY(){return this.actualCords[1];}
     public int getGridX(){return this.gridCords[0];}
