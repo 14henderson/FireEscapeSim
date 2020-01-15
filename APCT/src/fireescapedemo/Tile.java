@@ -134,6 +134,20 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             }
         },
 
+        Fire {
+            @Override
+            public void initialiseView(int index, Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
+                System.out.println("before x: " + (int)tile.getActualX() + ", y: " + (int)tile.getActualY());
+                Fire fire = new Fire((int)tile.getActualX(), (int)(tile.getActualY() - tile.getSize()/2),tile);
+                System.out.println("before x: " + fire.fxNode.getLayoutX() + ", y: " + (int)fire.fxNode.getLayoutY());
+
+                mainBuilding.windowContainer.getChildren().add(fire.fxNode);
+                tile.setTileObject(fire);
+                this.finalPreparation(tile);
+            }
+        },
         Employee {
             @Override
             public void initialiseView(int index,Tile tile, boolean isPLacing) {

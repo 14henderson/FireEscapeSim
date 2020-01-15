@@ -33,7 +33,7 @@ public class Particle extends Actor{
             p = new ImageView(image);
             p.setEffect(c);
             rec.setFill(new ImagePattern(p.getImage()));
-            System.out.println("Complete");
+            //System.out.println("Complete");
         } catch (URISyntaxException ex) {
             System.out.println(ex);
         }
@@ -62,7 +62,6 @@ public class Particle extends Actor{
 
     public void reset(int y){
         Random rand = new Random();
-        this.y = y;
         this.fxNode.setLayoutY(this.y);
         this.fxNode.setOpacity(1);
         this.velocity = this.randomVel;

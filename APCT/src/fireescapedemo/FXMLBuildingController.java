@@ -469,6 +469,12 @@ public class FXMLBuildingController implements Initializable {
     }
 
 
+    @FXML
+    public void fireTileButton(){
+        this.actionType = Tile.BlockType.Fire;
+        this.disableLineBlocks();
+        this.stairOptionsPane.setVisible(false);
+    }
 
 
 
