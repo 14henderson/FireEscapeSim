@@ -130,7 +130,7 @@ public class Floor extends MapObject implements Serializable {
         }
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){         //for every tile
-                System.out.println(Arrays.toString(this.floorBlocks[i][j].dimensions));
+                //System.out.println(Arrays.toString(this.floorBlocks[i][j].dimensions));
                 this.floorBlocks[i][j].setActualCords(
                         (this.floorBlocks[i][j].getGridX()*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
                         (this.floorBlocks[i][j].getGridY()*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
@@ -216,7 +216,14 @@ public class Floor extends MapObject implements Serializable {
         return this.exits.isEmpty() ? null : this.exits.get(0).parent;
     }
 
-    public Tile getTile(int x, int y){return this.floorBlocks[x][y];}
+    public Tile getTile(int x, int y){
+        if(x >= this.getBuilding().getWidth() || y >= this.getBuilding().getHeight()
+        || x < 0 || y < 0){
+            return new Tile();
+        }else {
+            return this.floorBlocks[x][y];
+        }
+    }
     public void addWall(int[] cords){this.walls.add(cords);}
     public ArrayList<int[]> getWalls(){return this.walls;}
     public final Tile[][] getCurrentFloorBlock(){return  floorBlocks;}

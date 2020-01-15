@@ -29,10 +29,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import static javax.swing.text.html.HTML.Tag.HEAD;
 
@@ -75,7 +72,7 @@ public class FXMLBuildingController implements Initializable {
     private static Line movingWall;
     public final int minZoom = 10;
     public final int maxZoom = 100;
-    public boolean buildingWalls;
+    public static boolean buildingWalls;
     public wallType currentWall;
     public Rectangle stairPreview;
     public static int currStairOrientation = 0;
@@ -142,7 +139,7 @@ public class FXMLBuildingController implements Initializable {
                     actionType = buttons.getValue();
                     unrenderLineBlocks(mainBuilding.getCurrentFloor().getPane());
 
-                    System.out.println("Button: "+buttons.getKey());
+                   // System.out.println("Button: "+buttons.getKey());
                     switch (buttons.getKey()){
                         case "Stair Up":
                             stairsUpButton();
@@ -182,7 +179,7 @@ public class FXMLBuildingController implements Initializable {
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        System.out.println("Current Floor: "+mainBuilding.getCurrentFloor().getId());
+                        //System.out.println("Current Floor: "+mainBuilding.getCurrentFloor().getId());
                         try{unrenderLineBlocks(mainBuilding.getFloor(currentFloorId).getPane());
                         }catch(NullPointerException e){}
 
@@ -197,6 +194,18 @@ public class FXMLBuildingController implements Initializable {
                     }
                 }
         );
+
+        for(Staircase s : this.mainBuilding.getStairs().values()){
+            System.out.println("Staircase found! Details: ID:"+s.ID+" JoinedID:"+s.joinedID);
+
+        }
+
+
+
+
+
+
+
     }
 
 
@@ -286,15 +295,23 @@ public class FXMLBuildingController implements Initializable {
         if(this.floorPaneContainer.getTabs().size() > 1) {
             Pane paneToDelete = (Pane) this.floorPaneContainer.getSelectionModel().getSelectedItem().getContent();
             paneToDelete.getChildren().removeAll();
+
+            //mainBuilding.getStairs().values().removeIf(n -> (n.parent.getFloor() == mainBuilding.getCurrentFloor()));
+            for(int n=mainBuilding.getStairs().size()-1; n>=0; n--){
+                if(mainBuilding.getStairs().get(n).parent.getFloor() == mainBuilding.getCurrentFloor()){
+                    mainBuilding.getStairs().remove(n);
+                }
+            }
+
             mainBuilding.removeFloor(mainBuilding.getCurrentFloor().getId());
             this.floorPaneContainer.getTabs().remove(this.floorPaneContainer.getSelectionModel().getSelectedItem());
             mainBuilding.refreshFloorLabels();
+            refreshStairToolContainer();
             this.currentFloorId = this.mainBuilding.getCurrentFloor().getId();
+
+
         }else{
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setContentText("Cannot Remove Only Remaining Floor");
-            alert.show();
+            raiseError("Cannot Remove Only Remaining Floor");
         }
     }
 
@@ -413,7 +430,7 @@ public class FXMLBuildingController implements Initializable {
         String details;
         for(int id : mainBuilding.getStairs().keySet()){
             details = "Floor:%d      ID:%d";
-            details = String.format(details, mainBuilding.getStairs().get(id).parent.floorNum, id);
+            details = String.format(details, mainBuilding.getStairs().get(id).parent.getFloorNum(), id);
             Text stairRecord = new Text(details);
             stairRecord.setX(10);
             stairRecord.setY(17);
@@ -437,16 +454,18 @@ public class FXMLBuildingController implements Initializable {
             if(mainBuilding.getStairs().keySet().size() == 1){link.setDisable(true);}
 
             //add other stair IDs to linkbox
-            for(int tmpID : mainBuilding.getStairs().keySet()) {link.getItems().add(tmpID);}
+            for(int tmpID : mainBuilding.getStairs().keySet()) {link.getItems().add(Integer.toString(tmpID));}
             if(mainBuilding.getStairs().get(id).joinedID != -1){
-                System.out.println("This stair has a joined ID of: "+mainBuilding.getStairs().get(id).joinedID);
-                link.getSelectionModel().select(mainBuilding.getStairs().get(id).joinedID);
+                if(!mainBuilding.getStairs().containsKey(mainBuilding.getStairs().get(id).joinedID)){
+                    mainBuilding.getStairs().get(id).joinedID = -1;
+                }
+                link.getSelectionModel().select(Integer.toString(mainBuilding.getStairs().get(id).joinedID));
             }
             link.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
                 //if the selection of the selectBox changes.
                 @Override
                 public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
-                    int selectedOption = (int)link.getItems().get((Integer) number2);   //id of stair to link to
+                    int selectedOption = Integer.parseInt((String) link.getItems().get((Integer) number2));   //id of stair to link to
                     String eventChoiceBoxId = link.getId();
                     int stairId = stairChoiceBox.get(eventChoiceBoxId);
                     if(mainBuilding.getStairs().get(stairId).parent.getFloor() == mainBuilding.getStairs().get(selectedOption).parent.getFloor()) {
@@ -455,7 +474,6 @@ public class FXMLBuildingController implements Initializable {
                     }else if(stairId == selectedOption){
                         raiseError("Stair cannot link with itself.");
                         refreshStairToolContainer();
-
                     }else {
                         mainBuilding.getStairs().get(stairId).joinedID = selectedOption;
                     }
@@ -616,15 +634,26 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    public static int convertToGridXCord(double n){return (int)(n-mainBuilding.getXPanOffset())/mainBuilding.getSize();}
-    public static int convertToGridYCord(double n){return (int)(n-mainBuilding.getYPanOffset())/mainBuilding.getSize();}
+    public static int convertToGridXCord(double n){
+        return (int)(n-mainBuilding.getXPanOffset())/mainBuilding.getSize();
+    }
+    public static int convertToGridYCord(double n){
+        return (int)(n-mainBuilding.getYPanOffset())/mainBuilding.getSize();
+    }
     public static double convertToActualXCord(int n){return (double)n*(mainBuilding.getSize())+mainBuilding.getXPanOffset();}
     public static double convertToActualYCord(int n){return (double)n*(mainBuilding.getSize())+mainBuilding.getYPanOffset();}
 
 
 
 
-
+    public boolean checkLimits(int[] gridCoords){
+        System.out.println(Arrays.toString(gridCoords));
+        if(gridCoords[0] > this.mainBuilding.getWidth() || gridCoords[0] < 0){return false;}
+        if(gridCoords[1] > this.mainBuilding.getHeight()|| gridCoords[1] < 0){return false;}
+        if(gridCoords[2] > this.mainBuilding.getWidth()|| gridCoords[2] < 0){return false;}
+        if(gridCoords[3] > this.mainBuilding.getHeight() || gridCoords[3] < 0){return false;}
+        return true;
+    }
 
 
     public void setLineClicked(MouseEvent event){
@@ -634,7 +663,6 @@ public class FXMLBuildingController implements Initializable {
             double x1 = event.getX(),y1 = event.getY(), x2 = lineCords[0], y2 = lineCords[1];
             double [] cords = {x1,y1,x2,y2};
             cords = normaliseCords(cords);
-           // System.out.println(cords[0]+" "+cords[1]+" "+cords[2]+" "+cords[3]);
             if(cords[0] == cords[2] && cords[1] == cords[3]){
                 lineClicked = false;
             }
@@ -661,6 +689,12 @@ public class FXMLBuildingController implements Initializable {
                     lGridCords[1] = convertToGridYCord(cords[1]);
                     lGridCords[2] = Math.min(gridCord1, gridCord2)+n+1;
                     lGridCords[3] = convertToGridYCord(cords[1]);
+
+                    if(checkLimits(lGridCords) == false){
+                        System.out.println("OUT OF BOUNDS");
+                        lineClicked = false;
+                        return;
+                    }
 
                     if(this.currentWall == wallType.Wall) {
                         l = new Line(lActualCords[0], lActualCords[1], lActualCords[2], lActualCords[3]);
@@ -702,6 +736,13 @@ public class FXMLBuildingController implements Initializable {
                     lGridCords[2] = convertToGridXCord(cords[0]);
                     lGridCords[3] = Math.min(gridCord1, gridCord2)+n+1;
 
+                    if(checkLimits(lGridCords) == false){
+                        System.out.println("OUT OF BOUNDS");
+                        lineClicked = false;
+                        return;
+                    }
+
+
                     if(this.currentWall == wallType.Wall) {
                         l = new Line(lActualCords[0], lActualCords[1], lActualCords[2], lActualCords[3]);
                         l.setStroke(Color.BLUE);
@@ -729,7 +770,8 @@ public class FXMLBuildingController implements Initializable {
         }else{
             lineClicked = true;
             lineCords[0] = event.getX();
-            lineCords[1] = event.getY();
+            lineCords[1] = (event.getY()+event.getY()+event.getY())/3.0;
+            System.out.println("Clicked X: "+lineCords[0]+" Y: "+lineCords[1]);
             mainBuilding.disableBuild();
             this.renderDragLine();
         }

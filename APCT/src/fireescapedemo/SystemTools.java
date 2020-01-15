@@ -130,11 +130,26 @@ public class SystemTools {
         }
 
         private boolean checkRoute(Tile start, Tile end){
+            Circle a = new Circle(end.getActualX(), end.getActualY(), 5, Color.GREEN);
+            start.getFloor().getPane().getChildren().add(a);
+
+
+            Building mainBuildingRef = start.getFloor().getBuilding();
+            Floor floorRef = start.getFloor();
             int gridWidth = Math.abs(start.getGridX()-end.getGridX())+1;    //grid width of path boundary
             int gridHeight = Math.abs(start.getGridY()-end.getGridY())+1;   //grid height of path boundary
 
-            double actualWidth = end.getActualX()-start.getActualX();       //actual width of path boundary
-            double actualHeight = end.getActualY()-start.getActualY();      //actual height of path boundary
+            double startX = (start.getActualX()-mainBuildingRef.getXPanOffset())/(floorRef.tileSize/50.0);
+            double startY = (start.getActualY()-mainBuildingRef.getYPanOffset())/(floorRef.tileSize/50.0);
+            double endX = (end.getActualX()-mainBuildingRef.getXPanOffset())/(floorRef.tileSize/50.0);
+            double endY = (end.getActualY()-mainBuildingRef.getYPanOffset())/(floorRef.tileSize/50.0);
+
+            System.out.println("Start X: "+startX+" Y: "+startY);
+            System.out.println("End X: "+endX+" Y: "+endY);
+
+
+            double actualWidth = endX-startX;       //actual width of path boundary
+            double actualHeight = endY-startY;      //actual height of path boundary
             int checkCount = (gridHeight*gridWidth)-1;                      //how many times is the path going to be cross-checked with access points.
 
             double gradient = actualHeight/actualWidth;                     //gradient of path
@@ -149,8 +164,8 @@ public class SystemTools {
             int[] gridCheckingCoordinate = new int[2];                      //
             ArrayList<Tile> tilesInPath = new ArrayList<>();                //A list of tiles that the path crosses over
 
-            currentCheckingCoordinate[0] = start.getActualX()+(start.getWidth()/2);
-            currentCheckingCoordinate[1] = start.getActualY()+(start.getHeight()/2);
+            currentCheckingCoordinate[0] = startX+(floorRef.tileSize/2);
+            currentCheckingCoordinate[1] = startY+(floorRef.tileSize/2);
 
         //    System.out.println("inverse gradient: "+inverseGradient);
        //     System.out.println("Origin point coords: "+currentCheckingCoordinate[0]+", "+currentCheckingCoordinate[1]);
@@ -158,26 +173,26 @@ public class SystemTools {
             startingCoords1[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(-actualHeight);
             startingCoords1[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(actualWidth);;
 
-       //     System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
-        //    Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
-        //    start.mainBuilding.windowContainer.getChildren().add(s1);
+           // System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
+           // Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
+           // start.getFloor().getPane().getChildren().add(s1);
 
             double[] startingCoords2 = new double[2];
             startingCoords2[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(actualHeight);
             startingCoords2[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(-actualWidth);;
 
-          //  System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
-         //   Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
-          //  start.mainBuilding.windowContainer.getChildren().add(s2);
+           // System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
+            //Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
+           // start.getFloor().getPane().getChildren().add(s2);
 
             double[] actualStartingCordsTMP = new double[2];
-            actualStartingCordsTMP[0] = start.getActualX()+(start.getWidth()/2);
-            actualStartingCordsTMP[1] = start.getActualY()+(start.getHeight()/2);
+            actualStartingCordsTMP[0] = startX+(25);
+            actualStartingCordsTMP[1] = startY+(25);
 
             ArrayList<double[]> linesToCheck = new ArrayList<>();
-            linesToCheck.add(startingCoords1);
-            //linesToCheck.add(actualStartingCordsTMP);
-            linesToCheck.add(startingCoords2);
+            //linesToCheck.add(startingCoords1);
+            linesToCheck.add(actualStartingCordsTMP);
+            //linesToCheck.add(startingCoords2);
 
             //for every parallel line to the mid-point that needs to be checked.
             for(double[] startpoint : linesToCheck) {
@@ -189,11 +204,11 @@ public class SystemTools {
 
                 //for each calculated point on the path
                 for (int n = 0; n <= checkCount; n++) {
-                    //Circle tmp = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5, Color.RED);
-                    //start.mainBuilding.windowContainer.getChildren().add(tmp);
+                  //  Circle tmp = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5, Color.RED);
+                 //   start.getFloor().getPane().getChildren().add(tmp);
 
-                    gridCheckingCoordinate[0] = (int) (currentCheckingCoordinate[0] / start.getWidth());                   //convert actual coordinate to grid coordinate
-                    gridCheckingCoordinate[1] = (int) (currentCheckingCoordinate[1] / start.getHeight());
+                    gridCheckingCoordinate[0] = (int) (currentCheckingCoordinate[0] / 50.0);                   //convert actual coordinate to grid coordinate
+                    gridCheckingCoordinate[1] = (int) (currentCheckingCoordinate[1] / 50.0);
 
                     tilesInPath.add(this.map[gridCheckingCoordinate[0]][gridCheckingCoordinate[1]]);                        //add the corresponding tile in path to list
                     xcha = Math.sqrt(Math.pow(currentGap, 2) / (Math.pow(gradient, 2) + 1)) * Math.signum(actualWidth);       //change in x from last checked actual coordinate

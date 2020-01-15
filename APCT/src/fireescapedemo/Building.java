@@ -19,14 +19,14 @@ import javafx.scene.shape.Rectangle;
 
 public class Building extends MapObject implements Serializable {
     private ArrayList<Floor> floors;
-    private static HashMap<Integer, Staircase> stairs;
+    private HashMap<Integer, Staircase> stairs;
     private int currentFloor;
     private int initialEmployeeCount;
     private boolean runningSim = false;
     private boolean calledFromSim = false;
     private int width;
     private int height;
-    //private static final long serialVersionUID = 12345;
+    private static final long serialVersionUID = 12345;
     public static transient Pane windowContainer;
     public static transient TabPane paneContainer;
 
@@ -151,6 +151,7 @@ public class Building extends MapObject implements Serializable {
     }
     public int getSize(){
         if(this.getCurrentFloor() == null){
+            System.out.println("CUrrent floor is null");
             return 50;
         }else {
             //System.out.println("RETURNING A TILE SIZE OF: "+this.getCurrentFloor().getTileSize());
@@ -182,7 +183,7 @@ public class Building extends MapObject implements Serializable {
     }
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
-    public double getActorSize(){return 40;}
+    public double getActorSize(){return 20;}
     public void setTabPane(TabPane newTabPane){this.paneContainer = newTabPane;}
     public void setCalledBySim(boolean b){this.calledFromSim = b;}
     public boolean getCalledBySim(){return this.calledFromSim;}
@@ -247,6 +248,7 @@ public class Building extends MapObject implements Serializable {
         for(int n=0; n<this.floors.size(); n++){
             newId = ("Floor "+n);
             this.floors.get(n).setId(newId);
+            this.floors.get(n).setFloorNum(n);
             this.paneContainer.getTabs().get(n).setText(newId);
         }
     }

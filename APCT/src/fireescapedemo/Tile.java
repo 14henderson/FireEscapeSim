@@ -100,15 +100,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.finalPreparation(tile);
             }
         },
-        Path {
-            @Override
-            public void initialiseView(int index,Tile tile, boolean isPLacing) {
-                this.flushTile(tile);
-                this.prepareTile(tile);
-                this.finalPreparation(tile);
-            }
-        },
-
 
         Blocked{
             @Override
@@ -143,7 +134,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Actor a;
                 Circle c;
-                c = new Circle(tile.mainBuilding.getSize()/4);
+                c = new Circle(tile.getFloor().getBuilding().getActorSize()*tile.getFloor().tileSize/50.0);
                 c.setFill(Color.PINK);
 
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
@@ -179,7 +170,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             //System.out.println("Tile: "+tile.parentFloor);
             tile.parentFloor.getPane().getChildren().remove(tile.fxRef);
             tile.fxRef = new Rectangle(tile.getActualX(), tile.getActualY(), tile.getWidth(), tile.getHeight());
-            System.out.println(tile.mainBuilding);
             if(tile.getFloor().getBuilding().getSimState()){
                 tile.fxRef.setStroke(Color.TRANSPARENT);
             }else{
@@ -193,7 +183,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         public void finalPreparation(Tile tile){
             tile.fxRef.setOnMouseClicked((MouseEvent event) -> {
                 System.out.println("Tile clicked (Tile Type handler) on "+tile.parentFloor.getId());
-                if(mainBuilding.canEdit) {
+                if(mainBuilding.canEdit && !FXMLBuildingController.buildingWalls) {
                     tile.type = FXMLBuildingController.getActionType();
                     tile.type.initialiseView(0, tile, true);
                     FXMLBuildingController.refreshLineTiles();
@@ -282,6 +272,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void setTileObject(TileObject t){this.tileObject = t;}
     public TileObject getTileObject(){return this.tileObject;}
     public void setFloorNum(int n){this.floorNum = n;}
+    public int getFloorNum(){return this.getFloor().floorNum;}
     public Floor getFloor(){return this.parentFloor;}
 
     @Override
@@ -298,7 +289,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
         this.currentActor = null;
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
             System.out.println("Tile clicked on "+this.parentFloor.getId());
-            if(mainBuilding.canEdit) {
+            if(mainBuilding.canEdit && !FXMLBuildingController.buildingWalls) {
                 this.type = FXMLBuildingController.getActionType();
                 this.type.initialiseView(0, this, true);
                 FXMLBuildingController.refreshLineTiles();
@@ -406,11 +397,11 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     public boolean getAccess(int dir){ return this.walls[dir];}
     public boolean checkAccess(Tile t){
-        System.out.println("~~~~~~~~~~~~~~~~");
-        System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
-        System.out.println("This Tile: "+ Arrays.toString(this.walls));
-        System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
-        System.out.println("~~~~~~~~~~~~~~~~");
+        //System.out.println("~~~~~~~~~~~~~~~~");
+        //System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
+        //System.out.println("This Tile: "+ Arrays.toString(this.walls));
+        //System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
+        //System.out.println("~~~~~~~~~~~~~~~~");
 
 
 
