@@ -94,9 +94,12 @@ public class FXMLSimulationController implements Initializable {
         floorPaneContainer.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
             @Override
             public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                //mainBuilding.getCurrentFloor().initialiseView();
+                if(started == false) {
+                    mainBuilding.getCurrentFloor().initialiseView();
+                }
             }
         });
+
         speedSlider.valueProperty().addListener(new ChangeListener<Number>() {
             @Override
             public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {

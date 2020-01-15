@@ -1,7 +1,12 @@
 package fireescapedemo;
 
+import java.awt.*;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -9,11 +14,14 @@ import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class PDFCreator{
-    public static void createReport(simResults s){
+    public static void createReport(simResults s) {
         Document document = new Document();
         try
         {
-            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Simulation Results.pdf"));
+            Path path = FileSystems.getDefault().getPath(".", "Simulation Results.pdf");
+            String filename = path.toString();
+
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(filename));
             document.open();
             document.add(new Paragraph("Calculated simulation resluts: " +
                     "\nOriginal amount of souls in building: "+s.getSoulsStart() +
@@ -21,12 +29,19 @@ public class PDFCreator{
                     "\nTile taken: " + s.getTimeTaken()));
             document.close();
             writer.close();
+
+
+
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(new File(filename));
         } catch (DocumentException e)
         {
             e.printStackTrace();
         } catch (FileNotFoundException e)
         {
             e.printStackTrace();
+        } catch (IOException e){
+
         }
     }
 
