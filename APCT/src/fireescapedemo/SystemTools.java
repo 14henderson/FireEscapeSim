@@ -25,7 +25,7 @@ public class SystemTools {
     public class AStarPath {
         private PriorityQueue<Tile> unopenedNodes;
         private PriorityQueue<Tile> openedNodes;
-        private ArrayList<Pair<Point2D, Tile>> velocitys;
+        private ArrayList<Tile> path;
         private ArrayList<Line> walls;
         private Tile[][] map;
         private Tile startNode, endNode;
@@ -38,7 +38,7 @@ public class SystemTools {
         public AStarPath(Tile startNode, Tile[][] map, ArrayList<Line> walls) {
             this.unopenedNodes = new PriorityQueue<>();
             this.openedNodes = new PriorityQueue<>();
-            this.velocitys = new ArrayList<>();
+            this.path = new ArrayList<>();
             this.map = map;
             this.startNode = this.map[startNode.getGridX()][startNode.getGridY()];
 
@@ -100,56 +100,28 @@ public class SystemTools {
                 Point2D point;
                 System.out.println("Finished");
                 if (this.openedNodes.contains(goal)) {
-                    int counter = 1;
                     currentNode = goal;
-                    boolean test = true;
-                    if (test) {
-                        Random rand = new Random();
-                        this.range = 1;//Math.round((rand.nextDouble() + 0.5) * 100.0) / 100.0;
-                        double vel = 0;
-                        int skip = 0, skipMax = 1;
-                        //this.nonPolygonalFunnelAlgorithm(currentNode);
 
-                        do {
-                            if (/*currentNode == startNode ||*/ currentNode == endNode) {
-                                skip = skipMax;
-                            }
-                            if (skip == skipMax) {
-                                double prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                                        currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
-                                System.out.println("x: " + proX + ", y: " + proY);
-                                if (prevX == proX) {
-                                    vel = prevY > proY ? range : -range;
-                                    this.velocitys.add(new Pair(new Point2D(vel, 0), currentNode));
-                                } else {
-                                    vel = prevX > proX ? range : -range;
-                                    this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
-                                }
-                                //System.out.println("Count " + counter);
-                                //System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                                //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                                //currentNode.setType(Tile.BlockType.Path);
-                                counter++;
-                                skip = 0;
-                            }
-                            currentNode = currentNode.getParent();
-                            skip++;
-                        } while (currentNode != start);
-                    }
-                    Collections.reverse(this.velocitys);
-                    System.out.println("\n\nsize of array: " + this.velocitys.size() + "\n\n");
+                    do {this.path.add(currentNode);currentNode = currentNode.getParent();} while (currentNode != start);
 
-                    this.velocitys = this.refinePath(this.velocitys);
+
+                    Collections.reverse(this.path);
+                    System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
+
+                    this.path = this.refinePath(this.path);
                     //modification for testing purposes
-                    for(int n=this.velocitys.size()-1; n>=0; n--){
-                        Pair<Point2D, Tile> p = this.velocitys.get(n);
+                  //  for(int n=this.path.size()-1; n>=0; n--){
+                     //   Tile t  = this.path.get(n);
                        // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
                      //   Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
                       //  p.getValue().mainBuilding.windowContainer.getChildren().add(c);
                     //    if(n%2 == 0){
                       //      this.velocitys.remove(n);
-                        }
+                      //  }
                  //   }
+
+
+                    //System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     return true;
                 }
@@ -263,12 +235,12 @@ public class SystemTools {
 
 
 
-        private ArrayList<Pair<Point2D, Tile>> refinePath(ArrayList<Pair<Point2D, Tile>> p){
-            ArrayList<Pair<Point2D, Tile>> waypoints = new ArrayList<>();
+        private ArrayList<Tile> refinePath(ArrayList<Tile> p){
+            ArrayList<Tile> waypoints = new ArrayList<>();
             Tile currentWaypoint = this.actorTile;
             int currentWaypointIndex = -1;
-            waypoints.add(new Pair(new Point2D(0, 0), this.actorTile));
-            p.add(new Pair(new Point2D(0, 0), this.goalTile));
+            waypoints.add(this.actorTile);
+            p.add(this.goalTile);
            // System.out.println("Goal cords: "+this.goalTile.getGridX()+", "+this.goalTile.getGridY());
 
             boolean reachedEnd = false;
@@ -278,10 +250,10 @@ public class SystemTools {
                //     System.out.println("Currently checking against coords: "+p.get(n).getValue().getGridX()+", "+p.get(n).getValue().getGridY());
 
                     ///if(p.get(n).getValue() == c)
-                    if (checkRoute(currentWaypoint, p.get(n).getValue()) == true) {
-                        currentWaypoint = p.get(n).getValue();
+                    if (checkRoute(currentWaypoint, p.get(n)) == true) {
+                        currentWaypoint = p.get(n);
                         currentWaypointIndex = n;
-                        waypoints.add(new Pair(p.get(currentWaypointIndex).getKey(), currentWaypoint));
+                        waypoints.add(currentWaypoint);
                         if(currentWaypointIndex == p.size()-1) {
                             reachedEnd = true;
                         }
@@ -400,9 +372,6 @@ public class SystemTools {
             return exitTile;
         }
 
-        public PriorityQueue<Tile> getPath() {
-            return this.openedNodes;
-        }
 
         public double getRange() {
             return this.range;
@@ -412,8 +381,8 @@ public class SystemTools {
             return this.foundExit;
         }
 
-        public ArrayList<Pair<Point2D, Tile>> getVelocities() {
-            return this.velocitys;
+        public ArrayList<Tile> getPath() {
+            return this.path;
         }
 
         public boolean intersectsWalls(Line path){
@@ -423,36 +392,7 @@ public class SystemTools {
             }
             return false;
         }
-        public void nonPolygonalFunnelAlgorithm(Tile currentNode) {
-            double vel;
-            double curX = currentNode.actualCords[0], curY = currentNode.actualCords[1];
-            Line prevPath, postPath;
 
-            do {
-                double prevX = currentNode.getActualCords()[0], prevY = currentNode.getActualCords()[1], proX =
-                        currentNode.getParent().getActualCords()[0], proY = currentNode.getParent().getActualCords()[1];
-                System.out.println("x: " + proX + ", y: " + proY);
-                prevPath = new Line(curX,curY, prevX, prevY);
-                postPath = new Line(curX,curY,proX,proY);
-                if(this.intersectsWalls(postPath)){
-                    System.out.println("Was true");
-                    if (prevX == proX) {
-                        vel = prevY > proY ? range : -range;
-                        this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
-                    } else {
-                        vel = prevX > proX ? range : -range;
-                        this.velocitys.add(new Pair(new Point2D(0, vel), currentNode));
-                    }
-                    System.out.println("x: " + currentNode.getActualCords()[0] + ", y: " + currentNode.getActualCords()[1]);
-                    //currentNode.getFxRef().setFill(Color.LIGHTBLUE);
-                    currentNode.setType(Tile.BlockType.Path);
-                    curX = prevPath.getStartX();
-                    curY = prevPath.getStartY();
-                }
-                 currentNode = currentNode.getParent();
-            } while (currentNode != this.startNode);
-
-        }
 
     }
 

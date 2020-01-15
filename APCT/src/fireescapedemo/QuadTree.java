@@ -132,7 +132,9 @@ public class QuadTree{
                             moveX = px - displacement * (px-tx)/distance;
                             moveY = py - displacement * (py-ty)/distance;
 
+
                            // System.out.println("px: " + px + ", py: " + py + "/tx: " + tx + ", ty: " + ty);
+
                             p.fxNode.setLayoutX(moveX);
                             p.fxNode.setLayoutY(moveY);
                             p.findLineAndRotate();

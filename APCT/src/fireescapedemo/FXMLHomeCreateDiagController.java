@@ -33,6 +33,38 @@ public class FXMLHomeCreateDiagController implements Initializable {
         manager.showScene("building");
     }
 
+    @FXML
+    public void createSmall() throws IOException {
+        int width = 20;
+        int height = 20;
+        BuildingSettings config = new BuildingSettings(width, height);
+        this.manager.setGlobalBuildingSettings(config);
+        this.manager.setLoadType(0);
+        manager.showScene("building");
+    }
+
+    @FXML
+    public void createMed() throws IOException {
+        int width = 30;
+        int height = 30;
+        BuildingSettings config = new BuildingSettings(width, height);
+        this.manager.setGlobalBuildingSettings(config);
+        this.manager.setLoadType(0);
+        manager.showScene("building");
+    }
+
+    @FXML
+    public void createLarge() throws IOException {
+        int width = 50;
+        int height = 50;
+        BuildingSettings config = new BuildingSettings(width, height);
+        this.manager.setGlobalBuildingSettings(config);
+        this.manager.setLoadType(0);
+        manager.showScene("building");
+    }
+
+
+
 
 
     public class BuildingSettings{
