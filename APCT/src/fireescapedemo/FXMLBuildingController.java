@@ -93,6 +93,7 @@ public class FXMLBuildingController implements Initializable {
         this.stairChoiceBox = new HashMap<>();
         this.currentFloorId = "Floor 0";
 
+        //loading with empty Building
         if(this.manager.getLoadType() == 0){
             System.out.println("Creating new with specifications");
             int width = manager.getGlobalBuildingSettings().getWidth();
@@ -100,11 +101,12 @@ public class FXMLBuildingController implements Initializable {
             int size = manager.getGlobalBuildingSettings().getSize();
             mainBuilding = new Building(width, height, this.floorPaneContainer);
 
+        //loading from file
         }else if(this.manager.getLoadType() == 1){
             mainBuilding = manager.getGlobalBuilding();
             mainBuilding.setTabPane(floorPaneContainer);
             for(Floor f : mainBuilding.getFloors()){
-                Tab newPane = new Tab(f.getId());
+                Tab newPane = new Tab(f.getId());       //preparing Tabs for each floor
                 Pane newFloorPane = new Pane();
                 newPane.setContent(newFloorPane);
                 f.setPane(newFloorPane);
@@ -122,6 +124,7 @@ public class FXMLBuildingController implements Initializable {
         mainBuilding.initialiseView();
         errorText.setText("");
 
+        //add buttons to listbox
         this.tileButtons.add(new Pair<>("Default", Tile.BlockType.Default));
         this.tileButtons.add(new Pair<>("Exit", Tile.BlockType.Exit));
         this.tileButtons.add(new Pair<>("Employee", Tile.BlockType.Employee));
@@ -131,6 +134,8 @@ public class FXMLBuildingController implements Initializable {
         this.tileButtons.add(new Pair<>("Stair Down", Tile.BlockType.Stairs));
         this.tileButtons.add(new Pair<>("Blocked", Tile.BlockType.Blocked));
 
+
+        //If a button is pressed
         Button a;
         for(Pair<String, Tile.BlockType> buttons : this.tileButtons){
             a = new Button(buttons.getKey());
@@ -140,8 +145,6 @@ public class FXMLBuildingController implements Initializable {
                     buildingWalls = false;
                     actionType = buttons.getValue();
                     unrenderLineBlocks(mainBuilding.getCurrentFloor().getPane());
-
-                   // System.out.println("Button: "+buttons.getKey());
                     switch (buttons.getKey()){
                         case "Stair Up":
                             stairsUpButton();
@@ -177,18 +180,15 @@ public class FXMLBuildingController implements Initializable {
 
 
 
+        //event called when changing tabs.
         floorPaneContainer.getSelectionModel().selectedItemProperty().addListener(
                 new ChangeListener<Tab>() {
                     @Override
                     public void changed(ObservableValue<? extends Tab> ov, Tab t, Tab t1) {
-                        //System.out.println("Current Floor: "+mainBuilding.getCurrentFloor().getId());
-                        try{unrenderLineBlocks(mainBuilding.getFloor(currentFloorId).getPane());
+                        try{unrenderLineBlocks(mainBuilding.getFloor(currentFloorId).getPane());        //remove line dots
                         }catch(NullPointerException e){}
-
-                        mainBuilding.getCurrentFloor().initialiseView();
-
-                        //renderDragLine();
-                        cancelLineClicked();
+                        mainBuilding.getCurrentFloor().initialiseView();                    //initialise new floor
+                        cancelLineClicked();                                                //cancel any wall being made
                         currentFloorId = mainBuilding.getCurrentFloor().getId();
                         mainBuilding.getCurrentFloor().initialiseView();
                         lineClicked = false;
@@ -199,13 +199,7 @@ public class FXMLBuildingController implements Initializable {
     }
 
 
-    public static void refreshLineTiles(){
-        for(LineTile[] tiles : lineTiles){
-            for(LineTile tile : tiles){
-                tile.bringToFront();
-            }
-        }
-    }
+
 
 
     //LINE BLOCK HANDLING
@@ -245,11 +239,17 @@ public class FXMLBuildingController implements Initializable {
             for (LineTile lineTile : lineTileRow) {
                 lineTile.getLineTileRect().setVisible(false);
             }}}
+    public static void refreshLineTiles(){
+        for(LineTile[] tiles : lineTiles){
+            for(LineTile tile : tiles){
+                tile.bringToFront();
+            }
+        }
+    }
 
 
 
-
-    //FLOOR MANAGEMENT
+    //Called from new floor button
     @FXML
     public void newFloor(){
         String newFloorID = "Floor "+mainBuilding.getTotalFloors();
@@ -263,41 +263,41 @@ public class FXMLBuildingController implements Initializable {
     }
 
 
+
+    //a listener for creating walls.
     public void addWallClickEventListener(Pane p){
         p.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 refreshStairToolContainer();
                 if(buildingWalls){
-                    if(event.getButton() == MouseButton.PRIMARY) {
+                    if(event.getButton() == MouseButton.PRIMARY) {      //left-click
                         setLineClicked(event);
-                    }else{
+                    }else{                                              //if right-clicking assume cancelling wall creation
                         lineClicked = false;
                         FXMLBuildingController.cancelLineClicked();
                     }}}});
     }
 
 
+    //called from Remove Floor button
     @FXML
     public void removeFloor(){
         if(this.floorPaneContainer.getTabs().size() > 1) {
             Pane paneToDelete = (Pane) this.floorPaneContainer.getSelectionModel().getSelectedItem().getContent();
-            paneToDelete.getChildren().removeAll();
+            paneToDelete.getChildren().removeAll();         //removes all fx objects from floor to delete
 
-            //mainBuilding.getStairs().values().removeIf(n -> (n.parent.getFloor() == mainBuilding.getCurrentFloor()));
             for(int n=mainBuilding.getStairs().size()-1; n>=0; n--){
                 if(mainBuilding.getStairs().get(n).parent.getFloor() == mainBuilding.getCurrentFloor()){
-                    mainBuilding.getStairs().remove(n);
+                    mainBuilding.getStairs().remove(n);     //remove any stairs in that floor
                 }
             }
-
-            mainBuilding.removeFloor(mainBuilding.getCurrentFloor().getId());
-            this.floorPaneContainer.getTabs().remove(this.floorPaneContainer.getSelectionModel().getSelectedItem());
-            mainBuilding.refreshFloorLabels();
-            refreshStairToolContainer();
+            mainBuilding.getCurrentFloor().getEmployees().removeIf(n -> (n.parent.getFloor() == mainBuilding.getCurrentFloor()));       //remove actors on that floor
+            mainBuilding.removeFloor(mainBuilding.getCurrentFloor().getId());                                                           //remove floor object
+            this.floorPaneContainer.getTabs().remove(this.floorPaneContainer.getSelectionModel().getSelectedItem());                    //remove tab from tabPane
+            mainBuilding.refreshFloorLabels();                                          //refresh tab floor labels and logical floor IDs
+            refreshStairToolContainer();                                                //refresh stairs listview box
             this.currentFloorId = this.mainBuilding.getCurrentFloor().getId();
-
-
         }else{
             raiseError("Cannot Remove Only Remaining Floor");
         }
@@ -372,7 +372,7 @@ public class FXMLBuildingController implements Initializable {
 
 
 
-    //STAIRS
+    //STAIRS MANAGEMENT
     public void stairPaneInitialise(){
         this.stairOptionsPane.setVisible(false);
         this.stairPreview = new Rectangle(60, 35, 50, 50);
