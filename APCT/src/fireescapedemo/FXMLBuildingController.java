@@ -161,8 +161,8 @@ public class FXMLBuildingController implements Initializable {
         this.mainBuilding.initialiseView();
 
         this.initLineBlocks();
-        this.renderLineBlocks();
-        this.disableLineBlocks();
+        //this.renderLineBlocks();
+        //this.disableLineBlocks();
 
         this.renderDragLine();
         this.stairPaneInitialise();
@@ -195,18 +195,6 @@ public class FXMLBuildingController implements Initializable {
                     }
                 }
         );
-
-        for(Staircase s : this.mainBuilding.getStairs().values()){
-            System.out.println("Staircase found! Details: ID:"+s.ID+" JoinedID:"+s.joinedID);
-
-        }
-
-
-
-
-
-
-
     }
 
 
@@ -219,6 +207,7 @@ public class FXMLBuildingController implements Initializable {
     }
 
 
+    //LINE BLOCK HANDLING
     public void initLineBlocks(){
         int size = this.mainBuilding.getSize();
         int width = this.mainBuilding.getWidth();
@@ -229,9 +218,6 @@ public class FXMLBuildingController implements Initializable {
                 this.lineTiles[i][j] = new LineTile(i*size, j*size, i, j, this.mainBuilding, this.mainBuilding.getCurrentFloor().getPane());
             }}
     }
-
-
-    //LINE BLOCK HANDLING
     public void renderLineBlocks(){
         for (LineTile[] lineTileRow : this.lineTiles) {
             for (LineTile lineTile : lineTileRow) {
