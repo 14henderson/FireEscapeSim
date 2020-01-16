@@ -105,7 +105,7 @@ public class SystemTools {
                     do {this.path.add(currentNode);currentNode = currentNode.getParent();} while (currentNode != start);
 
 
-                    //Collections.reverse(this.path);
+                    Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     this.path = this.refinePath(this.path);

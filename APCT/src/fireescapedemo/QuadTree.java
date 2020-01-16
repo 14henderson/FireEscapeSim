@@ -10,6 +10,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import static java.lang.Double.NaN;
 
@@ -29,7 +30,7 @@ public class QuadTree{
         this.y = y;
         this.w = w;
         this.h = h;
-        this.iter = 1;
+        this.iter = 0;
         this.divided = false;
         this.points = new Actor[this.cap];
         this.children = new QuadTree[4];
@@ -107,11 +108,12 @@ public class QuadTree{
         int i,j, pointLen = this.points.length, childLen = this.children.length;
         Actor point, target;
         Employee p,t;
+        Line wall;
         double size,distance, displacement,px,py,tx,ty,rad1,rad2, moveX, moveY;
         //apply collisions localy
+
         for(i = 0; i < this.iter; i++){
             point = this.points[i];
-
             for(j = 0; j < this.iter; j++){
                 target = this.points[j];
                 if(i == j){continue;}
@@ -157,6 +159,17 @@ public class QuadTree{
                 }
             }
         }
+/*
+        for(i = 0; i < this.iter; i++){
+            point = this.points[i];
+            if(point == null){continue;}
+            while(walls.hasNext()){
+                wall = walls.next();
+                if(employeeAgainstWall((Employee) point,wall)){
+                    System.out.println("Wow");
+                }
+            }
+        }*/
         if(this.divided){
             for(i = 0; i < childLen; i++){
                 this.children[i].checkCollisions();
@@ -168,7 +181,31 @@ public class QuadTree{
 
 
 
+    public boolean employeeAgainstWall(Employee e, Line wall){
+        boolean col = false;
+        double px = e.fxNode.getLayoutX() , py = e.fxNode.getLayoutY();
+        double wallX1 = wall.getEndX() - wall.getStartX(), wallX2 = px - wall.getStartX();
+        double wallY1 = wall.getEndY() - wall.getStartY(), wallY2 = py - wall.getStartY();
 
+        double wallLength = wallX1*wallX1 + wallY1 *wallY1;
+        //find dot product against the wall lengt
+        double t = Math.min(0,Math.max(wallLength, (wallX1 * wallX2 + wallY1 * wallY2)))/wallLength;
+
+        double dx = wall.getStartX() + t * wallX1;
+        double dy = wall.getStartY() + t * wallY1;
+        System.out.println(wall);
+        double distance = Math.sqrt(Math.pow(px - dx, 2) + Math.pow(py - dy, 2));
+        double raduis = ((Circle)e.fxNode).getRadius();
+        if(distance <= (raduis + wall.getStrokeWidth())){
+            col = true;
+            double overlap = 1.0 * ( distance - raduis - wall.getStrokeWidth());
+            System.out.println("raduis: " + wall.getStrokeWidth());
+            e.fxNode.setLayoutX(px - overlap * (px - dx) / distance);
+            e.fxNode.setLayoutY(py - overlap * (py - dy) / distance);
+        }
+
+        return col;
+    }
 
 
 
