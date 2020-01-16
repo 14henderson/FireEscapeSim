@@ -4,14 +4,8 @@
     <list default="true" id="fd254aa0-2c3a-45fe-b710-4c127cca727f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Simulation Results.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/Simulation Results.pdf" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/FXMLSimulationController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/Floor.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/test/APCT/fireescapedemo/SystemTools$AStarPath.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Employee.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/FXMLSimulationController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/Floor.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/SystemTools.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/fireescapedemo/TileObject.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/fireescapedemo/TileObject.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />

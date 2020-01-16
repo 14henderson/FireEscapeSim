@@ -335,7 +335,7 @@ public class SystemTools {
             Tile.BlockType target = Tile.BlockType.Exit;
             while (!exitCondition) {
                 //System.out.println("lockoutCounter: " + lockoutCounter);
-                if (lockoutCounter < lockoutLocal) {
+                if (lockoutCounter < lockoutLocal && !unopenList.isEmpty()) {
                     currentTile = unopenList.poll();
                     lockoutCounter++;
                     openList.add(currentTile);
