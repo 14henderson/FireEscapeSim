@@ -158,21 +158,27 @@ public class FXMLSimulationController implements Initializable {
                 this.ResetSim();
             }
 
-
-            for(Floor floor : mainBuilding.getFloors()) {
-                for (Employee e : floor.employees) {
-                    e.update(floor);
+            Iterator<Floor> floorIt = mainBuilding.getFloors().iterator();
+            Floor f;
+            Iterator<Employee> employeeIt;
+            Employee e;
+            while(floorIt.hasNext()) {
+                f = floorIt.next();
+                employeeIt = f.getEmployees().iterator();
+                while (employeeIt.hasNext()) {
+                    e = employeeIt.next();
+                    e.update(f);
                 }
                 //collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
 
-                if(started == true && floor.employees.size() > 0){
+                if(started == true && f.employees.size() > 0){
 
-                    nW = floor.getActualWidth();
-                    nH = floor.getActualHeight();
-                    nX = floor.getActualX();
-                    nY = floor.getActualY();
+                    nW = f.getActualWidth();
+                    nH = f.getActualHeight();
+                    nX = f.getActualX();
+                    nY = f.getActualY();
                     quadTree = new QuadTree(cap, nX, nY, nW, nH);
-                    quadTree.insertAll(floor.employees);
+                    quadTree.insertAll(f.employees);
                     quadTree.checkCollisions();
                 }else{
                     //System.out.println("Floor error " + floorNum);

@@ -105,20 +105,10 @@ public class SystemTools {
                     do {this.path.add(currentNode);currentNode = currentNode.getParent();} while (currentNode != start);
 
 
-                    Collections.reverse(this.path);
+                    //Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     this.path = this.refinePath(this.path);
-                    //modification for testing purposes
-                  //  for(int n=this.path.size()-1; n>=0; n--){
-                     //   Tile t  = this.path.get(n);
-                       // System.out.println("Velocity: "+p.getKey().toString()+" | "+p.getValue().getGridX()+", "+p.getValue().getGridY());
-                     //   Circle c = new Circle(p.getValue().getActualX()+25, p.getValue().getActualY()+25, 10, Color.RED);
-                      //  p.getValue().mainBuilding.windowContainer.getChildren().add(c);
-                    //    if(n%2 == 0){
-                      //      this.velocitys.remove(n);
-                      //  }
-                 //   }
 
 
                     //System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");

@@ -9,6 +9,7 @@ public abstract class TileObject implements Serializable {
     public transient Node fxNode = null;
     public Tile parent;
     public abstract Node getNode();
+    public Tile getParent(){return this.parent;}
     public abstract void setNode(Node n);
     public abstract void destroy();
     public void flushNodes() {

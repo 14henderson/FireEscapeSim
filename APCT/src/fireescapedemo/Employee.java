@@ -17,41 +17,44 @@ import java.util.Random;
 public class Employee extends Actor implements Serializable{
     private double counter = 0, range = 0, releaseTime;
     private transient ArrayList<Tile> path;
-    private boolean findingPath, exited, avgMove;
+    private boolean findingPath, exited, stairs;
     Tile curPoint,postPoint;
     public Tile proTile;
 
-    enum State{
+    enum State {
         Idle {
             @Override
             public void act(Employee employee, Floor floor) {
 
             }
         },
-        FindRoute{
+        FindRoute {
             @Override
-            public void act(Employee employee, Floor floor){
+            public void act(Employee employee, Floor floor) {
                 System.out.println("\n\nContains exit: " + floor.containsExit());
-                System.out.println("x: " + employee.oriTile.getActualX() + ", y: " + employee.oriTile.getActualY());
-                SystemTools tools = new SystemTools(employee.oriTile,floor.getCurrentFloorBlock(),floor.getWallsNodes());
+                
+                System.out.println("x: " + employee.proTile.getActualX() + ", y: " + employee.proTile.getActualY());
+                SystemTools tools = new SystemTools(employee.proTile, floor.getCurrentFloorBlock(), floor.getWallsNodes());
                 System.out.println("Route found");
                 boolean stateSwitch = tools.pathFinder.exitFound();
-                if(stateSwitch){
+                if (stateSwitch) {
                     tools.pathFinder.findPath(false);
                     employee.setPath(tools.pathFinder.getPath());
                 }
-                State state = stateSwitch? State.Escape : State.Idle;
+                State state = stateSwitch ? State.Escape : State.Idle;
 
                 System.out.println("Now set to " + state.toString());
-                if(state.equals(State.Escape)){
+                if (state.equals(State.Escape)) {
                     employee.proTile = employee.oriTile;
                     employee.findingPath = false;
                     employee.setrange(tools.pathFinder.getRange());
                     employee.curPoint = employee.getPath().get(0);
                     employee.setCurPoint();
-                    employee.setReleaseTime((Math.random()+1)*100);
-                    employee.setCurrentState(state);
+                    employee.setReleaseTime(1);
+
                 }
+
+                employee.setCurrentState(state);
             }
         },
         Escape {
@@ -59,19 +62,20 @@ public class Employee extends Actor implements Serializable{
             public void act(Employee employee, Floor floor) {
 
                 //if(employee.getPath() != null){
-                    employee.updatePathPoint();
-                    //Circle view = (Circle)employee.fxNode;
-                    //Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
-                    //Building.windowContainer.getChildren().add(cc);
+                employee.updatePathPoint();
+                //Circle view = (Circle)employee.fxNode;
+                //Circle cc = new Circle( view.getLayoutX(), view.getLayoutY(),2, Color.RED);
+                //Building.windowContainer.getChildren().add(cc);
                 //}
             }
         },
 
-        Extinguish{
+        Extinguish {
             @Override
             public void act(Employee employee, Floor floor) {
 
             }
+
         };
 
         public abstract void act(Employee employee, Floor floor);
@@ -91,9 +95,10 @@ public class Employee extends Actor implements Serializable{
     {
         super (view, tile);
         this.currentState = State.Idle;
+        this.proTile = this.oriTile;
         this.findingPath = false;
         this.exited = false;
-        this.avgMove = false;
+        this.stairs = false;
         this.oriTile = tile;
 
     }
@@ -101,9 +106,10 @@ public class Employee extends Actor implements Serializable{
     public Employee(Node view, Tile tile, Point2D vector){
         super(view,tile,new Point2D(0,0));
         this.currentState = State.Idle;
+        this.proTile = this.oriTile;
         this.findingPath = false;
         this.exited = false;
-        this.avgMove = false;
+        this.stairs = false;
         this.oriTile = tile;
     }
 
@@ -170,7 +176,6 @@ public class Employee extends Actor implements Serializable{
     public void setrange(double vel){this.range = vel;}
     public void setReleaseTime(double d){this.releaseTime = d; this.counter = 0; }
     public void toggleExited(){this.exited = !this.exited;}
-    public void setAvgMove(boolean b){this.avgMove = b;}
     public boolean hasExited(){return this.exited;}
 
     void updatePathPoint(){
@@ -180,7 +185,27 @@ public class Employee extends Actor implements Serializable{
         //System.out.println(((Circle)this.fxNode).getRadius());
         if(linePathValue <= ((Circle)this.fxNode).getRadius()){
             if(this.path.isEmpty()){
-                this.exited = true;
+                if(this.curPoint.type.equals(Tile.BlockType.Stairs)){
+                    int id = this.curPoint.getID();
+                    int jId = Building.mainBuilding.getStairs().get(id).joinedID;
+                    System.out.println("id: " + id + ", jId: " + jId);
+                    Floor prevFloor = this.curPoint.getFloor();
+                    this.curPoint = (Building.mainBuilding.getStairs().get(id)).getParent();
+
+                    Floor curFloor = this.curPoint.getFloor();
+                    prevFloor.removeEmployee(this);
+                    curFloor.addEmployee(this);
+                    prevFloor.floorPane.getChildren().remove(this.fxNode);
+                    this.fxNode.setLayoutX(this.curPoint.getActualX() + this.curPoint.getSize()/2);
+                    this.fxNode.setLayoutY(this.curPoint.getActualY() + this.curPoint.getSize()/2);
+                    curFloor.floorPane.getChildren().add(this.fxNode);
+                    //curFloor.floorPane.getChildren().add(new Rectangle(20,20,20,20));
+                    this.stairs = true;
+                    this.proTile = this.curPoint;
+                    this.currentState = State.FindRoute;
+                }else{
+                    this.exited = true;
+                }
             }else{
                 this.setCurPoint();
             }

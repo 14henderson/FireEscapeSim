@@ -154,7 +154,7 @@ public class Floor extends MapObject implements Serializable {
     }
 
 
-
+    public boolean removeEmployee(Employee e){ return this.employees.remove(e);}
     public int getPanXOffset(){return this.panXOffset;}
     public int getPanYOffset(){return this.panYOffset;}
     public boolean containsExit(){return !this.exits.isEmpty();}
