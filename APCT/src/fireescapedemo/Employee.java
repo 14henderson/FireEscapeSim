@@ -183,15 +183,18 @@ public class Employee extends Actor implements Serializable{
        // System.out.println("Linepathvale: " + linePathValue);
 
         //System.out.println(((Circle)this.fxNode).getRadius());
-        if(linePathValue <= ((Circle)this.fxNode).getRadius()){
+        if(linePathValue <= this.curPoint.getSize()/2){
             if(this.path.isEmpty()){
                 if(this.curPoint.type.equals(Tile.BlockType.Stairs)){
                     int id = this.curPoint.getID();
                     int jId = Building.mainBuilding.getStairs().get(id).joinedID;
+                    if(id == this.curPoint.getFloorNum()){
+                        this.curPoint = (Building.mainBuilding.getStairs().get(jId)).getParent();
+                    }else{
+                        this.curPoint = (Building.mainBuilding.getStairs().get(id)).getParent();
+                    }
                     System.out.println("id: " + id + ", jId: " + jId);
                     Floor prevFloor = this.curPoint.getFloor();
-                    this.curPoint = (Building.mainBuilding.getStairs().get(id)).getParent();
-
                     Floor curFloor = this.curPoint.getFloor();
                     prevFloor.removeEmployee(this);
                     curFloor.addEmployee(this);

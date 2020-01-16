@@ -162,12 +162,20 @@ public class FXMLSimulationController implements Initializable {
             Floor f;
             Iterator<Employee> employeeIt;
             Employee e;
+            Iterator<Line> wallIt;
+            Line wall;
+            boolean b;
             while(floorIt.hasNext()) {
                 f = floorIt.next();
                 employeeIt = f.getEmployees().iterator();
                 while (employeeIt.hasNext()) {
                     e = employeeIt.next();
                     e.update(f);
+                    wallIt = f.getWallsNodes().iterator();
+                    /*while(wallIt.hasNext()){
+                        wall = wallIt.next();
+                        employeeAgainstWall(e,wall);
+                    }*/
                 }
                 //collisionBetweenWallandEmployee(floor.employees,floor.getWallsNodes(),floor.employees.get(0).getSize());
 
@@ -199,6 +207,35 @@ public class FXMLSimulationController implements Initializable {
             }
         }
     }
+
+
+    public boolean employeeAgainstWall(Employee e, Line wall){
+        boolean col = false;
+        double px = e.fxNode.getLayoutX() , py = e.fxNode.getLayoutY();
+        double wallX1 = wall.getEndX() - wall.getStartX(), wallX2 = px - wall.getStartX();
+        double wallY1 = wall.getEndY() - wall.getStartY(), wallY2 = py - wall.getStartY();
+
+        double wallLength = wallX1*wallX1 + wallY1 *wallY1;
+        //find dot product against the wall lengt
+        double t = Math.min(0,Math.max(wallLength, (wallX1 * wallX2 + wallY1 * wallY2)))/wallLength;
+
+        double dx = wall.getStartX() + t * wallX1;
+        double dy = wall.getStartY() + t * wallY1;
+
+        double distance = Math.sqrt(Math.pow(px - dx, 2) + Math.pow(py - dy, 2));
+        double raduis = ((Circle)e.fxNode).getRadius();
+        if(distance <= (raduis + wall.getStrokeWidth())){
+            col = true;
+            double overlap = (distance - raduis - wall.getStrokeWidth());
+
+            e.fxNode.setLayoutX(px - (overlap * (px - dx) / distance));
+            e.fxNode.setLayoutY(py - (overlap * (py - dy) / distance));
+        }
+
+        return col;
+    }
+
+
 
     private void EmployeeCollision(){
         for(Employee e : this.mainBuilding.getCurrentFloor().getEmployees()){
