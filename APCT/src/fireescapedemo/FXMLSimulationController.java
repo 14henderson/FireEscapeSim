@@ -61,18 +61,19 @@ public class FXMLSimulationController implements Initializable {
     QuadTree quadTree;
     public Building mainBuilding;// = new Building();
     SceneManager manager;
-    Timeline timeline;
+   // Timeline timeline;
     static int speedScaler = 1;
     PDFCreator.simResults provisionalResults;
     @FXML
     Label employeesLeft;
     int second = 0;
     boolean paused = false;
-    public final int minZoom = 10;
+    public final int minZoom = 30;
     public final int maxZoom = 100;
     private String reportFilename;
     private Alert reportAlert;
-
+    private int timeTick = 0;
+    private AnimationTimer t;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -80,7 +81,8 @@ public class FXMLSimulationController implements Initializable {
         this.mainBuilding = manager.getGlobalBuilding();
         mainBuilding.setTabPane(floorPaneContainer);
         mainBuilding.setCalledBySim(true);
-        timeline = new Timeline(new KeyFrame(Duration.seconds(1), e-> addSecond()));
+        //
+        // timeline = new Timeline(new KeyFrame(Duration.seconds(1), e-> addSecond()));
         //if issue with loading
         if(mainBuilding == null){
             System.out.println("Building is null. ERROR");
@@ -124,7 +126,7 @@ public class FXMLSimulationController implements Initializable {
         provisionalResults = new PDFCreator.simResults(mainBuilding.getInitialEmployeeCount(), -1, "0s");
 
         mainBuilding.disableBuild();
-        timeline.setCycleCount(Timeline.INDEFINITE);
+//        timeline.setCycleCount(Timeline.INDEFINITE);
         initAnimation();
     }
 
@@ -133,14 +135,12 @@ public class FXMLSimulationController implements Initializable {
 
 
     public void initAnimation(){
-        AnimationTimer t = new AnimationTimer(){
+        this.t = new AnimationTimer(){
             @Override
             public void handle(long now) {
                 onUpdate();
             }
         };
-        t.start();
-
     }
     double nX, nY, nW, nH;
     int cap = 1000000;
@@ -149,7 +149,12 @@ public class FXMLSimulationController implements Initializable {
     private void onUpdate() {
         int floorNum = 0;
         if(!paused){
-            if(employeesLeft.getText().equals("x0") && started == true){
+            timeTick++;
+            if(timeTick % 100 == 0){
+                addSecond();
+                timeTick = 0;
+            }
+            if(employeesLeft.getText().equals("x0") && started == true && !timerLabel.getText().equals("0s")){
                 provisionalResults.setSoulsEnd(mainBuilding.getInitialEmployeeCount());
                 provisionalResults.setTimeTaken(timerLabel.getText());
                 if(!reportAlert.isShowing()){
@@ -190,7 +195,7 @@ public class FXMLSimulationController implements Initializable {
             employeesLeft.setText("x" + mainBuilding.getInitialEmployeeCount());
 
             if (mainBuilding.getInitialEmployeeCount() <= 0) {
-                timeline.stop();
+                //timeline.stop();
                 // timer.setTextFill(Color.RED);
             }
         }
@@ -317,9 +322,9 @@ public class FXMLSimulationController implements Initializable {
         this.panRightButton.setDisable(true);
         this.panUpButton.setDisable(true);
 
+        t.start();
 
-
-        timeline.play();
+//        timeline.play();
         started= true;
         PauseSimButton.setText("Pause");
         PauseSimButton.setDisable(false);
@@ -340,13 +345,13 @@ public class FXMLSimulationController implements Initializable {
         this.StartSimButton.setDisable(false);
         this.PauseSimButton.setDisable(true);
         this.paused = !this.paused;
-        this.timeline.pause();
+       // this.timeline.pause();
     }
 
 
     public void ResetSim() {
         second = 0;
-        this.timeline.stop();
+      //  this.timeline.stop();
         this.zoomInButton.setDisable(false);
         this.zoomOutButton.setDisable(false);
         this.panDownButton.setDisable(false);
@@ -373,7 +378,8 @@ public class FXMLSimulationController implements Initializable {
         paused = false;
         started = false;
         PauseSimButton.setDisable(true);
-        timeline.stop();
+    //    timeline.stop();
+        t.stop();
         mainBuilding.initialiseAll();
     }
 
