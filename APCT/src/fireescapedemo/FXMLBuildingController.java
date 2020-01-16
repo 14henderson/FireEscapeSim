@@ -162,8 +162,8 @@ public class FXMLBuildingController implements Initializable {
         this.mainBuilding.initialiseView();
 
         this.initLineBlocks();
-        //this.renderLineBlocks();
-        //this.disableLineBlocks();
+        this.renderLineBlocks();
+        this.disableLineBlocks();
 
         this.renderDragLine();
         this.stairPaneInitialise();
