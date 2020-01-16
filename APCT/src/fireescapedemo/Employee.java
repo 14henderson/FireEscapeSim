@@ -186,7 +186,14 @@ public class Employee extends Actor implements Serializable{
         if(linePathValue <= this.curPoint.getSize()/2){
             if(this.path.isEmpty()){
                 if(this.curPoint.type.equals(Tile.BlockType.Stairs)){
-                    int id = this.curPoint.getID();
+
+                    int id = 0;
+                    for(Staircase s : curPoint.getFloor().getBuilding().getStairs().values()){
+                        if(s.parent == curPoint){
+                           id = s.ID;
+                        }
+                    }
+                     //= this.curPoint.getID();
                     int jId = Building.mainBuilding.getStairs().get(id).joinedID;
                     if(id == this.curPoint.getFloorNum()){
                         this.curPoint = (Building.mainBuilding.getStairs().get(jId)).getParent();
