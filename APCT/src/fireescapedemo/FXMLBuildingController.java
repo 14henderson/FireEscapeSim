@@ -124,6 +124,7 @@ public class FXMLBuildingController implements Initializable {
         this.tileButtons.add(new Pair<>("Default", Tile.BlockType.Default));
         this.tileButtons.add(new Pair<>("Exit", Tile.BlockType.Exit));
         this.tileButtons.add(new Pair<>("Employee", Tile.BlockType.Employee));
+        this.tileButtons.add(new Pair<>("Fire", Tile.BlockType.Fire));
 
         this.tileButtons.add(new Pair<>("Stair Up", Tile.BlockType.Stairs));
         this.tileButtons.add(new Pair<>("Stair Down", Tile.BlockType.Stairs));
