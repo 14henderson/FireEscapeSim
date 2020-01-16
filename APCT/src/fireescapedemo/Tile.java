@@ -108,6 +108,18 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.prepareTile(tile);
                 DefaultAssetHolder blocked = new Tile.DefaultAssetHolder(tile, "/Assets/no_entrance.fw.png");
                 tile.setTileObject(blocked);
+                tile.removeAccess(0);
+                tile.getFloor().getTile(tile.getGridX(), tile.getGridY()-1).removeAccess(2);
+
+                tile.removeAccess(1);
+                tile.getFloor().getTile(tile.getGridX()+1, tile.getGridY()).removeAccess(3);
+
+                tile.removeAccess(2);
+                tile.getFloor().getTile(tile.getGridX(), tile.getGridY()+1).removeAccess(0);
+
+                tile.removeAccess(3);
+                tile.getFloor().getTile(tile.getGridX()-1, tile.getGridY()).removeAccess(1);
+
                 this.finalPreparation(tile);
             }
         },
@@ -119,6 +131,19 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 this.prepareTile(tile);
                 DefaultAssetHolder fire = new Tile.DefaultAssetHolder(tile, "/Assets/fire.png");
                 tile.setTileObject(fire);
+
+                tile.removeAccess(0);
+                tile.getFloor().getTile(tile.getGridX(), tile.getGridY()-1).removeAccess(2);
+
+                tile.removeAccess(1);
+                tile.getFloor().getTile(tile.getGridX()+1, tile.getGridY()).removeAccess(3);
+
+                tile.removeAccess(2);
+                tile.getFloor().getTile(tile.getGridX(), tile.getGridY()+1).removeAccess(0);
+
+                tile.removeAccess(3);
+                tile.getFloor().getTile(tile.getGridX()-1, tile.getGridY()).removeAccess(1);
+
                 this.finalPreparation(tile);
             }
         },
