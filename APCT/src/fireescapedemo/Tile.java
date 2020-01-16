@@ -112,6 +112,16 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             }
         },
 
+        Fire{
+            @Override
+            public void initialiseView(int index, Tile tile, boolean isPLacing) {
+                this.flushTile(tile);
+                this.prepareTile(tile);
+                DefaultAssetHolder fire = new Tile.DefaultAssetHolder(tile, "/Assets/fire.png");
+                tile.setTileObject(fire);
+                this.finalPreparation(tile);
+            }
+        },
 
         Default {
             @Override
