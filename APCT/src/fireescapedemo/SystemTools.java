@@ -105,7 +105,7 @@ public class SystemTools {
                     do {this.path.add(currentNode);currentNode = currentNode.getParent();} while (currentNode != start);
 
 
-                    //Collections.reverse(this.path);
+                    Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
                     this.path = this.refinePath(this.path);
@@ -120,8 +120,8 @@ public class SystemTools {
         }
 
         private boolean checkRoute(Tile start, Tile end){
-            Circle a = new Circle(end.getActualX(), end.getActualY(), 5, Color.GREEN);
-            start.getFloor().getPane().getChildren().add(a);
+            //Circle a = new Circle(end.getActualX(), end.getActualY(), 5, Color.GREEN);
+           // start.getFloor().getPane().getChildren().add(a);
 
 
             Building mainBuildingRef = start.getFloor().getBuilding();
@@ -194,8 +194,9 @@ public class SystemTools {
 
                 //for each calculated point on the path
                 for (int n = 0; n <= checkCount; n++) {
-                  //  Circle tmp = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5, Color.RED);
-                 //   start.getFloor().getPane().getChildren().add(tmp);
+                   // Circle tmp = new Circle(currentCheckingCoordinate[0], currentCheckingCoordinate[1], 5, Color.RED);
+
+                  //  start.getFloor().getPane().getChildren().add(tmp);
 
                     gridCheckingCoordinate[0] = (int) (currentCheckingCoordinate[0] / 50.0);                   //convert actual coordinate to grid coordinate
                     gridCheckingCoordinate[1] = (int) (currentCheckingCoordinate[1] / 50.0);
