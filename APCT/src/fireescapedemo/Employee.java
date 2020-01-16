@@ -38,7 +38,7 @@ public class Employee extends Actor implements Serializable{
                 System.out.println("Route found");
                 boolean stateSwitch = tools.pathFinder.exitFound();
                 if (stateSwitch) {
-                    tools.pathFinder.findPath(false);
+                    tools.pathFinder.findPath(true);
                     employee.setPath(tools.pathFinder.getPath());
                 }
                 State state = stateSwitch ? State.Escape : State.Idle;

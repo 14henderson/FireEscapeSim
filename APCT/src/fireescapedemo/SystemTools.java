@@ -108,7 +108,7 @@ public class SystemTools {
                     Collections.reverse(this.path);
                     System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
 
-                    this.path = this.refinePath(this.path);
+                    //this.path = this.refinePath(this.path);
 
 
                     //System.out.println("\n\nsize of array: " + this.path.size() + "\n\n");
@@ -228,7 +228,7 @@ public class SystemTools {
                     currentGap += checkGap;
                 }
                 for (int n = 0; n < tilesInPath.size() - 1; n++) {
-                    if (!tilesInPath.get(n).checkAccess(tilesInPath.get(n + 1))) {        //if a wall blocks the path, return false.
+                    if (!tilesInPath.get(n).checkAccess(tilesInPath.get(n + 1)) )  {        //if a wall blocks the path, return false.
                         System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
                         return false;
                     }
@@ -299,14 +299,15 @@ public class SystemTools {
 
                         if (newX < mapLength && newX > -1 && newY < mapLength && newY > -1) {
                             if ((i == 0 && dirAcess[0])) {
-                                if (avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Employee)) {
+                                if (avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Fire)) {
+                                    System.out.println("Fire");
                                     add = false;
                                 }
                                 if (add) {
                                     nodesToExplore.add(this.map[newX][newY]);
                                 }
                             } else if (j == 0 && dirAcess[1]) {
-                                if (avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Employee)) {
+                                if (avoiding && this.map[newX][newY].type.equals(Tile.BlockType.Fire)) {
                                     add = false;
                                 }
                                 if (add) {
@@ -341,7 +342,7 @@ public class SystemTools {
                     lockoutCounter++;
                     openList.add(currentTile);
                     //currentTile.setColour(Color.LIGHTBLUE);
-                    neighbors = getNeighbors(currentTile.getGridX(), currentTile.getGridY(), currentTile, false);
+                    neighbors = getNeighbors(currentTile.getGridX(), currentTile.getGridY(), currentTile, true);
                     for (Tile neighbor : neighbors) {
                         if (!openList.contains(neighbor) && !unopenList.contains(neighbor)) {
                             if (neighbor.type.equals(target)) {
@@ -382,6 +383,8 @@ public class SystemTools {
         public double getRange() {
             return this.range;
         }
+
+        public Tile getGoalTile(){return this.endNode;}
 
         public boolean exitFound() {
             return this.foundExit;
