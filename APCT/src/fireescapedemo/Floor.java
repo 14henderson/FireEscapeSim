@@ -100,7 +100,7 @@ public class Floor extends MapObject implements Serializable {
             this.wallsNodes.get(n).toFront();
         }
     }
-    public void initialiseWalls(){
+    public void initialiseWalls(){      //re-draws walls
         for(Node wall : this.wallsNodes) {
             this.getPane().getChildren().remove(wall);
         }
@@ -119,7 +119,7 @@ public class Floor extends MapObject implements Serializable {
     }
 
 
-    public void zoom(int zoomValue){
+    public void zoom(int zoomValue){        //applies a zoom factor on building
         System.out.println("Current tile size: "+this.tileSize);
         int newZoomValue = mainBuilding.getSize() + zoomValue;
         this.mainBuilding.setSize(newZoomValue);
@@ -130,7 +130,6 @@ public class Floor extends MapObject implements Serializable {
         }
         for(int i = 0; i < this.mapWidth; i++){
             for(int j = 0; j< this.mapHeight; j++){         //for every tile
-                //System.out.println(Arrays.toString(this.floorBlocks[i][j].dimensions));
                 this.floorBlocks[i][j].setActualCords(
                         (this.floorBlocks[i][j].getGridX()*this.mainBuilding.getSize())+this.mainBuilding.getXPanOffset(),
                         (this.floorBlocks[i][j].getGridY()*this.mainBuilding.getSize())+this.mainBuilding.getYPanOffset());
@@ -181,13 +180,9 @@ public class Floor extends MapObject implements Serializable {
     }
 
 
-
-
-
+    //redraw floor onto corresponding pane.
     @Override
     public void initialiseView(){
-        //this.panXOffset = 10;
-        //this.panYOffset = 10;
         this.wallsNodes = new ArrayList<>();
         try{this.exits.clear();}catch(Exception e){}
         try{this.employees.clear();}catch(Exception e){}
@@ -208,9 +203,6 @@ public class Floor extends MapObject implements Serializable {
             e.fxNode.toFront();
         }
     }
-
-
-
 
     public final Tile getTestFirstExit(){
         return this.exits.isEmpty() ? null : this.exits.get(0).parent;
@@ -241,20 +233,14 @@ public class Floor extends MapObject implements Serializable {
         this.wallsNodes.add(l);
     }
     public void removeWall(int[] cords){
-        System.out.println("In removeWall in Floor. Walls Num: "+this.walls.size());
-
         for(int n=this.walls.size()-1; n>=0; n--){
             System.out.println(this.walls.get(n)[0]+", "+this.walls.get(n)[1]+", "+this.walls.get(n)[2]+", "+this.walls.get(n)[3]);
-
-
             if(this.walls.get(n)[0] == cords[0] && this.walls.get(n)[1] == cords[1]
             && this.walls.get(n)[2] == cords[2] && this.walls.get(n)[3] == cords[3]){
                 this.walls.remove(n);
-               // System.out.println("REMOVED WALL");
             }else if(this.walls.get(n)[0] == cords[2] && this.walls.get(n)[1] == cords[3]
                     && this.walls.get(n)[2] == cords[0] && this.walls.get(n)[3] == cords[1]){
                 this.walls.remove(n);
-             //   System.out.println("REMOVED WALL");
             }
         }
     }
@@ -264,46 +250,7 @@ public class Floor extends MapObject implements Serializable {
     public int getTileSize(){return this.tileSize;}
     public void setTileSize(int size){this.tileSize = size;}
 
-
 }
-/*
-    public void refactorFloorForSim(){
-        this.floor = new Pane();
-        int i,j, sizei = this.floorBlocks.length,sizej = this.floorBlocks[0].length;
-        for(i = 0; i < sizei; i++){
-            for(j = 0; j < sizej; j++){
-                if(this.floorBlocks[i][j].type != BlockType.Exit) {
-                    this.floorBlocks[i][j].block.setStroke(Color.WHITESMOKE);
-                    this.floorBlocks[i][j].block.setFill(Color.WHITESMOKE);
-                    this.floor.getChildren().add(this.floorBlocks[i][j].block);
-                }
-            }
-        }
 
-        /*
-        //this is purley for testing purposes
-        int empX,empY,exiX,exiY;
-        for(Line l : this.walls){
-            this.floor.getChildren().add(l);
-        }
-        for(Actor emp : employees){
-            System.out.println("Wow 1");
-            this.floor.getChildren().add(emp.view);
-        }
-        for(Exit exit : this.exits){
-            System.out.println("Exit added");
-            this.floor.getChildren().add(exit.VIEW);
-        }
-        System.out.println("Number of Exits: " + this.exits.size());
-    }
-
-
-    public void renderBlocks(int index){
-
-        for(Tile[] floor :  this.floorBlocks){
-            for(Tile block : floor){
-                if(block.type != null) { block.type.render(); }
-    }}}
-    */
 
 

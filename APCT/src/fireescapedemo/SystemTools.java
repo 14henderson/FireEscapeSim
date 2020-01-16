@@ -121,7 +121,7 @@ public class SystemTools {
 
         private boolean checkRoute(Tile start, Tile end){
             //Circle a = new Circle(end.getActualX(), end.getActualY(), 5, Color.GREEN);
-           // start.getFloor().getPane().getChildren().add(a);
+
 
 
             Building mainBuildingRef = start.getFloor().getBuilding();
@@ -134,8 +134,8 @@ public class SystemTools {
             double endX = (end.getActualX()-mainBuildingRef.getXPanOffset())/(floorRef.tileSize/50.0);
             double endY = (end.getActualY()-mainBuildingRef.getYPanOffset())/(floorRef.tileSize/50.0);
 
-            System.out.println("Start X: "+startX+" Y: "+startY);
-            System.out.println("End X: "+endX+" Y: "+endY);
+            //System.out.println("Start X: "+startX+" Y: "+startY);
+            //System.out.println("End X: "+endX+" Y: "+endY);
 
 
             double actualWidth = endX-startX;       //actual width of path boundary
@@ -163,26 +163,26 @@ public class SystemTools {
             startingCoords1[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(-actualHeight);
             startingCoords1[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(actualWidth);;
 
-           // System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
-           // Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
-           // start.getFloor().getPane().getChildren().add(s1);
+          //  System.out.println("Starting p1 coords: "+startingCoords1[0]+", "+startingCoords1[1]);
+        //    Circle s1 = new Circle(startingCoords1[0], startingCoords1[1], 3, Color.BLUE);
+         //   start.getFloor().getPane().getChildren().add(s1);
 
             double[] startingCoords2 = new double[2];
             startingCoords2[0] = currentCheckingCoordinate[0] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, 2) + 1))*Math.signum(actualHeight);
             startingCoords2[1] = currentCheckingCoordinate[1] + Math.sqrt(Math.pow(start.mainBuilding.getActorSize()/2, 2) / (Math.pow(inverseGradient, -2) + 1))*Math.signum(-actualWidth);;
 
-           // System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
-            //Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
-           // start.getFloor().getPane().getChildren().add(s2);
+            //System.out.println("Starting p2 coords: "+startingCoords2[0]+", "+startingCoords2[1]);
+           // Circle s2 = new Circle(startingCoords2[0], startingCoords2[1], 3, Color.BLUE);
+            //start.getFloor().getPane().getChildren().add(s2);
 
-            double[] actualStartingCordsTMP = new double[2];
-            actualStartingCordsTMP[0] = startX+(25);
-            actualStartingCordsTMP[1] = startY+(25);
+           // double[] actualStartingCordsTMP = new double[2];
+            //actualStartingCordsTMP[0] = startX+(25);
+            //actualStartingCordsTMP[1] = startY+(25);
 
             ArrayList<double[]> linesToCheck = new ArrayList<>();
-            //linesToCheck.add(startingCoords1);
-            linesToCheck.add(actualStartingCordsTMP);
-            //linesToCheck.add(startingCoords2);
+            linesToCheck.add(startingCoords1);
+            //linesToCheck.add(actualStartingCordsTMP);
+            linesToCheck.add(startingCoords2);
 
             //for every parallel line to the mid-point that needs to be checked.
             for(double[] startpoint : linesToCheck) {
@@ -222,14 +222,14 @@ public class SystemTools {
                             currentGap += checkGap;
                             continue;
                         } else {
-                            System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
+                           // System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
                             return false;
                         }}
                     currentGap += checkGap;
                 }
                 for (int n = 0; n < tilesInPath.size() - 1; n++) {
                     if (!tilesInPath.get(n).checkAccess(tilesInPath.get(n + 1))) {        //if a wall blocks the path, return false.
-                        System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
+                      //  System.out.println("This path does not work. Start node: "+start.getGridX()+", "+start.getGridY()+" End node: "+end.getGridX()+", "+end.getGridY());
                         return false;
                     }
                 }

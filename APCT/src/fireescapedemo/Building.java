@@ -1,18 +1,12 @@
 package fireescapedemo;
 
-import java.awt.*;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.scene.control.TabPane;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
+
 
 
 
@@ -26,8 +20,8 @@ public class Building extends MapObject implements Serializable {
     private boolean calledFromSim = false;
     private int width;
     private int height;
+    private int actorSize = 20;
     private static final long serialVersionUID = 12345;
-    public static transient Pane windowContainer;
     public static transient TabPane paneContainer;
 
 
@@ -38,49 +32,35 @@ public class Building extends MapObject implements Serializable {
         if(floors == null){
             throw new RuntimeException();
         }
-        //this.pan(10, 10);
     }
 
     public Building(int floorWidth, int floorHeight, TabPane container){
         this.mainBuilding = this;
-        //this.windowContainer = windowContainerParent;
         this.paneContainer = container;
         this.stairs = new HashMap<>();
-        System.out.println("New Stairs being creates");
         this.width = floorWidth;
         this.height = floorHeight;
-
         if ( floors == null){
              floors = new ArrayList();
-             //Floor tmpRef = new Floor(firstFloorPane, "Floor 0", floorHeight,floorWidth,tileSize, 0);
-            // tmpRef.setFloorNum(0);
-            // floors.add(tmpRef);
-           //  currentFloor = 0;
              this.initialEmployeeCount = 0;
         }
-
-
     }
+
+
+
 
     public Building(int floorWidth, int floorHeight, int tileSize){
         this.mainBuilding = this;
-        //this.windowContainer = windowContainerParent;
         this.stairs = new HashMap<>();
         this.width = floorWidth;
         this.height = floorHeight;
-        System.out.println("New Stairs being creates");
-
         if ( floors == null){
             floors = new ArrayList();
-            //Floor tmpRef = new Floor(firstFloorPane, "Floor 0", floorHeight,floorWidth,tileSize, 0);
-            //tmpRef.setFloorNum(0);
-            //floors.add(tmpRef);
-            //currentFloor = 0;
             this.initialEmployeeCount = 0;
         }
-
-
     }
+
+
 
     @Override
     public void updateView(){
@@ -93,16 +73,15 @@ public class Building extends MapObject implements Serializable {
     @Override
     public void initialiseView(){
         if(this.stairs == null){
-            System.out.println("No stairs found");
             this.stairs = new HashMap<>();
         }
         this.mainBuilding = this;
         if(!this.floors.isEmpty()){this.floors.get(this.currentFloor).initialiseView();}
     }
 
+    //initialises all floors onto their subsequent panes
     public void initialiseAll(){
         if(this.stairs == null){
-            System.out.println("No stairs found");
             this.stairs = new HashMap<>();
         }
         this.mainBuilding = this;
@@ -111,6 +90,7 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
+    //calculate total employees in building
     public void calculateInitialEmployeeCount(){
         this.initialEmployeeCount = 0;
         for(Floor floor : this.floors){
@@ -171,7 +151,6 @@ public class Building extends MapObject implements Serializable {
     public int getInitialEmployeeCount(){return this.initialEmployeeCount; }
     public boolean hasNextFloor(){return ( this.currentFloor + 1) <  this.floors.size(); }
     public boolean hasPrevFloor(){return ( this.currentFloor - 1) > -1; }
-    public void setWindowContainer(Pane paneRef){this.windowContainer = paneRef;}
     public void setCurrentFloor(int floor){this.currentFloor = floor;}
     public double getXPanOffset(){
         if(this.getCurrentFloor() == null){return 0;}
@@ -183,10 +162,11 @@ public class Building extends MapObject implements Serializable {
     }
     public void enableSim(){this.runningSim = true;}
     public boolean getSimState(){return this.runningSim;}
-    public double getActorSize(){return 20;}
+    public double getActorSize(){return this.actorSize;}
     public void setTabPane(TabPane newTabPane){this.paneContainer = newTabPane;}
     public void setCalledBySim(boolean b){this.calledFromSim = b;}
     public boolean getCalledBySim(){return this.calledFromSim;}
+    public void setActorSize(int s){this.actorSize = s;}
 
     public final Floor getCurrentFloor(){
         if(this.paneContainer.getTabs().size() == 0){
@@ -198,7 +178,6 @@ public class Building extends MapObject implements Serializable {
                 return f;
             }
         }
-        //System.console().printf("CANNOT FIND FLOOR WITH THE NAME: "+currTabName);
         return null;
     }
 
@@ -211,29 +190,7 @@ public class Building extends MapObject implements Serializable {
         }
         return null;
     }
-    public final int getCurrentFloorIndex() {
-        System.out.println("Calling unsafe method! (getCurrentFloorIndex)");
-        return this.currentFloor;
-    }
 
-
-    public Floor increaseFloor() {
-        if(hasNextFloor()){currentFloor += 1;}
-        return  floors.get( currentFloor);
-    }
-    public Floor decreaseFloor() {
-        if(hasPrevFloor()){
-            currentFloor -= 1;
-        }
-        return  floors.get( currentFloor);
-    }
-
-    /*
-    public void renderBlocks(){
-        int index = 0;
-        for(Floor floor : floors){ floor.renderBlocks(index); index++;}
-
-    }*/
 
     public final void addFloor(Pane floorPane, String id) {
         Floor newFloor = new Floor(floorPane, id, this, this.getHeight(), this.getWidth(), 50, this.floors.size());
@@ -253,6 +210,7 @@ public class Building extends MapObject implements Serializable {
         }
     }
 
+    //get grid coords
     public static int normaliseXCoord(double x, Building b){
         double tmp = ((x-b.getXPanOffset())/b.getCurrentFloor().getTileSize());
         return (int)tmp;

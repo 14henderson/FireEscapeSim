@@ -195,11 +195,8 @@ public class Employee extends Actor implements Serializable{
                     }
                      //= this.curPoint.getID();
                     int jId = Building.mainBuilding.getStairs().get(id).joinedID;
-                    if(id == this.curPoint.getFloorNum()){
-                        this.curPoint = (Building.mainBuilding.getStairs().get(jId)).getParent();
-                    }else{
-                        this.curPoint = (Building.mainBuilding.getStairs().get(id)).getParent();
-                    }
+                    this.curPoint = (Building.mainBuilding.getStairs().get(jId)).getParent();
+
                     System.out.println("id: " + id + ", jId: " + jId);
                     Floor prevFloor = this.curPoint.getFloor();
                     Floor curFloor = this.curPoint.getFloor();

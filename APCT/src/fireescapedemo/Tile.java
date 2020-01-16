@@ -144,7 +144,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
                 Actor a;
                 Circle c;
-                c = new Circle(tile.getFloor().getBuilding().getActorSize()*tile.getFloor().tileSize/100.0);
+
+                c = new Circle((tile.getFloor().getBuilding().getActorSize()/2)*tile.getFloor().tileSize/50.0);
                 c.setFill(Color.PINK);
 
                 c.setLayoutX(tile.getActualX()+tile.mainBuilding.getSize()/2);
@@ -163,6 +164,8 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 tile.parentFloor.getPane().getChildren().add(c);
                 tile.setActor(e);
                 tile.setTileObject(e);
+
+                this.finalPreparation(tile);
             }
         };
         
@@ -291,10 +294,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
             this.parentFloor.getPane().getChildren().remove(this.fxRef);
             this.parentFloor.getPane().getChildren().remove(this.currentActor.fxNode);
         } catch(Exception e){}
-        //if(this.tileObject != null) {
-        //    this.tileObject.flushNodes();
-        //    this.tileObject.destroy();
-        //}
         this.type.initialiseView(0, this, false);
         this.currentActor = null;
         this.fxRef.setOnMouseClicked((MouseEvent event) -> {
@@ -331,10 +330,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public void translate(int xinc, int yinc){
         this.actualCords[0] += xinc;
         this.actualCords[1] += yinc;
-
-       // if(this.tileObject == null) {
-       //     this.initialiseView();
-       // }
     }
 
 
@@ -372,18 +367,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     public final double getSize(){return this.fxRef.getHeight();}
 
 
-
-
-
-    /**
-     * Check if actor has access to a certain direction
-     *
-     * @param dir   Direction player is to move:
-     *              0:  Checks Up
-     *              1:  Checks Right
-     *              2:  Checks Down
-     *              3:  Checks Left
-     */
     public final void removeAccess(int dir){ this.walls[dir] = false;}
     public final void grantAccess(int dir){ this.walls[dir] = true;}
     public static void toggleBuild() {buildEnabled = !buildEnabled;}
@@ -407,14 +390,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
 
     public boolean getAccess(int dir){ return this.walls[dir];}
     public boolean checkAccess(Tile t){
-        //System.out.println("~~~~~~~~~~~~~~~~");
-        //System.out.println("This Tile: "+this.getGridX()+", "+this.getGridY());
-        //System.out.println("This Tile: "+ Arrays.toString(this.walls));
-        //System.out.println("Testing Tile: "+t.getGridX()+", "+t.getGridY());
-        //System.out.println("~~~~~~~~~~~~~~~~");
-
-
-
         if(t == this){return true;}
         if(t.getGridX()-this.getGridX() == 1 && t.getGridY()-this.getGridY() == 1){
             return
@@ -459,8 +434,7 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
     }
 
 
-
-
+    //default tile holder for tiles. Tiles with limited functionality can extent this.
     public static class DefaultAssetHolder extends TileObject implements Serializable{
         String filename;
         DefaultAssetHolder(Tile t, String fname){
@@ -505,9 +479,6 @@ public class Tile extends MapObject implements Serializable, Comparable<fireesca
                 System.out.println(ex);
             }
             this.fxNode = rec;
-
-
-
         }
 
 
